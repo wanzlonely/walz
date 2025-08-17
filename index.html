@@ -1,140 +1,195 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Top Up Center | Promo Murah</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Poppins', sans-serif; margin:0; padding:0; background:#f4f4f4; color:#333; }
-    header { background:#2d2d2d; color:#fff; padding:20px; text-align:center; font-size:24px; font-weight:600; }
-    .container { max-width:600px; margin:30px auto; padding:20px; background:#fff; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
-    label { font-weight:600; margin-top:15px; display:block; }
-    select, input { width:100%; padding:10px; margin-top:8px; border:1px solid #ccc; border-radius:5px; font-size:16px; }
-    .price { background:#eef2f5; padding:10px; border-radius:5px; margin-top:12px; font-size:18px; }
-    .payment-methods { display:flex; justify-content:space-around; margin-top:15px; }
-    .payment-option { flex:1; margin:0 5px; padding:10px; border:1px solid #ccc; border-radius:8px; text-align:center; cursor:pointer; }
-    .payment-option img { width:50px; height:50px; object-fit:contain; }
-    .payment-option div { margin-top:5px; font-size:14px; }
-    button { width:100%; padding:14px; background:#ff5722; border:none; border-radius:6px; color:white; font-size:18px; margin-top:20px; cursor:pointer; }
-    button:hover { background:#e64a19; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Top Up Center | Promo Murah</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body { font-family:'Poppins', sans-serif; margin:0; padding:0; background:#f4f4f4; color:#333; }
+header { background:#2d2d2d; color:#fff; padding:20px; text-align:center; font-size:24px; font-weight:600; }
+.container { max-width:700px; margin:30px auto; padding:20px; background:#fff; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); }
+
+/* Label & input */
+label { font-weight:600; margin-top:15px; display:block; }
+select, input { width:100%; padding:10px; margin-top:8px; border:1px solid #ccc; border-radius:6px; font-size:16px; }
+.price { background:#eef2f5; padding:10px; border-radius:6px; margin-top:12px; font-size:18px; text-align:center; }
+
+/* Button */
+button { width:100%; padding:14px; background:#ff5722; border:none; border-radius:8px; color:white; font-size:18px; margin-top:20px; cursor:pointer; }
+button:hover { background:#e64a19; }
+
+/* Game grid */
+.game-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:15px; margin-top:10px; }
+.game-card { position:relative; border-radius:12px; height:150px; color:white; font-weight:600; text-align:center; cursor:pointer; overflow:hidden; display:flex; flex-direction:column; justify-content:center; align-items:center; transition:0.3s; background-size:cover; background-position:center; }
+.game-card:hover { transform:scale(1.05); box-shadow:0 4px 12px rgba(0,0,0,0.3); }
+.game-card .overlay { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); border-radius:12px; }
+.game-card img { width:50px; height:50px; object-fit:contain; margin-bottom:5px; z-index:1; position:relative; }
+.game-card div { z-index:1; position:relative; }
+
+/* Badge promo animasi berkedip */
+@keyframes blink { 0%,50%,100%{opacity:1;} 25%,75%{opacity:0.3;} }
+.badge { position:absolute; top:8px; right:8px; background:#ffeb3b; color:#000; font-size:12px; font-weight:700; padding:2px 6px; border-radius:6px; z-index:2; animation:blink 1.5s infinite; }
+
+/* E-wallet grid */
+.payment-methods { display:flex; justify-content:space-around; flex-wrap:wrap; margin-top:15px; }
+.payment-option { flex:1; min-width:120px; margin:5px; border-radius:12px; height:100px; display:flex; flex-direction:column; justify-content:center; align-items:center; color:white; font-weight:600; cursor:pointer; transition:0.3s; background-size:cover; background-position:center; }
+.payment-option img { width:50px; height:50px; object-fit:contain; margin-bottom:5px; }
+.payment-option:hover { transform:scale(1.05); opacity:0.85; }
+
+/* Paket card grid */
+.package-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin-top:10px; }
+.package-card { background:#fff; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2); padding:10px; text-align:center; cursor:pointer; transition:0.3s; }
+.package-card:hover { transform:translateY(-5px) scale(1.03); box-shadow:0 6px 12px rgba(0,0,0,0.3); }
+.package-card.selected { border:3px solid #ff5722; }
+.package-card .pkg-name { font-weight:600; margin-bottom:5px; }
+.package-card .pkg-price { color:#ff5722; font-weight:700; }
+</style>
 </head>
 <body>
-  <header>Top Up Center – Promo Murah</header>
-  <div class="container">
-    <label for="game">Pilih Game</label>
-    <select id="game" onchange="updatePackages()">
-      <option value="">-- Pilih Game --</option>
-      <option value="Free Fire">Free Fire</option>
-      <option value="Mobile Legends">Mobile Legends</option>
-      <option value="PUBG Mobile">PUBG Mobile</option>
-      <option value="Genshin Impact">Genshin Impact</option>
-      <option value="Valorant">Valorant</option>
-      <option value="COD Mobile">COD Mobile</option>
-      <option value="Roblox">Roblox</option>
-    </select>
 
-    <label for="idgame">Masukkan ID / UID</label>
-    <input type="text" id="idgame" placeholder="Masukkan ID Game">
+<header>Top Up Center – Promo Murah</header>
+<div class="container">
 
-    <label for="package">Pilih Paket</label>
-    <select id="package"></select>
-
-    <label for="voucher">Voucher (opsional)</label>
-    <input type="text" id="voucher" placeholder="PROMO10">
-
-    <div class="price" id="priceBox">Total: Rp 0</div>
-
-    <label>Pilih Metode Pembayaran</label>
-    <div class="payment-methods">
-      <div class="payment-option" data-method="OVO">
-        <img src="https://img.icons8.com/color/96/ovo.png" alt="OVO"/>
-        <div>OVO</div>
-      </div>
-      <div class="payment-option" data-method="Dana">
-        <img src="https://files.catbox.moe/9ozprx.jpg" alt="Dana"/>
-        <div>Dana</div>
-      </div>
-      <div class="payment-option" data-method="GoPay">
-        <img src="https://files.catbox.moe/0qmbo6.jpg" alt="GoPay"/>
-        <div>GoPay</div>
-      </div>
-      <div class="payment-option" data-method="Bank Transfer">
-        <img src="https://img.icons8.com/color/96/bank-card-back-side.png" alt="Bank"/>
-        <div>Bank</div>
-      </div>
-    </div>
-
-    <button onclick="checkout()">Beli Sekarang</button>
+<label>Pilih Game</label>
+<div class="game-grid" id="gameGrid">
+  <div class="game-card" data-game="Free Fire" style="background-image:url('https://files.catbox.moe/oqnxag.jpeg');">
+    <div class="overlay"></div>
+    <img src="https://upload.wikimedia.org/wikipedia/id/6/6b/Free_Fire_logo.png" alt="Free Fire">
+    <div>Free Fire</div>
+    <div class="badge">PROMO</div>
   </div>
+  <div class="game-card" data-game="Mobile Legends" style="background-image:url('https://files.catbox.moe/h7whee.jpeg');">
+    <div class="overlay"></div>
+    <img src="https://upload.wikimedia.org/wikipedia/id/c/c6/Mobile_Legends_Logo.png" alt="ML">
+    <div>Mobile Legends</div>
+    <div class="badge">PROMO</div>
+  </div>
+  <div class="game-card" data-game="Honor of Kings" style="background-image:url('https://files.catbox.moe/04zakl.jpeg');">
+    <div class="overlay"></div>
+    <img src="https://upload.wikimedia.org/wikipedia/en/0/00/Genshin_Impact_logo.png" alt="HOK">
+    <div>Honor of Kings</div>
+  </div>
+  <div class="game-card" data-game="Roblox" style="background-image:url('https://files.catbox.moe/ldegjz.png');">
+    <div class="overlay"></div>
+    <img src="https://upload.wikimedia.org/wikipedia/en/0/00/Genshin_Impact_logo.png" alt="Roblox">
+    <div>Roblox</div>
+  </div>
+</div>
 
-  <script>
-    const harga = {
-      "Free Fire": { "70 Diamonds": 9000, "140 Diamonds": 18000, "355 Diamonds": 45000, "720 Diamonds": 90000, "1450 Diamonds": 180000 },
-      "Mobile Legends": { "86 Diamonds": 23000, "172 Diamonds": 45000, "514 Diamonds": 120000, "706 Diamonds": 160000, "1000 Diamonds": 220000 },
-      "PUBG Mobile": { "60 UC": 12000, "325 UC": 60000, "660 UC": 120000, "1800 UC": 310000 },
-      "Genshin Impact": { "60 Crystals": 12000, "300 Crystals": 59000, "980 Crystals": 175000, "1980 Crystals": 350000 },
-      "Valorant": { "475 VP": 45000, "1000 VP": 90000, "2050 VP": 180000 },
-      "COD Mobile": { "80 CP": 12000, "420 CP": 60000, "880 CP": 120000, "2400 CP": 310000 },
-      "Roblox": { "80 Robux": 12000, "400 Robux": 60000, "800 Robux": 115000, "1700 Robux": 230000 }
-    };
+<label for="idgame">Masukkan ID / UID</label>
+<input type="text" id="idgame" placeholder="Masukkan ID Game">
 
-    let selectedPayment = "";
+<label>Pilih Paket</label>
+<div id="packageGrid" class="package-grid"></div>
 
-    document.querySelectorAll(".payment-option").forEach(opt=>{
-      opt.addEventListener("click", ()=>{
-        selectedPayment = opt.getAttribute("data-method");
-        document.querySelectorAll(".payment-option").forEach(o=>o.style.borderColor = "#ccc");
-        opt.style.borderColor = "#ff5722";  // tanda aktif yang sederhana & elegan
+<label for="voucher">Voucher (opsional)</label>
+<input type="text" id="voucher" placeholder="PROMO10">
+
+<div class="price" id="priceBox">Total: Rp 0</div>
+
+<label>Pilih Metode Pembayaran</label>
+<div class="payment-methods">
+  <div class="payment-option" data-method="OVO" style="background:#6a1b9a;">
+    <img src="https://img.icons8.com/color/96/ovo.png" alt="OVO"/>
+    <div>OVO</div>
+  </div>
+  <div class="payment-option" data-method="Dana" style="background:#0099ff;">
+    <img src="https://files.catbox.moe/9ozprx.jpg" alt="Dana"/>
+    <div>Dana</div>
+  </div>
+  <div class="payment-option" data-method="GoPay" style="background:#00cc66;">
+    <img src="https://files.catbox.moe/7f7kj6.png" alt="GoPay"/>
+    <div>GoPay</div>
+  </div>
+  <div class="payment-option" data-method="Bank Transfer" style="background:#ff6600;">
+    <img src="https://img.icons8.com/color/96/bank-card-back-side.png" alt="Bank"/>
+    <div>Bank</div>
+  </div>
+</div>
+
+<button onclick="checkout()">Beli Sekarang</button>
+
+</div>
+
+<script>
+const harga = {
+  "Free Fire": { "70 Diamonds": 9000, "140 Diamonds": 18000, "355 Diamonds": 45000, "720 Diamonds": 90000, "1450 Diamonds": 180000, "3000 Diamonds": 360000, "5000 Diamonds": 600000 },
+  "Mobile Legends": { "86 Diamonds": 23000, "172 Diamonds": 45000, "514 Diamonds": 120000, "706 Diamonds": 160000, "1000 Diamonds": 220000, "1500 Diamonds": 330000, "2500 Diamonds": 550000 },
+  "Honor of Kings": { "80 Tokens": 14000, "240 Tokens": 44000, "560 Tokens": 100000, "1200 Tokens": 210000, "2500 Tokens": 430000, "5000 Tokens": 850000, "10000 Tokens": 1600000 },
+  "Roblox": { "80 Robux": 12000, "400 Robux": 60000, "800 Robux": 115000, "1700 Robux": 230000, "3000 Robux": 400000, "5000 Robux": 650000, "10000 Robux": 1200000 }
+};
+
+let selectedGame = "";
+let selectedPayment = "";
+let selectedPackage = "";
+
+document.querySelectorAll(".game-card").forEach(card=>{
+  card.addEventListener("click", ()=>{
+    selectedGame = card.getAttribute("data-game");
+    document.querySelectorAll(".game-card").forEach(c=>c.style.border="none");
+    card.style.border="3px solid #fff";
+    updatePackages(selectedGame);
+  });
+});
+
+document.querySelectorAll(".payment-option").forEach(opt=>{
+  opt.addEventListener("click", ()=>{
+    selectedPayment = opt.getAttribute("data-method");
+    document.querySelectorAll(".payment-option").forEach(o=>o.style.opacity="1");
+    opt.style.opacity="0.8";
+  });
+});
+
+function updatePackages(game){
+  const grid = document.getElementById('packageGrid');
+  grid.innerHTML = '';
+  if(harga[game]){
+    Object.entries(harga[game]).forEach(([p, cost])=>{
+      const div = document.createElement('div');
+      div.className = 'package-card';
+      div.innerHTML = `<div class="pkg-name">${p}</div><div class="pkg-price">Rp ${cost.toLocaleString()}</div>`;
+      div.addEventListener('click', ()=>{
+        selectedPackage = p;
+        document.querySelectorAll('.package-card').forEach(c=>c.classList.remove('selected'));
+        div.classList.add('selected');
+        updatePrice();
       });
+      grid.appendChild(div);
     });
+  }
+  updatePrice();
+}
 
-    function updatePackages(){
-      const game = document.getElementById('game').value;
-      const pack = document.getElementById('package');
-      pack.innerHTML = '';
-      if(harga[game]){
-        Object.entries(harga[game]).forEach(([p, cost]) => {
-          const opt = document.createElement('option');
-          opt.value = p;
-          opt.textContent = `${p} — Rp ${cost.toLocaleString()}`;
-          pack.appendChild(opt);
-        });
-      }
-      updatePrice();
-    }
+document.getElementById('voucher').addEventListener('input', updatePrice);
 
-    document.getElementById('voucher').addEventListener('input', updatePrice);
-    document.getElementById('package').addEventListener('change', updatePrice);
+function updatePrice(){
+  const game = selectedGame;
+  const paket = selectedPackage;
+  const kode = document.getElementById('voucher').value.trim().toUpperCase();
+  let total = harga[game]?.[paket] || 0;
+  if(kode === 'PROMO10') total *= 0.9;
+  document.getElementById('priceBox').textContent = `Total: Rp ${total.toLocaleString()}`;
+}
 
-    function updatePrice(){
-      const game = document.getElementById('game').value;
-      const paket = document.getElementById('package').value;
-      const kode = document.getElementById('voucher').value.trim().toUpperCase();
-      let total = harga[game]?.[paket] || 0;
-      if(kode === 'PROMO10') total *= 0.9;
-      document.getElementById('priceBox').textContent = `Total: Rp ${total.toLocaleString()}`;
-    }
+function checkout(){
+  const uid = document.getElementById('idgame').value.trim();
+  const paket = selectedPackage;
+  const kode = document.getElementById('voucher').value.trim();
+  const metode = selectedPayment;
+  const hargaAsli = harga[selectedGame]?.[paket] || 0;
+  let total = kode.toUpperCase() === 'PROMO10' ? hargaAsli*0.9 : hargaAsli;
 
-    function checkout(){
-      const game = document.getElementById('game').value;
-      const uid = document.getElementById('idgame').value.trim();
-      const paket = document.getElementById('package').value;
-      const kode = document.getElementById('voucher').value.trim();
-      const metode = selectedPayment;
-      const hargaAsli = harga[game]?.[paket] || 0;
-      let total = kode.toUpperCase() === 'PROMO10' ? hargaAsli * 0.9 : hargaAsli;
+  if(!selectedGame || !uid || !paket || !metode){
+    alert('Harap lengkapi semua informasi sebelum checkout!');
+    return;
+  }
 
-      if(!game || !uid || !paket || !metode){
-        alert('Harap lengkapi semua informasi sebelum melanjutkan pembelian.');
-        return;
-      }
+  const msg = `Halo Admin, saya ingin top up:\n\nGame: ${selectedGame}\nID: ${uid}\nPaket: ${paket}\nHarga: Rp ${total.toLocaleString()}\nMetode Pembayaran: ${metode}${kode ? `\nVoucher: ${kode}` : ''}`;
+  const url = `https://wa.me/6282298902274?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+}
+</script>
 
-      const msg = `Halo Admin, saya ingin top up:\n\nGame: ${game}\nID: ${uid}\nPaket: ${paket}\nHarga: Rp ${total.toLocaleString()}\nMetode Pembayaran: ${metode}${kode ? `\nVoucher: ${kode}` : ''}`;
-      const url = `https://wa.me/6282298902274?text=${encodeURIComponent(msg)}`;
-      window.open(url, '_blank');
-    }
-  </script>
 </body>
-</html>
+  </html>
