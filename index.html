@@ -8,6 +8,8 @@
 </head>
 <body>
 
+<canvas id="particleCanvas"></canvas>
+
 <!-- HERO SECTION -->
 <section class="hero">
   <h1>Top Up Center Premium</h1>
@@ -15,14 +17,11 @@
   <a href="#produk" class="btn">Beli Sekarang</a>
 </section>
 
-<!-- MAIN CONTAINER -->
 <div class="container">
 
   <!-- GAME CARDS -->
   <h2>Pilih Game</h2>
-  <div class="game-grid" id="gameGrid">
-    <!-- Game cards akan di-generate JS -->
-  </div>
+  <div class="game-grid" id="gameGrid"></div>
 
   <!-- INPUT ID -->
   <label for="idgame">Masukkan ID / UID</label>
@@ -30,9 +29,7 @@
 
   <!-- PACKAGE -->
   <h2>Pilih Paket</h2>
-  <div class="package-grid" id="packageGrid">
-    <!-- Paket akan di-generate JS -->
-  </div>
+  <div class="package-grid" id="packageGrid"></div>
 
   <!-- VOUCHER -->
   <label for="voucher">Voucher (opsional)</label>
@@ -43,12 +40,10 @@
 
   <!-- PAYMENT METHODS -->
   <h2>Pilih Metode Pembayaran</h2>
-  <div class="payment-methods" id="paymentGrid">
-    <!-- Payment e-wallet akan di-generate JS -->
-  </div>
+  <div class="payment-methods" id="paymentGrid"></div>
 
   <!-- CHECKOUT BUTTON -->
-  <button onclick="checkout()">Beli Sekarang</button>
+  <button id="checkoutBtn">Beli Sekarang</button>
 
 </div>
 
@@ -60,7 +55,6 @@
   </div>
 </div>
 
-<!-- SCRIPT -->
 <script src="script.js"></script>
 </body>
-    </html>
+  </html>
