@@ -1,187 +1,66 @@
-{
-  margin: 0; padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
+/* RESET & BODY */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{background:#0f172a;color:#fff;line-height:1.6;overflow-x:hidden;}
 
-body {
-  background: #0f172a;
-  color: #fff;
-  line-height: 1.6;
-}
+/* PARTICLE CANVAS */
+#particleCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;}
 
 /* HERO */
-.hero {
-  text-align: center;
-  padding: 4rem 1rem;
-  background: linear-gradient(135deg, #1e3c72, #2a5298);
-}
-.hero h1 {
-  font-size: 2.8rem;
-  margin-bottom: 0.5rem;
-}
-.hero p {
-  margin-bottom: 1.5rem;
-}
-.btn {
-  display: inline-block;
-  padding: 12px 20px;
-  background: #ff9800;
-  color: #fff;
-  border-radius: 25px;
-  text-decoration: none;
-  transition: 0.3s;
-}
-.btn:hover {
-  background: #e68900;
-}
+.hero{text-align:center;padding:4rem 1rem;background:linear-gradient(135deg,#1e3c72,#2a5298);border-radius:15px;margin:1rem;animation:fadeSlide 1s ease-out;}
+.hero h1{font-size:2.8rem;margin-bottom:0.5rem;animation:fadeSlide 1.2s ease-out forwards;}
+.hero p{margin-bottom:1.5rem;opacity:0;animation:fadeSlide 1.4s ease-out forwards;}
+.btn{display:inline-block;padding:12px 20px;background:#ff9800;color:#fff;border-radius:25px;text-decoration:none;transition:0.3s;animation:fadeSlide 1.6s ease-out forwards;}
+.btn:hover{background:#e68900;transform:scale(1.05);box-shadow:0 0 15px #ff9800;}
+@keyframes fadeSlide{0%{opacity:0;transform:translateY(20px);}100%{opacity:1;transform:translateY(0);}}
 
-/* PRODUK */
-#produk {
-  padding: 3rem 1rem;
-  text-align: center;
-}
-#produk h2 {
-  margin-bottom: 2rem;
-  color: #ff9800;
-}
-.produk-grid {
-  display: grid;
-  gap: 1.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  max-width: 800px;
-  margin: auto;
-}
-.produk-card {
-  background: #1e293b;
-  padding: 1.5rem;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-  transition: transform 0.3s;
-}
-.produk-card:hover {
-  transform: scale(1.05);
-}
-.produk-card h3 {
-  margin-bottom: 0.5rem;
-  color: #ff9800;
-}
+/* GAME CARDS */
+.game-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:15px;margin-top:10px;}
+.game-card{position:relative;border-radius:12px;height:160px;color:white;font-weight:600;text-align:center;cursor:pointer;overflow:hidden;display:flex;flex-direction:column;justify-content:center;align-items:center;transition:0.4s;box-shadow:0 2px 6px rgba(0,0,0,0.2);opacity:0;transform:translateY(30px);}
+.game-card.visible{opacity:1;transform:translateY(0);transition:0.5s;}
+.game-card:hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(255,87,34,0.6);}
+.game-card .overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.35);border-radius:12px;}
+.game-card img{width:50px;height:50px;object-fit:contain;margin-bottom:5px;z-index:1;position:relative;}
+.game-card div{z-index:1;position:relative;}
 
-/* ORDER */
-#order {
-  padding: 3rem 1rem;
-  text-align: center;
+/* PACKAGE FLIP CARD */
+.package-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:10px;}
+.flip-card{background-color:transparent;perspective:1000px;opacity:0;transform:translateY(30px);transition:all 0.6s ease-out;position:relative;}
+.flip-card.visible{opacity:1;transform:translateY(0);}
+.flip-card-inner{position:relative;width:100%;height:100px;text-align:center;transition:transform 0.6s;transform-style:preserve-3d;cursor:pointer;}
+.flip-card:hover .flip-card-inner,.flip-card.selected .flip-card-inner{transform:rotateY(180deg);}
+.flip-card-front,.flip-card-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.25);display:flex;flex-direction:column;justify-content:center;align-items:center;}
+.flip-card-front{
+  background: linear-gradient(270deg, #1e293b, #283350, #1e293b);
+  background-size: 600% 600%;
+  animation: shimmer 3s ease infinite;
+  color:#fff;
+  transition:0.3s;
 }
-#order h2 {
-  margin-bottom: 1rem;
-  color: #ff9800;
-}
-.card {
-  background: #1e293b;
-  padding: 2rem;
-  border-radius: 15px;
-  max-width: 400px;
-  margin: auto;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-}
-form label {
-  display: block;
-  text-align: left;
-  margin-top: 1rem;
-}
-form input, form select {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  border: none;
-  border-radius: 8px;
-}
-button {
-  margin-top: 1.5rem;
-  padding: 12px;
-  width: 100%;
-  border: none;
-  background: #ff9800;
-  color: white;
-  font-weight: bold;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-button:hover {
-  background: #e68900;
-}
+@keyframes shimmer{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+.flip-card-front:hover,.flip-card.selected .flip-card-front{box-shadow:0 0 20px #ff9800,0 0 40px #ff5722;transform:scale(1.05);}
+.flip-card-back{background:#ff5722;color:#fff;transform:rotateY(180deg);font-weight:600;font-size:14px;}
+.pkg-name{font-weight:600;margin-bottom:5px;}
+.pkg-price{color:#ff9800;font-weight:700;}
 
-/* POPUP */
-.popup {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.7);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-}
-.popup-content {
-  background: #1e293b;
-  padding: 2rem;
-  border-radius: 15px;
-  text-align: center;
-  max-width: 300px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-}
-.loader {
-  border: 6px solid #f3f3f3;
-  border-top: 6px solid #ff9800;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  margin: auto;
-  animation: spin 1s linear infinite;
-}
-@keyframes spin { 100% { transform: rotate(360deg); } }
-.popup h3 { margin-top: 1rem; }
+/* PAYMENT METHODS */
+.payment-methods{display:flex;flex-wrap:wrap;justify-content:space-around;margin-top:15px;}
+.payment-option{flex:1;min-width:120px;margin:5px;border-radius:12px;height:100px;display:flex;flex-direction:column;justify-content:center;align-items:center;color:white;font-weight:600;cursor:pointer;transition:0.3s all;background-size:cover;background-position:center;box-shadow:0 2px 8px rgba(0,0,0,0.25);}
+.payment-option img{width:50px;height:50px;object-fit:contain;margin-bottom:5px;}
+.payment-option.selected{box-shadow:0 0 15px #ff9800,0 0 30px #ff5722;transform:scale(1.05);animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{transform:scale(1.05);}50%{transform:scale(1.12);}}
+.payment-option:hover{transform:scale(1.05);opacity:0.85;}
 
-/* RIWAYAT */
-#riwayat {
-  padding: 3rem 1rem;
-  text-align: center;
-}
-#riwayat h2 {
-  margin-bottom: 1.5rem;
-  color: #ff9800;
-}
-.riwayat-list {
-  max-width: 600px;
-  margin: auto;
-  display: grid;
-  gap: 1rem;
-}
-.riwayat-card {
-  background: #1e293b;
-  padding: 1rem;
-  border-radius: 10px;
-  text-align: left;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.4);
-}
-.riwayat-card p { margin: 5px 0; }
-.btn-clear {
-  margin-top: 1.5rem;
-  padding: 10px 18px;
-  background: #dc2626;
-  border: none;
-  border-radius: 8px;
-  color: #fff;
-  cursor: pointer;
-  transition: 0.3s;
-}
-.btn-clear:hover { background: #b91c1c; }
+/* STICKY PRICE */
+#stickyPrice{position:sticky;top:0;background:#ffeb3b;color:#000;font-weight:700;text-align:center;padding:10px 0;border-radius:6px;margin-bottom:10px;font-size:18px;z-index:99;transition:0.3s;}
 
-/* FOOTER */
-footer {
-  padding: 1rem;
-  text-align: center;
-  background: #111827;
-  font-size: 0.9rem;
-}
+/* CHECKOUT BUTTON */
+#checkoutBtn{background: linear-gradient(270deg, #ff9800, #ff5722, #ff9800);background-size:600% 600%;color:#fff;font-weight:bold;border-radius:10px;cursor:pointer;transition:0.3s all;animation: gradientBtn 3s ease infinite;}
+#checkoutBtn:hover{transform:scale(1.05);box-shadow:0 0 20px #ff9800,0 0 40px #ff5722;}
+@keyframes gradientBtn{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+
+/* POPUP LOADER */
+.popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;justify-content:center;align-items:center;z-index:999;opacity:0;visibility:hidden;transition:0.3s;}
+.popup.active{opacity:1;visibility:visible;}
+.popup-content{background:#1e293b;padding:2rem;border-radius:15px;text-align:center;max-width:350px;box-shadow:0 5px 20px rgba(0,0,0,0.5);}
+.loader{border:6px solid #f3f3f3;border-top:6px solid #ff9800;border-radius:50%;width:60px;height:60px;margin:auto;animation:spin 1s linear infinite;}
+@keyframes spin{100%{transform:rotate(360deg);}}
