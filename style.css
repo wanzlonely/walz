@@ -31,13 +31,7 @@ h2{font-size:18px;margin:14px 4px 10px}
 
 /* GAME GRID */
 .game-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-top:6px}
-.game-card{
-  position:relative;height:132px;border-radius:16px;overflow:hidden;cursor:pointer;
-  background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0)) border-box, linear-gradient(180deg,#1f2250,#121435) padding-box;
-  border:1px solid rgba(255,255,255,.12);
-  display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;
-  transition:.3s;box-shadow:0 8px 30px rgba(0,0,0,.25)
-}
+.game-card{position:relative;height:132px;border-radius:16px;overflow:hidden;cursor:pointer;background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0)) border-box, linear-gradient(180deg,#1f2250,#121435) padding-box;border:1px solid rgba(255,255,255,.12);display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;transition:.3s;box-shadow:0 8px 30px rgba(0,0,0,.25)}
 .game-card .overlay{position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,.1))}
 .game-card img{position:relative;z-index:1;width:52px;height:52px;border-radius:10px;object-fit:cover;margin-bottom:6px;box-shadow:0 8px 20px rgba(0,0,0,.35)}
 .game-card div{position:relative;z-index:1;font-weight:700;text-shadow:0 2px 6px rgba(0,0,0,.45)}
@@ -46,12 +40,7 @@ h2{font-size:18px;margin:14px 4px 10px}
 
 /* PACKAGE GRID */
 .package-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:6px}
-.flip-card{
-  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)) padding-box;
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:16px;padding:14px;text-align:center;cursor:pointer;transition:.25s;
-  box-shadow:0 8px 26px rgba(0,0,0,.25); display:flex;flex-direction:column;align-items:center;gap:6px
-}
+.flip-card{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)) padding-box;border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px;text-align:center;cursor:pointer;transition:.25s;box-shadow:0 8px 26px rgba(0,0,0,.25);display:flex;flex-direction:column;align-items:center;gap:6px}
 .flip-card .pkg-icon{width:34px;height:34px;object-fit:contain;filter:drop-shadow(0 4px 8px rgba(0,0,0,.35))}
 .flip-card .pkg-name{font-size:14px;font-weight:700}
 .flip-card .pkg-price{font-size:13px;color:#ffd27a;font-weight:800}
@@ -62,21 +51,13 @@ h2{font-size:18px;margin:14px 4px 10px}
 .voucher-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .voucher-icon{width:28px;height:28px;object-fit:contain}
 .voucher-list{display:flex;flex-direction:column;gap:6px}
-.voucher-item{
-  background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
-  border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:8px 10px;font-size:13px;
-  display:flex;justify-content:space-between;align-items:center
-}
+.voucher-item{background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:8px 10px;font-size:13px;display:flex;justify-content:space-between;align-items:center}
 .voucher-item.active{border-color:#22c55e;color:#22c55e;font-weight:700}
 .voucher-item.expired{border-color:#dc2626;color:#dc2626;opacity:.7}
 
 /* PAYMENT */
 .payment-list{display:flex;flex-direction:column;gap:10px}
-.payment-item{
-  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-  border:1.5px solid rgba(255,255,255,.12);border-radius:14px;padding:12px 14px;cursor:pointer;transition:.2s;
-  display:flex;align-items:center;justify-content:space-between;box-shadow:0 8px 26px rgba(0,0,0,.18)
-}
+.payment-item{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));border:1.5px solid rgba(255,255,255,.12);border-radius:14px;padding:12px 14px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:space-between;box-shadow:0 8px 26px rgba(0,0,0,.18)}
 .payment-left{display:flex;align-items:center;gap:10px}
 .payment-item img{width:38px;height:38px;object-fit:contain;border-radius:8px}
 .payment-right{font-weight:900;color:#ffd27a}
@@ -84,19 +65,12 @@ h2{font-size:18px;margin:14px 4px 10px}
 .payment-item.selected{outline:2px solid #6c75ff; background:linear-gradient(180deg, rgba(124,134,255,.15), rgba(255,255,255,.02))}
 
 /* SUMMARY BAR */
-.summary-bar{
-  position:fixed;left:0;right:0;bottom:0;padding:12px 16px;background:linear-gradient(90deg,#7b2cff, #2a72ff);
-  display:flex;align-items:center;justify-content:space-between;gap:12px;border-radius:18px 18px 0 0;
-  box-shadow:0 -12px 40px rgba(0,0,0,.35);z-index:50
-}
+.summary-bar{position:fixed;left:0;right:0;bottom:0;padding:12px 16px;background:linear-gradient(90deg,#7b2cff, #2a72ff);display:flex;align-items:center;justify-content:space-between;gap:12px;border-radius:18px 18px 0 0;box-shadow:0 -12px 40px rgba(0,0,0,.35);z-index:50}
 .summary-info{min-width:0}
 .summary-title{font-weight:900}
 .summary-sub{font-size:12px;color:#eaefff;opacity:.9}
 .summary-price{font-weight:900}
-.confirm-btn{
-  background:#0b66ff;border:none;color:#fff;border-radius:12px;padding:12px 16px;font-weight:900;cursor:pointer;
-  box-shadow:0 10px 24px rgba(11,102,255,.35);transition:.2s
-}
+.confirm-btn{background:#0b66ff;border:none;color:#fff;border-radius:12px;padding:12px 16px;font-weight:900;cursor:pointer;box-shadow:0 10px 24px rgba(11,102,255,.35);transition:.2s}
 .confirm-btn:hover{filter:brightness(1.05); transform:translateY(-1px)}
 
 /* POPUP */
@@ -107,5 +81,5 @@ h2{font-size:18px;margin:14px 4px 10px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* CANVAS LAYERS */
-#bubbleCanvas{position:fixed;inset:0;z-index:0}
-#particleCanvas{position:fixed;inset:0;pointer-events:none;z-index:60}
+#bubbleCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+#particleCanvas{position:fixed;inset:0;z-index:60;pointer-events:none}
