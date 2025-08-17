@@ -29,6 +29,7 @@ header p {color:#bbb; font-size:14px;}
   margin-top:8px;
 }
 .input:focus {border-color:#ff9800; outline:none;}
+.hidden {display:none;}
 
 /* === GAME GRID === */
 .game-grid {
@@ -106,9 +107,6 @@ header p {color:#bbb; font-size:14px;}
   border-radius:10px;
   padding:6px 10px;
   font-size:13px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
 }
 .voucher-item.active {border-color:#22c55e; color:#22c55e; font-weight:600;}
 .voucher-item.expired {border-color:#dc2626; color:#dc2626; opacity:.6;}
@@ -132,7 +130,6 @@ header p {color:#bbb; font-size:14px;}
 }
 .payment-item img {
   width:36px; height:36px; border-radius:8px; object-fit:contain;
-  margin-right:10px;
 }
 .payment-left {display:flex; align-items:center; gap:8px;}
 .payment-item span {font-size:15px;}
