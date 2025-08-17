@@ -1,74 +1,82 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Top Up Game Store</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-
-  <!-- HEADER -->
-  <header>
-    <h1>Top Up Game</h1>
-    <p>Pilih game, paket, masukkan ID, lalu checkout via WhatsApp</p>
-  </header>
-
-  <!-- GAME LIST -->
-  <section>
-    <h2>Pilih Game</h2>
-    <div id="gameGrid" class="game-grid"></div>
-  </section>
-
-  <!-- ID GAME -->
-  <section>
-    <h2>Masukkan ID Game</h2>
-    <input type="text" id="idgame" class="input" placeholder="Masukkan ID Game Anda">
-    <input type="text" id="serverid" class="input hidden" placeholder="Masukkan Server ID (contoh: 4231)">
-  </section>
-
-  <!-- PAKET LIST -->
-  <section>
-    <h2>Pilih Paket</h2>
-    <div id="packageGrid" class="package-grid"></div>
-  </section>
-
-  <!-- VOUCHER -->
-  <section>
-    <h2>Kode Promo</h2>
-    <div class="voucher-row">
-      <img src="https://cdn-icons-png.flaticon.com/512/726/726623.png" class="voucher-icon" alt="voucher">
-      <input id="voucher" type="text" class="input" placeholder="Masukkan kode promo"/>
-    </div>
-    <div id="voucherList" class="voucher-list"></div>
-  </section>
-
-  <!-- PAYMENT -->
-  <section>
-    <h2>Pilih Metode Pembayaran</h2>
-    <div class="payment-list" id="ewalletList"></div>
-  </section>
-
-  <!-- SUMMARY BAR -->
-  <div class="summary-bar" id="summaryBar">
-    <div class="summary-info">
-      <span id="summaryTitle">Paket belum dipilih</span>
-      <small id="summarySub">Silakan pilih paket & payment</small>
-    </div>
-    <div class="summary-price" id="summaryPrice">Rp0</div>
-    <button id="confirmBtn">Konfirmasi Pesanan</button>
-  </div>
-
-  <!-- POPUP LOADING -->
-  <div id="popup" class="popup">
-    <div class="loader"></div>
-    <p>Memproses pesanan...</p>
-  </div>
-
-  <!-- CANVAS PARTICLES -->
+  <!-- BACKGROUND BUBBLES -->
+  <canvas id="bubbleCanvas"></canvas>
+  <!-- PARTICLE BURST -->
   <canvas id="particleCanvas"></canvas>
 
-  <!-- SCRIPT -->
+  <!-- HEADER -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">Premium Store</div>
+      <h1>Top Up Game</h1>
+      <p>Diamond & item game cepat, aman, dan murah</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- GAME -->
+    <section>
+      <h2>Pilih Game</h2>
+      <div id="gameGrid" class="game-grid"></div>
+    </section>
+
+    <!-- ID GAME -->
+    <section>
+      <h2>Masukkan ID</h2>
+      <input type="text" id="idgame" class="input" placeholder="Contoh: 123456789"/>
+      <input type="text" id="serverid" class="input hidden" placeholder="Masukkan Server ID (contoh: 4231)"/>
+      <small class="hint">* Khusus Mobile Legends tambahkan Server ID</small>
+    </section>
+
+    <!-- PAKET -->
+    <section>
+      <h2>Pilih Paket</h2>
+      <div id="packageGrid" class="package-grid"></div>
+    </section>
+
+    <!-- VOUCHER -->
+    <section>
+      <h2>Kode Promo</h2>
+      <div class="voucher-row">
+        <img src="https://cdn-icons-png.flaticon.com/512/726/726623.png" class="voucher-icon" alt="voucher">
+        <input id="voucher" type="text" class="input" placeholder="Masukkan kode promo (contoh: WLZSPR)"/>
+      </div>
+      <div id="voucherList" class="voucher-list"></div>
+    </section>
+
+    <!-- PAYMENT -->
+    <section>
+      <h2>Metode Pembayaran</h2>
+      <div class="payment-list" id="ewalletList"></div>
+    </section>
+  </main>
+
+  <!-- SUMMARY BAR -->
+  <div class="summary-bar">
+    <div class="summary-info">
+      <div id="summaryTitle" class="summary-title">Paket belum dipilih</div>
+      <div id="summarySub" class="summary-sub">Silakan pilih paket & payment</div>
+    </div>
+    <div id="summaryPrice" class="summary-price">Rp0</div>
+    <button id="confirmBtn" class="confirm-btn">Konfirmasi</button>
+  </div>
+
+  <!-- POPUP LOADER -->
+  <div id="popup" class="popup">
+    <div class="popup-content">
+      <div class="loader"></div>
+      <h3>Memproses pesanan...</h3>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
-      </html>
+  </html>
