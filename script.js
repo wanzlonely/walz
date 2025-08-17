@@ -72,8 +72,20 @@ games.forEach(game=>{
     document.querySelectorAll('.game-card').forEach(g=>g.classList.remove('selected'));
     div.classList.add('selected');
     selectedGame=game.id;selectedPackage=null;
-    generatePackages(game.id);updatePrice();renderPayments();
-    createParticles(div.getBoundingClientRect().left+div.offsetWidth/2, div.getBoundingClientRect().top+div.offsetHeight/2, 24);
+    generatePackages(game.id);
+    updatePrice();
+
+    // === khusus ML tampilkan Server ID ===
+    const serverInput = document.getElementById('serverid');
+    if(game.id === 'ml'){
+      serverInput.classList.remove('hidden');
+    } else {
+      serverInput.classList.add('hidden');
+      serverInput.value = "";
+    }
+
+    createParticles(div.getBoundingClientRect().left+div.offsetWidth/2,
+                    div.getBoundingClientRect().top+div.offsetHeight/2, 24);
   });
   gameGrid.appendChild(div);
 });
@@ -91,7 +103,8 @@ function generatePackages(gameId){
       document.querySelectorAll('.flip-card').forEach(el=>el.classList.remove('selected'));
       card.classList.add('selected');selectedPackage=name;
       updatePrice();renderPayments();
-      createParticles(card.getBoundingClientRect().left+card.offsetWidth/2, card.getBoundingClientRect().top+card.offsetHeight/2, 28);
+      createParticles(card.getBoundingClientRect().left+card.offsetWidth/2,
+                      card.getBoundingClientRect().top+card.offsetHeight/2, 28);
     });
     packageGrid.appendChild(card);
   });
@@ -150,7 +163,6 @@ function updatePrice(){
   const total=getTotal();
   document.getElementById('stickyPrice').textContent = "Total: Rp " + total.toLocaleString();
 
-  // Update summary bar
   const summaryTitle = document.getElementById('summaryTitle');
   const summarySub   = document.getElementById('summarySub');
   const summaryPrice = document.getElementById('summaryPrice');
@@ -164,15 +176,13 @@ function updatePrice(){
     summarySub.textContent   = "Silakan pilih paket & payment";
     summaryPrice.textContent = "Rp0";
   }
-
-  // Refresh payment list supaya harga update
-  renderPayments();
 }
 
 // === CHECKOUT ===
 const confirmBtn = document.getElementById('confirmBtn');
 confirmBtn.addEventListener('click', ()=>{
   const uid = document.getElementById('idgame').value.trim();
+  const serverid = document.getElementById('serverid').value.trim();
   const voucher = document.getElementById('voucher').value.trim().toUpperCase();
 
   if(!selectedGame || !selectedPackage || !selectedPayment || !uid){
@@ -180,10 +190,20 @@ confirmBtn.addEventListener('click', ()=>{
     return;
   }
 
+  // === Khusus Mobile Legends butuh Server ID ===
+  let finalId = uid;
+  if(selectedGame === 'ml'){
+    if(!serverid){
+      alert("Masukkan juga Server ID (contoh: 4231) untuk Mobile Legends");
+      return;
+    }
+    finalId = `${uid} (${serverid})`;
+  }
+
   const total = getTotal();
   const msg = `Halo Admin, saya ingin top up:\n`+
               `Game: ${selectedGame.toUpperCase()}\n`+
-              `ID: ${uid}\n`+
+              `ID: ${finalId}\n`+
               `Paket: ${selectedPackage}\n`+
               `Payment: ${selectedPayment}\n`+
               `Voucher: ${voucher || "-"}\n`+
@@ -198,4 +218,10 @@ confirmBtn.addEventListener('click', ()=>{
     const waUrl = `https://wa.me/6282298902274?text=${encodeURIComponent(msg)}`;
     window.open(waUrl,"_blank");
   },1500);
+});
+
+// === VOUCHER INPUT LISTENER ===
+document.getElementById('voucher').addEventListener('input', ()=>{
+  updatePrice();
+  renderPayments();
 });
