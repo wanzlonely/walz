@@ -24,8 +24,8 @@ const ewallets = [
 
 // === VOUCHERS ===
 const vouchers = [
-  { code:"WLZSPR", desc:"Diskon 10% spesial", exp:"2025-12-31", discount:0.1 },
-  { code:"PROMO10", desc:"Diskon 10%", exp:"2024-12-31", discount:0.1 }
+  { code:"WLZSPR", desc:"Diskon 10% spesial", exp:"2025-12-31", discount:0.10 },
+  { code:"PROMO10", desc:"Diskon 10%",        exp:"2024-12-31", discount:0.10 }
 ];
 
 // === ICON per game ===
@@ -37,23 +37,71 @@ const gameIcons = {
 };
 
 // === STATE ===
-let selectedGame=null, selectedPackage=null, selectedPayment=null;
+let selectedGame = null;
+let selectedPackage = null;
+let selectedPayment = null;
 
-// === PARTICLES ===
-const canvas=document.getElementById('particleCanvas');
-const ctx=canvas.getContext('2d');
-function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
-resizeCanvas(); window.addEventListener('resize',resizeCanvas);
-function createParticles(x,y,count){
-  const parts=[];for(let i=0;i<count;i++){parts.push({x,y,r:Math.random()*3+2,dx:(Math.random()-0.5)*5,dy:(Math.random()-0.5)*5,a:1})}
-  function tick(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    parts.forEach(p=>{p.x+=p.dx;p.y+=p.dy;p.a-=0.02;
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(255,255,255,${Math.max(p.a,0)})`;ctx.fill();
+// === BUBBLE BACKGROUND ===
+const bubbleCanvas = document.getElementById('bubbleCanvas');
+const bctx = bubbleCanvas.getContext('2d');
+function resizeBubbles(){
+  bubbleCanvas.width = window.innerWidth;
+  bubbleCanvas.height = window.innerHeight;
+}
+resizeBubbles();
+window.addEventListener('resize', resizeBubbles);
+
+const bubbles = Array.from({length:40}).map(()=>({
+  x: Math.random()*window.innerWidth,
+  y: window.innerHeight + Math.random()*window.innerHeight,
+  r: Math.random()*6 + 2,
+  s: Math.random()*0.6 + 0.2,
+  drift: (Math.random()-0.5)*0.6
+}));
+function drawBubbles(){
+  bctx.clearRect(0,0,bubbleCanvas.width,bubbleCanvas.height);
+  bubbles.forEach(b=>{
+    b.y -= b.s;
+    b.x += b.drift;
+    if(b.y < -20){ b.y = window.innerHeight + 20; b.x = Math.random()*window.innerWidth; }
+    const grad = bctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r*2.2);
+    grad.addColorStop(0,'rgba(255,255,255,0.18)');
+    grad.addColorStop(1,'rgba(255,255,255,0)');
+    bctx.fillStyle = grad;
+    bctx.beginPath(); bctx.arc(b.x,b.y,b.r*2,0,Math.PI*2); bctx.fill();
+  });
+  requestAnimationFrame(drawBubbles);
+}
+drawBubbles();
+
+// === PARTICLES (BURST) ===
+const particleCanvas = document.getElementById('particleCanvas');
+const pctx = particleCanvas.getContext('2d');
+function resizeParticles(){ particleCanvas.width=window.innerWidth; particleCanvas.height=window.innerHeight }
+resizeParticles(); window.addEventListener('resize', resizeParticles);
+
+function createParticles(x,y,count=24){
+  const parts=[];
+  for(let i=0;i<count;i++){
+    parts.push({
+      x,y,
+      r:Math.random()*3+2,
+      dx:(Math.random()-0.5)*6,
+      dy:(Math.random()-0.5)*6,
+      a:1
     });
-    if(parts.every(p=>p.a<=0))return;requestAnimationFrame(tick);
-  } tick();
+  }
+  function tick(){
+    pctx.clearRect(0,0,particleCanvas.width,particleCanvas.height);
+    parts.forEach(p=>{
+      p.x+=p.dx; p.y+=p.dy; p.a-=0.02;
+      pctx.beginPath(); pctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      pctx.fillStyle=`rgba(255,255,255,${Math.max(p.a,0)})`; pctx.fill();
+    });
+    if(parts.every(p=>p.a<=0)) return;
+    requestAnimationFrame(tick);
+  }
+  tick();
 }
 
 // === POPUP ===
@@ -71,11 +119,12 @@ games.forEach(game=>{
   div.addEventListener('click',()=>{
     document.querySelectorAll('.game-card').forEach(g=>g.classList.remove('selected'));
     div.classList.add('selected');
-    selectedGame=game.id;selectedPackage=null;
-    generatePackages(game.id);
-    updatePrice();
 
-    // === khusus ML tampilkan Server ID ===
+    selectedGame = game.id;
+    selectedPackage = null;
+    selectedPayment = null;
+
+    // ML: tampilkan Server ID
     const serverInput = document.getElementById('serverid');
     if(game.id === 'ml'){
       serverInput.classList.remove('hidden');
@@ -84,8 +133,11 @@ games.forEach(game=>{
       serverInput.value = "";
     }
 
-    createParticles(div.getBoundingClientRect().left+div.offsetWidth/2,
-                    div.getBoundingClientRect().top+div.offsetHeight/2, 24);
+    generatePackages(game.id);
+    updatePrice(); // akan reset ringkasan & kosongkan payment list
+
+    const rect = div.getBoundingClientRect();
+    createParticles(rect.left + rect.width/2, rect.top + rect.height/2, 28);
   });
   gameGrid.appendChild(div);
 });
@@ -98,13 +150,21 @@ function generatePackages(gameId){
   Object.keys(packs).forEach(name=>{
     const card=document.createElement('div');
     card.className='flip-card';
-    card.innerHTML=`<img class="pkg-icon" src="${gameIcons[gameId]}" alt=""><div class="pkg-name">${name}</div><div class="pkg-price">Rp ${packs[name].toLocaleString()}</div>`;
+    card.innerHTML=`
+      <img class="pkg-icon" src="${gameIcons[gameId]}" alt="">
+      <div class="pkg-name">${name}</div>
+      <div class="pkg-price">Rp ${packs[name].toLocaleString()}</div>
+    `;
     card.addEventListener('click',()=>{
       document.querySelectorAll('.flip-card').forEach(el=>el.classList.remove('selected'));
-      card.classList.add('selected');selectedPackage=name;
-      updatePrice();renderPayments();
-      createParticles(card.getBoundingClientRect().left+card.offsetWidth/2,
-                      card.getBoundingClientRect().top+card.offsetHeight/2, 28);
+      card.classList.add('selected');
+
+      selectedPackage = name;
+      selectedPayment = null; // reset payment saat ganti paket
+      updatePrice();          // ini juga akan render payment
+
+      const rect = card.getBoundingClientRect();
+      createParticles(rect.left + rect.width/2, rect.top + rect.height/2, 30);
     });
     packageGrid.appendChild(card);
   });
@@ -112,18 +172,19 @@ function generatePackages(gameId){
 
 // === VOUCHER LIST ===
 function renderVouchers(){
-  const list=document.getElementById('voucherList');list.innerHTML='';
+  const list=document.getElementById('voucherList');
+  list.innerHTML='';
   const now=new Date();
   vouchers.forEach(v=>{
     const expDate=new Date(v.exp);
     const expired=expDate<now;
     const item=document.createElement('div');
     item.className='voucher-item '+(expired?'expired':'active');
-    item.textContent=`${v.code} - ${v.desc} (exp: ${v.exp})`;
+    item.textContent = `${v.code} — ${v.desc} (exp: ${v.exp})`;
     if(!expired){
       item.addEventListener('click',()=>{
         document.getElementById('voucher').value=v.code;
-        updatePrice();renderPayments();
+        updatePrice(); // total & payment refresh
       });
     }
     list.appendChild(item);
@@ -131,38 +192,51 @@ function renderVouchers(){
 }
 renderVouchers();
 
-// === PAYMENTS ===
-function renderPayments(){
-  const list=document.getElementById('ewalletList');list.innerHTML='';
-  const total=getTotal();
+// === PAYMENT RENDER ===
+function renderPayments(total=null){
+  const list=document.getElementById('ewalletList');
+  list.innerHTML='';
+  if(!selectedGame || !selectedPackage) return; // hanya setelah paket dipilih
+  if(total === null) total = getTotal();
+
   ewallets.forEach(p=>{
     const row=document.createElement('div');
     row.className='payment-item';
-    row.innerHTML=`<div class="payment-left"><img src="${p.img}" alt="${p.name}"/><span>${p.name}</span></div><div class="payment-right">Rp${total.toLocaleString()}</div>`;
+    row.innerHTML=`
+      <div class="payment-left">
+        <img src="${p.img}" alt="${p.name}"/>
+        <span>${p.name}</span>
+      </div>
+      <div class="payment-right">Rp${total.toLocaleString()}</div>
+    `;
     row.addEventListener('click',()=>{
       document.querySelectorAll('.payment-item').forEach(el=>el.classList.remove('selected'));
-      row.classList.add('selected');selectedPayment=p.name;
-      updatePrice();
+      row.classList.add('selected');
+      selectedPayment=p.name;
+      updatePrice(); // perbarui summary
+      const rect = row.getBoundingClientRect();
+      createParticles(rect.left + rect.width - 30, rect.top + rect.height/2, 24);
     });
     list.appendChild(row);
   });
 }
 
-// === HARGA TOTAL ===
+// === TOTAL HARGA ===
 function getTotal(){
-  if(!selectedGame||!selectedPackage) return 0;
-  let total=harga[selectedGame][selectedPackage]||0;
-  const code=document.getElementById('voucher').value.trim().toUpperCase();
-  const now=new Date();
-  const v=vouchers.find(x=>x.code===code && new Date(x.exp)>=now);
-  if(v) total*=1-v.discount;
+  if(!selectedGame || !selectedPackage) return 0;
+  let total = harga[selectedGame][selectedPackage] || 0;
+
+  const code = document.getElementById('voucher').value.trim().toUpperCase();
+  const now = new Date();
+  const v = vouchers.find(x => x.code === code && new Date(x.exp) >= now);
+  if(v){ total = Math.round(total * (1 - v.discount)); }
+
   return total;
 }
 
+// === RINGKASAN & HARGA ===
 function updatePrice(){
-  const total=getTotal();
-  document.getElementById('stickyPrice').textContent = "Total: Rp " + total.toLocaleString();
-
+  const total = getTotal();
   const summaryTitle = document.getElementById('summaryTitle');
   const summarySub   = document.getElementById('summarySub');
   const summaryPrice = document.getElementById('summaryPrice');
@@ -176,6 +250,9 @@ function updatePrice(){
     summarySub.textContent   = "Silakan pilih paket & payment";
     summaryPrice.textContent = "Rp0";
   }
+
+  // sinkronkan harga pada list payment
+  renderPayments(total);
 }
 
 // === CHECKOUT ===
@@ -190,7 +267,7 @@ confirmBtn.addEventListener('click', ()=>{
     return;
   }
 
-  // === Khusus Mobile Legends butuh Server ID ===
+  // ML: wajib Server ID
   let finalId = uid;
   if(selectedGame === 'ml'){
     if(!serverid){
@@ -201,27 +278,28 @@ confirmBtn.addEventListener('click', ()=>{
   }
 
   const total = getTotal();
-  const msg = `Halo Admin, saya ingin top up:\n`+
-              `Game: ${selectedGame.toUpperCase()}\n`+
-              `ID: ${finalId}\n`+
-              `Paket: ${selectedPackage}\n`+
-              `Payment: ${selectedPayment}\n`+
-              `Voucher: ${voucher || "-"}\n`+
-              `Total Harga: Rp ${total.toLocaleString()}`;
+
+  // nama game untuk pesan WA
+  const gameMap = Object.fromEntries(games.map(g=>[g.id,g.name]));
+  const msg = `Halo Admin, saya ingin top up:
+Game: ${gameMap[selectedGame] || selectedGame.toUpperCase()}
+ID: ${finalId}
+Paket: ${selectedPackage}
+Payment: ${selectedPayment}
+Voucher: ${voucher || "-"}
+Total Harga: Rp ${total.toLocaleString()}`;
 
   showPopup();
-  createParticles(confirmBtn.getBoundingClientRect().left+confirmBtn.offsetWidth/2,
-                  confirmBtn.getBoundingClientRect().top+confirmBtn.offsetHeight/2, 40);
+
+  const rect = confirmBtn.getBoundingClientRect();
+  createParticles(rect.left + rect.width/2, rect.top + rect.height/2, 42);
 
   setTimeout(()=>{
     hidePopup();
     const waUrl = `https://wa.me/6282298902274?text=${encodeURIComponent(msg)}`;
-    window.open(waUrl,"_blank");
-  },1500);
+    window.open(waUrl, "_blank");
+  }, 1200);
 });
 
-// === VOUCHER INPUT LISTENER ===
-document.getElementById('voucher').addEventListener('input', ()=>{
-  updatePrice();
-  renderPayments();
-});
+// === LISTENERS ===
+document.getElementById('voucher').addEventListener('input', ()=>{ updatePrice(); });
