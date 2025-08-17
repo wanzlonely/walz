@@ -3,88 +3,158 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🔥 TopUp Store</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Top Up Diamonds | Mirip Codashop</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: #f9f9fb;
+      color: #333;
+    }
+    header {
+      background: #6a11cb;
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      color: #fff;
+      text-align: center;
+      padding: 1rem;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+    .container {
+      max-width: 600px;
+      margin: 1rem auto;
+      padding: 1rem;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 1rem;
+    }
+    button {
+      background: #6a11cb;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #2575fc;
+    }
+    .price-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .price-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .price-card:hover, .price-card.active {
+      background: #f0f4ff;
+      border-color: #6a11cb;
+    }
+    .footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 20px;
+      padding-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
-  <!-- HERO -->
-  <header class="hero">
-    <h1>🔥 TopUp Store</h1>
-    <p>Top up game cepat, aman, dan terpercaya.</p>
-    <a href="#produk" class="btn">Lihat Produk</a>
-  </header>
+  <header>💎 Top Up Diamonds</header>
 
-  <!-- PRODUK -->
-  <section id="produk">
-    <h2>💎 Daftar Produk</h2>
-    <div class="produk-grid">
-      <div class="produk-card">
-        <h3>Diamond 50</h3>
-        <p>Rp 10.000</p>
-      </div>
-      <div class="produk-card">
-        <h3>Diamond 100</h3>
-        <p>Rp 18.000</p>
-      </div>
-      <div class="produk-card">
-        <h3>Diamond 500</h3>
-        <p>Rp 80.000</p>
-      </div>
-    </div>
-  </section>
+  <div class="container">
+    <h2>1. Masukkan Data Akun</h2>
+    <input type="text" id="userId" placeholder="User ID">
+    <input type="text" id="serverId" placeholder="Server ID">
 
-  <!-- FORM ORDER -->
-  <section id="order">
-    <h2>🛒 Formulir Order</h2>
-    <div class="card">
-      <form id="topupForm">
-        <label for="gameId">ID Game / Nomor HP</label>
-        <input type="text" id="gameId" placeholder="Masukkan ID" required>
+    <h2>2. Pilih Jumlah Diamonds</h2>
+    <div class="price-list" id="diamondList"></div>
 
-        <label for="produk">Pilih Produk</label>
-        <select id="produk" required>
-          <option value="">-- Pilih --</option>
-          <option value="Diamond 50">Diamond 50</option>
-          <option value="Diamond 100">Diamond 100</option>
-          <option value="Diamond 500">Diamond 500</option>
-        </select>
+    <h2>3. Pilih Metode Pembayaran</h2>
+    <select id="payment">
+      <option value="Dana">Dana</option>
+      <option value="OVO">OVO</option>
+      <option value="Gopay">Gopay</option>
+      <option value="Pulsa">Pulsa</option>
+      <option value="Bank Transfer">Bank Transfer</option>
+    </select>
 
-        <label for="payment">Metode Pembayaran</label>
-        <select id="payment" required>
-          <option value="">-- Pilih --</option>
-          <option value="Dana">Dana</option>
-          <option value="OVO">OVO</option>
-          <option value="Gopay">Gopay</option>
-        </select>
-
-        <button type="submit">Pesan Sekarang</button>
-      </form>
-    </div>
-  </section>
-
-  <!-- POPUP LOADING -->
-  <div class="popup" id="popup">
-    <div class="popup-content">
-      <div class="loader" id="loader"></div>
-      <h3 id="statusText">Memproses pesanan...</h3>
-    </div>
+    <button onclick="orderNow()">Beli Sekarang</button>
   </div>
 
-  <!-- RIWAYAT ORDER -->
-  <section id="riwayat">
-    <h2>📜 Riwayat Order</h2>
-    <div class="riwayat-list" id="riwayatList">
-      <p>Belum ada riwayat order.</p>
-    </div>
-    <button class="btn-clear" onclick="clearRiwayat()">Hapus Riwayat</button>
-  </section>
+  <div class="footer">
+    © 2025 TopUpKeren. Mirip Codashop.
+  </div>
 
-  <!-- FOOTER -->
-  <footer>
-    <p>© 2025 TopUp Store | Dibuat dengan ❤️ di GitHub Pages</p>
-  </footer>
+  <script>
+    const diamondData = [
+      {name: "5 Diamonds", price: "Rp 901"},
+      {name: "12 Diamonds", price: "Rp 1.802"},
+      {name: "50 Diamonds", price: "Rp 7.207"},
+      {name: "70 Diamonds", price: "Rp 9.009"},
+      {name: "140 Diamonds", price: "Rp 18.018"},
+      {name: "355 Diamonds", price: "Rp 45.045"},
+      {name: "720 Diamonds", price: "Rp 90.090"},
+      {name: "1450 Diamonds", price: "Rp 180.180"},
+      {name: "2180 Diamonds", price: "Rp 270.000"},
+      {name: "3640 Diamonds", price: "Rp 450.500"}
+    ];
 
-  <script src="script.js"></script>
+    let selectedDiamond = null;
+
+    const diamondList = document.getElementById('diamondList');
+    diamondData.forEach((item, index) => {
+      const card = document.createElement('div');
+      card.classList.add('price-card');
+      card.innerHTML = `<strong>${item.name}</strong><br><small>${item.price}</small>`;
+      card.onclick = () => {
+        document.querySelectorAll('.price-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        selectedDiamond = item;
+      };
+      diamondList.appendChild(card);
+    });
+
+    function orderNow() {
+      const userId = document.getElementById('userId').value;
+      const serverId = document.getElementById('serverId').value;
+      const payment = document.getElementById('payment').value;
+
+      if (!userId || !serverId || !selectedDiamond) {
+        alert("Harap lengkapi semua data!");
+        return;
+      }
+
+      const message = `Halo Admin, saya ingin Top Up:\n\n` +
+                      `🎮 Game: Mobile Legends\n` +
+                      `🆔 ID: ${userId} (Server: ${serverId})\n` +
+                      `💎 Paket: ${selectedDiamond.name}\n` +
+                      `💰 Harga: ${selectedDiamond.price}\n` +
+                      `💳 Pembayaran: ${payment}`;
+      
+      const waNumber = "6282298902274"; // nomor admin fix
+      const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
+      window.open(url, "_blank");
+    }
+  </script>
 </body>
-  </html>
+</html>
