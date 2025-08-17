@@ -1,66 +1,73 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Top Up Center Premium</title>
-  <link rel="stylesheet" href="style.css"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top Up Game Store</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <canvas id="particleCanvas"></canvas>
 
-  <!-- HERO -->
-  <section class="hero">
-    <h1>Top Up Center Premium</h1>
-    <p>Diamond & item game cepat, aman, dan murah</p>
-  </section>
+  <!-- HEADER -->
+  <header>
+    <h1>Top Up Game</h1>
+    <p>Pilih game, paket, masukkan ID, lalu checkout via WhatsApp</p>
+  </header>
 
-  <main class="container" id="produk">
-    <!-- GAME -->
+  <!-- GAME LIST -->
+  <section>
     <h2>Pilih Game</h2>
     <div id="gameGrid" class="game-grid"></div>
+  </section>
 
-    <!-- ID -->
-    <label for="idgame" class="label">Masukkan ID / UID</label>
-    <input id="idgame" type="text" class="input" placeholder="Contoh: 123456789"/>
+  <!-- ID GAME -->
+  <section>
+    <h2>Masukkan ID Game</h2>
+    <input type="text" id="idgame" class="input" placeholder="Masukkan ID Game Anda">
+  </section>
 
-    <!-- PAKET -->
+  <!-- PAKET LIST -->
+  <section>
     <h2>Pilih Paket</h2>
     <div id="packageGrid" class="package-grid"></div>
+  </section>
 
-    <!-- VOUCHER -->
-    <label for="voucher" class="label">Kode Promo</label>
-    <input id="voucher" type="text" class="input" value="WLZSPR"/>
-    
-    <!-- Total (info cepat) -->
-    <div id="stickyPrice" class="sticky-price">Total: Rp 0</div>
+  <!-- VOUCHER -->
+  <section>
+    <h2>Kode Promo</h2>
+    <div class="voucher-row">
+      <img src="https://cdn-icons-png.flaticon.com/512/726/726623.png" class="voucher-icon" alt="voucher">
+      <input id="voucher" type="text" class="input" placeholder="Masukkan kode promo"/>
+    </div>
+    <div id="voucherList" class="voucher-list"></div>
+  </section>
 
-    <!-- PAYMENT -->
-    <h2>Metode Pembayaran</h2>
-    <div class="payment-category">E-Wallet</div>
-    <div id="ewalletList" class="payment-list"></div>
-  </main>
+  <!-- PAYMENT -->
+  <section>
+    <h2>Pilih Metode Pembayaran</h2>
+    <div class="payment-list" id="ewalletList"></div>
+  </section>
 
   <!-- SUMMARY BAR -->
   <div class="summary-bar" id="summaryBar">
-    <div class="summary-left">
-      <div id="summaryTitle" class="summary-title">Paket belum dipilih</div>
-      <div id="summarySub" class="summary-sub">Silakan pilih paket & payment</div>
+    <div class="summary-info">
+      <span id="summaryTitle">Paket belum dipilih</span>
+      <small id="summarySub">Silakan pilih paket & payment</small>
     </div>
-    <div class="summary-right">
-      <div id="summaryPrice" class="summary-price">Rp0</div>
-      <button id="confirmBtn" class="confirm-btn">Konfirmasi Pesanan</button>
-    </div>
+    <div class="summary-price" id="summaryPrice">Rp0</div>
+    <button id="confirmBtn">Konfirmasi Pesanan</button>
   </div>
 
-  <!-- POPUP LOADER -->
+  <!-- POPUP LOADING -->
   <div id="popup" class="popup">
-    <div class="popup-content">
-      <div class="loader"></div>
-      <h3>Memproses Order...</h3>
-    </div>
+    <div class="loader"></div>
+    <p>Memproses pesanan...</p>
   </div>
 
+  <!-- CANVAS PARTICLES -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- SCRIPT -->
   <script src="script.js"></script>
 </body>
-                                            </html>
+  </html>
