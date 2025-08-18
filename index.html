@@ -3,78 +3,78 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>TopUp — Codashop-style (A)</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styleA.css">
+  <title>TopUp — Premium (B)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styleB.css">
 </head>
-<body>
-  <header class="nav">
+<body class="theme-light">
+  <header class="topbar">Promo: Diskon hingga 20% — Gunakan PROMO10</header>
+  <header class="navB">
     <div class="wrap">
-      <div class="brand"><div class="logo">⚡</div><div class="name">TopUp Center</div></div>
-      <nav class="menu"><a href="#produk">Produk</a><a href="#promo">Promo</a><a href="#faq">FAQ</a></nav>
+      <div class="brandB"><div class="logo">⚡</div><div class="title">TopUp Premium</div></div>
+      <div class="actions">
+        <input id="searchB" class="searchB" placeholder="Cari game...">
+        <button id="darkToggle" class="icon">🌙</button>
+      </div>
     </div>
   </header>
 
-  <main class="wrap main">
-    <section id="hero" class="card hero">
-      <h1>Top Up Instan • Aman • Cepat</h1>
-      <p>Pilih game → Masukkan ID → Pilih paket → Pilih pembayaran → Checkout</p>
-    </section>
-
-    <!-- STEP 1: Games -->
-    <section id="produk" class="card">
-      <h2>Pilih Game</h2>
-      <input id="searchGame" placeholder="Cari game..." class="search">
-      <div id="gameGrid" class="grid game-grid"></div>
-    </section>
-
-    <!-- STEP 2: ID -->
-    <section id="step-id" class="card hidden">
-      <h2>Masukkan ID / UID</h2>
-      <input id="idgame" placeholder="Masukkan ID/UID">
-      <input id="serverid" class="hidden" placeholder="Server ID (khusus Mobile Legends)">
-      <div class="controls"><button id="toPackage" class="btn">Lanjut Pilih Paket</button></div>
-    </section>
-
-    <!-- STEP 3: Package -->
-    <section id="step-package" class="card hidden">
-      <h2>Pilih Paket</h2>
-      <div id="packageGrid" class="grid package-grid"></div>
-    </section>
-
-    <!-- STEP 4: Voucher + Payment -->
-    <section id="step-pay" class="card hidden">
-      <h2>Voucher & Metode Pembayaran</h2>
-      <div class="voucher-row">
-        <div id="voucherShelf" class="voucher-shelf"></div>
-        <div class="voucher-input"><input id="voucherInput" placeholder="Kode voucher (opsional)"><button id="applyVoucher" class="btn-outline">Terapkan</button></div>
+  <main class="wrap mainB">
+    <section class="heroB card">
+      <div class="hero-left">
+        <h1>Top Up Cepat & Aman</h1>
+        <p>Pilih game → isi ID → pilih paket → aktifkan voucher → bayar cepat.</p>
+        <div class="stepsB"><div class="stepB active">1. Game</div><div class="stepB">2. ID</div><div class="stepB">3. Paket</div><div class="stepB">4. Bayar</div></div>
       </div>
-      <h3>Metode Pembayaran</h3>
-      <div id="paymentGrid" class="grid payment-grid"></div>
+      <div class="hero-right"><canvas id="heroCanvas"></canvas></div>
     </section>
 
-    <!-- ORDER SUMMARY -->
-    <aside id="summary" class="card summary hidden">
-      <h3>Ringkasan</h3>
-      <div class="row"><span>Game</span><b id="sumGame">-</b></div>
-      <div class="row"><span>ID</span><b id="sumId">-</b></div>
-      <div class="row"><span>Paket</span><b id="sumPack">-</b></div>
-      <div class="row"><span>Voucher</span><b id="sumVoucher">-</b></div>
-      <div class="row total"><span>Total</span><b id="sumPrice">Rp0</b></div>
-      <button id="checkoutA" class="btn-checkout">Checkout via WhatsApp</button>
+    <section id="selectArea" class="card sectionB">
+      <h2>Pilih Game</h2>
+      <div id="gameGridB" class="gridB gameGridB"></div>
+
+      <div id="idArea" class="idArea hidden">
+        <h3>Masukkan ID</h3>
+        <input id="idB" placeholder="Masukkan ID/UID">
+        <input id="serverB" class="hidden" placeholder="Server ID (ML)">
+        <button id="toPackagesB" class="btnB">Lanjut</button>
+      </div>
+
+      <div id="packagesArea" class="hidden">
+        <h3>Pilih Paket</h3>
+        <div class="filtersB"><button data-f="all" class="chip active">Semua</button><button data-f="best" class="chip">Best</button><button data-f="cheap" class="chip">Murah</button></div>
+        <div id="packageGridB" class="gridB packageGridB"></div>
+      </div>
+
+      <div id="voucherArea" class="hidden">
+        <h3>Voucher</h3>
+        <div id="voucherStripB" class="voucherStripB"></div>
+        <div class="voucherInputB"><input id="voucherB" placeholder="Kode voucher"><button id="applyVoucherB" class="btn-outlineB">Terapkan</button></div>
+      </div>
+
+      <div id="paymentArea" class="hidden">
+        <h3>Pilih Pembayaran</h3>
+        <div id="paymentGridB" class="gridB paymentGridB"></div>
+      </div>
+    </section>
+
+    <aside id="summaryB" class="card summaryB hidden">
+      <h3>Ringkasan Pesanan</h3>
+      <div class="line"><span>Game</span><b id="gB">-</b></div>
+      <div class="line"><span>ID</span><b id="idvB">-</b></div>
+      <div class="line"><span>Paket</span><b id="pB">-</b></div>
+      <div class="line"><span>Voucher</span><b id="vB">-</b></div>
+      <div class="line totalB"><span>Total</span><b id="tB">Rp 0</b></div>
+      <button id="payNowB" class="payBtn">Bayar via WhatsApp</button>
     </aside>
-
-    <section id="faq" class="card">
-      <h2>FAQ</h2>
-      <details><summary>Berapa lama proses?</summary><p>Biasanya instan 1–5 menit.</p></details>
-      <details><summary>Apa yang dibutuhkan?</summary><p>ID/UID dan metode pembayaran.</p></details>
-    </section>
   </main>
 
-  <footer class="footer">
-    <div class="wrap">© 2025 TopUp Center — All rights reserved</div>
-  </footer>
+  <a id="fabWA" class="fab" href="https://wa.me/6282298902274" target="_blank">💬</a>
 
-  <script src="scriptA.js"></script>
+  <footer class="footerB">© 2025 TopUp Premium</footer>
+
+  <div id="confirmB" class="modal hidden"><div class="modalCard"><button id="closeConfirmB" class="close">✕</button><div id="confirmBodyB"></div><div class="actionsB"><button id="cancelB" class="btn-outlineB">Batal</button><button id="confirmBbtn" class="btnB">Konfirmasi & Bayar</button></div></div></div>
+
+  <script src="scriptB.js"></script>
 </body>
-      </html>
+                                                                                                                                    </html>
