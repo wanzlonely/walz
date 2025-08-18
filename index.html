@@ -2,75 +2,73 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Demonz Hosting - Top Up</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- BUBBLES -->
+  <!-- Background canvas -->
   <canvas id="bubbleCanvas"></canvas>
   <canvas id="particleCanvas"></canvas>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-inner">
-      <div class="hero-badge">💎 DemonZ Hosting</div>
-      <h1>Top Up Game Termurah & Terpercaya</h1>
-      <p>Pilih game favoritmu, masukkan ID, dan bayar dengan mudah</p>
-    </div>
+  <!-- HEADER -->
+  <header style="text-align:center;padding:20px 10px;z-index:2;position:relative;">
+    <h1 style="font-size:26px;color:#fff;font-weight:700;">💎 DemonZ Hosting Top Up</h1>
+    <p style="color:var(--muted);font-size:14px;">Cepat • Aman • Murah</p>
+  </header>
+
+  <!-- GAME GRID -->
+  <section>
+    <h2 style="margin:10px 20px;font-size:18px;">Pilih Game</h2>
+    <div id="gameGrid"></div>
   </section>
 
-  <!-- CONTENT -->
-  <div class="container">
+  <!-- INPUT ID -->
+  <section>
+    <input id="idgame" type="text" placeholder="Masukkan ID Game">
+    <input id="serverid" type="text" placeholder="Server ID (khusus ML)" class="hidden">
+  </section>
 
-    <!-- ID INPUT -->
-    <h2>Masukkan ID</h2>
-    <input id="idgame" class="input" placeholder="Masukkan ID Game Anda">
-    <input id="serverid" class="input hidden" placeholder="Server ID (contoh: 4231)">
-    <small class="hint">* Wajib isi ID sesuai game, Mobile Legends butuh Server ID.</small>
+  <!-- PACKAGE GRID -->
+  <section>
+    <h2 style="margin:10px 20px;font-size:18px;">Pilih Paket</h2>
+    <div id="packageGrid"></div>
+  </section>
 
-    <!-- GAME LIST -->
-    <h2>Pilih Game</h2>
-    <div id="gameGrid" class="game-grid"></div>
+  <!-- VOUCHERS -->
+  <section>
+    <h2 style="margin:10px 20px;font-size:18px;">Voucher Promo</h2>
+    <input id="voucher" type="text" placeholder="Masukkan kode voucher">
+    <div id="voucherList"></div>
+  </section>
 
-    <!-- PACKAGE LIST -->
-    <h2>Pilih Paket</h2>
-    <div id="packageGrid" class="package-grid"></div>
+  <!-- PAYMENTS -->
+  <section>
+    <h2 style="margin:10px 20px;font-size:18px;">Metode Pembayaran</h2>
+    <div id="ewalletList"></div>
+  </section>
 
-    <!-- VOUCHER -->
-    <h2>Voucher Promo</h2>
-    <div class="voucher-row">
-      <input id="voucher" class="input" placeholder="Masukkan kode promo">
-    </div>
-    <div id="voucherList" class="voucher-list"></div>
+  <!-- SUMMARY -->
+  <section id="summaryBox">
+    <div id="summaryTitle">Paket belum dipilih</div>
+    <div id="summaryPrice">Rp0</div>
+    <div id="summarySub">Pilih paket & payment</div>
+  </section>
 
-    <!-- PAYMENT -->
-    <h2>Metode Pembayaran</h2>
-    <div id="ewalletList" class="payment-list"></div>
-
-  </div>
-
-  <!-- SUMMARY BAR -->
-  <div class="summary-bar">
-    <div class="summary-info">
-      <div id="summaryTitle" class="summary-title">Paket belum dipilih</div>
-      <div id="summarySub" class="summary-sub">Pilih paket & payment</div>
-    </div>
-    <div id="summaryPrice" class="summary-price">Rp0</div>
-    <button id="checkoutBtn" class="confirm-btn">Beli Sekarang</button>
-  </div>
+  <!-- CHECKOUT -->
+  <button id="checkoutBtn">Checkout via WhatsApp</button>
 
   <!-- FLOATING CONTACT -->
-  <div id="contactBtn">
-    <img src="https://cdn-icons-png.flaticon.com/512/220/220236.png" alt="WA">
-  </div>
+  <div id="contactBtn">☎</div>
   <div id="contactPopup" class="hidden">
-    <a href="https://wa.me/6282298902274" target="_blank">WhatsApp 1: 082298902274</a>
-    <a href="https://wa.me/62895405278759" target="_blank">WhatsApp 2: 0895405278759</a>
-    <a href="mailto:wanzlonely04@gmail.com">Email: wanzlonely04@gmail.com</a>
-    <a href="https://instagram.com/zxuwan25" target="_blank">Instagram: @zxuwan25</a>
+    <p><b>Owner Contact</b></p>
+    <p>📞 WhatsApp: <a href="https://wa.me/6282298902274" target="_blank" style="color:var(--accent);">082298902274</a></p>
+    <p>📧 Email: <a href="mailto:wanzlonely@gmail.com" style="color:var(--accent);">wanzlonely@gmail.com</a></p>
   </div>
 
+  <!-- SCRIPT -->
   <script src="script.js"></script>
 </body>
-    </html>
+</html>
