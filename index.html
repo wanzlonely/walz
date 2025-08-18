@@ -1,65 +1,60 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Top Up Game</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top Up Premium</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<canvas id="bubbleCanvas"></canvas>
-<canvas id="particleCanvas"></canvas>
+  <header>
+    <h1>Top Up Premium</h1>
+  </header>
 
-<div class="container">
-  <h2>Pilih Game</h2>
-  <div id="gameGrid"></div>
+  <!-- GAME SELECTION -->
+  <section class="game-section">
+    <h2>Pilih Game</h2>
+    <div id="gameGrid" class="grid"></div>
+  </section>
 
-  <h2>Pilih Paket</h2>
-  <div id="packageGrid"></div>
-
-  <h2>Masukkan ID Game</h2>
-  <div class="input-wrapper">
-    <input type="text" id="idgame" placeholder="ID Game">
-    <input type="text" id="serverid" class="hidden" placeholder="Server ID (ML)">
-  </div>
-
-  <h2>Voucher</h2>
-  <div class="voucher-wrapper">
-    <input type="text" id="voucher" placeholder="Masukkan kode voucher">
-    <button id="applyVoucher">Terapkan</button>
-  </div>
-  <div id="voucherMsg"></div>
-  <div id="voucherList"></div>
-
-  <h2>Pilih Payment</h2>
-  <div id="ewalletList"></div>
-
-  <div id="summary">
-    <div id="summaryTitle">Paket belum dipilih</div>
-    <div id="summaryPrice">Rp0</div>
-    <div id="summarySub">Pilih paket & payment</div>
-    <button id="checkoutBtn">Checkout</button>
-  </div>
-</div>
-
-<!-- Modal Konfirmasi Order -->
-<div id="orderModal" class="modal hidden">
-  <div class="modal-content">
-    <h3>Konfirmasi Order</h3>
-    <p id="orderDetails"></p>
-    <div class="modal-buttons">
-      <button id="confirmOrder">Lanjutkan</button>
-      <button id="cancelOrder">Batal</button>
+  <!-- ID INPUT -->
+  <section class="id-section">
+    <h2>Masukkan ID Game</h2>
+    <input type="text" id="idgame" placeholder="User ID">
+    <div id="serverIdContainer" style="display:none;">
+      <input type="text" id="serverid" placeholder="Server ID">
     </div>
-  </div>
-</div>
+  </section>
 
-<div id="contactBtn">CS</div>
-<div id="contactPopup" class="hidden">
-  <div>WhatsApp: 08892119837</div>
-  <div>Email: wanzlon@example.com</div>
-</div>
+  <!-- PACKAGE -->
+  <section class="package-section">
+    <h2>Pilih Diamond</h2>
+    <div id="packageGrid" class="grid"></div>
+  </section>
 
-<script src="script.js"></script>
+  <!-- PAYMENT -->
+  <section class="payment-section">
+    <h2>Pilih Metode Pembayaran</h2>
+    <div id="paymentGrid" class="grid"></div>
+  </section>
+
+  <!-- VOUCHER -->
+  <section class="voucher-section">
+    <h2>Voucher Promo</h2>
+    <div class="voucher-list" id="voucherList">
+      <div class="voucher" data-code="PROMO10">PROMO10 - Diskon 10%</div>
+      <div class="voucher" data-code="VIP20">VIP20 - Diskon 20%</div>
+    </div>
+    <input type="text" id="voucher" placeholder="Masukkan Kode Voucher">
+  </section>
+
+  <!-- CHECKOUT -->
+  <footer>
+    <div id="stickyPrice">Total: Rp 0</div>
+    <button id="checkoutBtn">Checkout</button>
+  </footer>
+
+  <canvas id="particleCanvas"></canvas>
+  <script src="script.js"></script>
 </body>
-  </html>
+        </html>
