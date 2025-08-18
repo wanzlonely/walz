@@ -1,80 +1,62 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>TopUp — Premium (B)</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styleB.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top Up Game | Premium Store</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body class="theme-light">
-  <header class="topbar">Promo: Diskon hingga 20% — Gunakan PROMO10</header>
-  <header class="navB">
-    <div class="wrap">
-      <div class="brandB"><div class="logo">⚡</div><div class="title">TopUp Premium</div></div>
-      <div class="actions">
-        <input id="searchB" class="searchB" placeholder="Cari game...">
-        <button id="darkToggle" class="icon">🌙</button>
-      </div>
-    </div>
+<body>
+  <!-- HEADER -->
+  <header class="header">
+    <h1 class="logo">🎮 Premium Top Up</h1>
   </header>
 
-  <main class="wrap mainB">
-    <section class="heroB card">
-      <div class="hero-left">
-        <h1>Top Up Cepat & Aman</h1>
-        <p>Pilih game → isi ID → pilih paket → aktifkan voucher → bayar cepat.</p>
-        <div class="stepsB"><div class="stepB active">1. Game</div><div class="stepB">2. ID</div><div class="stepB">3. Paket</div><div class="stepB">4. Bayar</div></div>
-      </div>
-      <div class="hero-right"><canvas id="heroCanvas"></canvas></div>
+  <main class="container">
+    <!-- STEP 1: PILIH GAME -->
+    <section class="card">
+      <h2>1. Pilih Game</h2>
+      <div id="gameGrid" class="grid"></div>
     </section>
 
-    <section id="selectArea" class="card sectionB">
-      <h2>Pilih Game</h2>
-      <div id="gameGridB" class="gridB gameGridB"></div>
+    <!-- STEP 2: MASUKKAN ID -->
+    <section class="card">
+      <h2>2. Masukkan ID Game</h2>
+      <input id="idgame" type="text" placeholder="Masukkan ID Game Anda">
+      <input id="serverid" type="text" placeholder="Server ID (hanya untuk MLBB)" style="display:none;">
+    </section>
 
-      <div id="idArea" class="idArea hidden">
-        <h3>Masukkan ID</h3>
-        <input id="idB" placeholder="Masukkan ID/UID">
-        <input id="serverB" class="hidden" placeholder="Server ID (ML)">
-        <button id="toPackagesB" class="btnB">Lanjut</button>
-      </div>
+    <!-- STEP 3: PILIH PRODUK -->
+    <section class="card">
+      <h2>3. Pilih Produk</h2>
+      <div id="packageGrid" class="grid"></div>
+    </section>
 
-      <div id="packagesArea" class="hidden">
-        <h3>Pilih Paket</h3>
-        <div class="filtersB"><button data-f="all" class="chip active">Semua</button><button data-f="best" class="chip">Best</button><button data-f="cheap" class="chip">Murah</button></div>
-        <div id="packageGridB" class="gridB packageGridB"></div>
-      </div>
-
-      <div id="voucherArea" class="hidden">
-        <h3>Voucher</h3>
-        <div id="voucherStripB" class="voucherStripB"></div>
-        <div class="voucherInputB"><input id="voucherB" placeholder="Kode voucher"><button id="applyVoucherB" class="btn-outlineB">Terapkan</button></div>
-      </div>
-
-      <div id="paymentArea" class="hidden">
-        <h3>Pilih Pembayaran</h3>
-        <div id="paymentGridB" class="gridB paymentGridB"></div>
+    <!-- STEP 4: MASUKKAN VOUCHER -->
+    <section class="card">
+      <h2>4. Voucher Promo</h2>
+      <div class="voucher-box">
+        <input id="voucher" type="text" placeholder="Masukkan kode voucher">
       </div>
     </section>
 
-    <aside id="summaryB" class="card summaryB hidden">
-      <h3>Ringkasan Pesanan</h3>
-      <div class="line"><span>Game</span><b id="gB">-</b></div>
-      <div class="line"><span>ID</span><b id="idvB">-</b></div>
-      <div class="line"><span>Paket</span><b id="pB">-</b></div>
-      <div class="line"><span>Voucher</span><b id="vB">-</b></div>
-      <div class="line totalB"><span>Total</span><b id="tB">Rp 0</b></div>
-      <button id="payNowB" class="payBtn">Bayar via WhatsApp</button>
-    </aside>
+    <!-- STEP 5: METODE PEMBAYARAN -->
+    <section class="card">
+      <h2>5. Metode Pembayaran</h2>
+      <div id="paymentGrid" class="grid payment"></div>
+    </section>
+
+    <!-- CHECKOUT -->
+    <section class="checkout">
+      <div id="stickyPrice">Total: Rp 0</div>
+      <button id="checkoutBtn">Bayar Sekarang</button>
+    </section>
   </main>
 
-  <a id="fabWA" class="fab" href="https://wa.me/6282298902274" target="_blank">💬</a>
+  <footer class="footer">
+    <p>© 2025 Premium Top Up. All rights reserved.</p>
+  </footer>
 
-  <footer class="footerB">© 2025 TopUp Premium</footer>
-
-  <div id="confirmB" class="modal hidden"><div class="modalCard"><button id="closeConfirmB" class="close">✕</button><div id="confirmBodyB"></div><div class="actionsB"><button id="cancelB" class="btn-outlineB">Batal</button><button id="confirmBbtn" class="btnB">Konfirmasi & Bayar</button></div></div></div>
-
-  <script src="scriptB.js"></script>
+  <script src="script.js"></script>
 </body>
-                                                                                                                                    </html>
+        </html>
