@@ -28,7 +28,7 @@ const vouchers = [
   { code:"PROMO10", desc:"Diskon 10%",        exp:"2024-12-31", discount:0.10 }
 ];
 
-// === ICON PER GAME (diamond biru universal) ===
+// === ICON PER GAME ===
 const gameIcons = {
   ff:"https://cdn-icons-png.flaticon.com/512/1828/1828817.png",
   ml:"https://cdn-icons-png.flaticon.com/512/1828/1828817.png",
@@ -45,21 +45,29 @@ let selectedPayment = null;
 const bubbleCanvas = document.getElementById('bubbleCanvas');
 const bctx = bubbleCanvas.getContext('2d');
 function resizeBubbles(){bubbleCanvas.width=window.innerWidth;bubbleCanvas.height=window.innerHeight}
-resizeBubbles();window.addEventListener('resize',resizeBubbles);
-const bubbles = Array.from({length:40}).map(()=>({
+resizeBubbles(); window.addEventListener('resize', resizeBubbles);
+
+const bubbles = Array.from({length:50}).map(()=>({
   x:Math.random()*window.innerWidth,
   y:window.innerHeight+Math.random()*window.innerHeight,
   r:Math.random()*6+2,
   s:Math.random()*0.6+0.2,
-  drift:(Math.random()-0.5)*0.6
+  drift:(Math.random()-0.5)*0.6,
+  angle: Math.random()*Math.PI*2
 }));
+
 function drawBubbles(){
   bctx.clearRect(0,0,bubbleCanvas.width,bubbleCanvas.height);
   bubbles.forEach(b=>{
-    b.y-=b.s; b.x+=b.drift;
-    if(b.y<-20){b.y=window.innerHeight+20;b.x=Math.random()*window.innerWidth;}
-    const grad=bctx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r*2.2);
-    grad.addColorStop(0,'rgba(255,255,255,0.18)');
+    b.y -= b.s;
+    b.x += Math.sin(b.angle)*0.5 + b.drift;
+    b.angle += 0.01;
+    b.r += Math.sin(b.angle)*0.1;
+
+    if(b.y<-20){ b.y=window.innerHeight+20; b.x=Math.random()*window.innerWidth; }
+
+    const grad = bctx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r*2.2);
+    grad.addColorStop(0,'rgba(255,255,255,0.2)');
     grad.addColorStop(1,'rgba(255,255,255,0)');
     bctx.fillStyle=grad;
     bctx.beginPath(); bctx.arc(b.x,b.y,b.r*2,0,Math.PI*2); bctx.fill();
@@ -72,18 +80,28 @@ drawBubbles();
 const particleCanvas=document.getElementById('particleCanvas');
 const pctx=particleCanvas.getContext('2d');
 function resizeParticles(){particleCanvas.width=window.innerWidth;particleCanvas.height=window.innerHeight}
-resizeParticles();window.addEventListener('resize',resizeParticles);
+resizeParticles(); window.addEventListener('resize', resizeParticles);
+
 function createParticles(x,y,count=24){
   const parts=[];
   for(let i=0;i<count;i++){
-    parts.push({x,y,r:Math.random()*3+2,dx:(Math.random()-0.5)*6,dy:(Math.random()-0.5)*6,a:1});
+    parts.push({
+      x,y,r:Math.random()*4+2,dx:(Math.random()-0.5)*6,dy:(Math.random()-0.5)*6,a:1,
+      g:0.1, scale:1, dScale:Math.random()*0.05+0.02
+    });
   }
   function tick(){
     pctx.clearRect(0,0,particleCanvas.width,particleCanvas.height);
     parts.forEach(p=>{
-      p.x+=p.dx; p.y+=p.dy; p.a-=0.02;
-      pctx.beginPath(); pctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      pctx.fillStyle=`rgba(255,255,255,${Math.max(p.a,0)})`; pctx.fill();
+      p.x+=p.dx; p.y+=p.dy; p.dy+=p.g; p.a-=0.02; p.scale+=p.dScale;
+      pctx.save();
+      pctx.translate(p.x,p.y);
+      pctx.scale(p.scale,p.scale);
+      pctx.beginPath();
+      pctx.arc(0,0,p.r,0,Math.PI*2);
+      pctx.fillStyle=`rgba(255,255,255,${Math.max(p.a,0)})`;
+      pctx.fill();
+      pctx.restore();
     });
     if(parts.every(p=>p.a<=0)) return;
     requestAnimationFrame(tick);
@@ -107,12 +125,8 @@ games.forEach(game=>{
     selectedPayment=null;
 
     const serverInput=document.getElementById('serverid');
-    if(game.id==='ml'){
-      serverInput.classList.remove('hidden');
-    }else{
-      serverInput.classList.add('hidden');
-      serverInput.value="";
-    }
+    if(game.id==='ml'){ serverInput.classList.remove('hidden'); }
+    else{ serverInput.classList.add('hidden'); serverInput.value=""; }
 
     generatePackages(game.id);
     updatePrice();
@@ -171,7 +185,7 @@ function renderVouchers(){
   });
 }
 
-// === PAYMENT RENDER (SELALU TAMPIL) ===
+// === PAYMENT RENDER ===
 function renderPayments(total=null){
   const list=document.getElementById('ewalletList');
   list.innerHTML='';
@@ -204,63 +218,56 @@ function renderPayments(total=null){
 function getTotal(){
   if(!selectedGame || !selectedPackage) return 0;
   let total = harga[selectedGame][selectedPackage] || 0;
-
   const code = document.getElementById('voucher').value.trim().toUpperCase();
   const now = new Date();
-  const v = vouchers.find(x => x.code === code && new Date(x.exp) >= now);
-  if(v){ total = Math.round(total * (1 - v.discount)); }
-
+  const v = vouchers.find(x => x.code===code && new Date(x.exp)>=now);
+  if(v){ total=Math.round(total*(1-v.discount)); }
   return total;
 }
 
 // === RINGKASAN & HARGA ===
 function updatePrice(){
-  const total = getTotal();
-  const summaryTitle = document.getElementById('summaryTitle');
-  const summaryPrice = document.getElementById('summaryPrice');
-  const summarySub = document.getElementById('summarySub');
+  const total=getTotal();
+  const summaryTitle=document.getElementById('summaryTitle');
+  const summaryPrice=document.getElementById('summaryPrice');
+  const summarySub=document.getElementById('summarySub');
 
   if(selectedGame && selectedPackage){
-    summaryTitle.textContent = selectedPackage;
-    summaryPrice.textContent = "Rp" + total.toLocaleString();
+    summaryTitle.textContent=selectedPackage;
+    summaryPrice.textContent="Rp"+total.toLocaleString();
   } else {
-    summaryTitle.textContent = "Paket belum dipilih";
-    summaryPrice.textContent = "Rp0";
+    summaryTitle.textContent="Paket belum dipilih";
+    summaryPrice.textContent="Rp0";
   }
 
   if(selectedPayment){
-    summarySub.textContent = `Siap checkout via ${selectedPayment}`;
-  }else{
-    summarySub.textContent = "Pilih paket & payment";
-  }
+    summarySub.textContent=`Siap checkout via ${selectedPayment}`;
+  } else { summarySub.textContent="Pilih paket & payment"; }
 
   renderPayments(total);
 }
 
 // === CHECKOUT ===
-const confirmBtn = document.getElementById('checkoutBtn');
+const confirmBtn=document.getElementById('checkoutBtn');
 confirmBtn.addEventListener('click', ()=>{
-  const uid = document.getElementById('idgame').value.trim();
-  const serverid = document.getElementById('serverid').value.trim();
-  const voucher = document.getElementById('voucher').value.trim().toUpperCase();
+  const uid=document.getElementById('idgame').value.trim();
+  const serverid=document.getElementById('serverid').value.trim();
+  const voucher=document.getElementById('voucher').value.trim().toUpperCase();
 
   if(!selectedGame || !selectedPackage || !selectedPayment || !uid){
     alert("Silakan pilih game, paket, metode pembayaran, dan isi ID.");
     return;
   }
 
-  let finalId = uid;
-  if(selectedGame === 'ml'){
-    if(!serverid){
-      alert("Masukkan juga Server ID (contoh: 4231) untuk Mobile Legends");
-      return;
-    }
-    finalId = `${uid} (${serverid})`;
+  let finalId=uid;
+  if(selectedGame==='ml'){
+    if(!serverid){ alert("Masukkan juga Server ID (contoh: 4231) untuk Mobile Legends"); return; }
+    finalId=`${uid} (${serverid})`;
   }
 
-  const total = getTotal();
-  const gameMap = Object.fromEntries(games.map(g=>[g.id,g.name]));
-  const msg = `Halo Admin, saya ingin top up:
+  const total=getTotal();
+  const gameMap=Object.fromEntries(games.map(g=>[g.id,g.name]));
+  const msg=`Halo Admin, saya ingin top up:
 Game: ${gameMap[selectedGame] || selectedGame.toUpperCase()}
 ID: ${finalId}
 Paket: ${selectedPackage}
@@ -268,25 +275,23 @@ Payment: ${selectedPayment}
 Voucher: ${voucher || "-"}
 Total Harga: Rp ${total.toLocaleString()}`;
 
-  const rect = confirmBtn.getBoundingClientRect();
-  createParticles(rect.left + rect.width/2, rect.top + rect.height/2, 42);
+  const rect=confirmBtn.getBoundingClientRect();
+  createParticles(rect.left+rect.width/2,rect.top+rect.height/2,42);
 
   setTimeout(()=>{
-    const waUrl = `https://wa.me/6282298902274?text=${encodeURIComponent(msg)}`;
-    window.open(waUrl, "_blank");
-  }, 400);
+    const waUrl=`https://wa.me/6282298902274?text=${encodeURIComponent(msg)}`;
+    window.open(waUrl,"_blank");
+  },400);
 });
 
 // === LISTENERS ===
 document.getElementById('voucher').addEventListener('input', updatePrice);
 
 // === FLOATING CONTACT ===
-const contactBtn = document.getElementById('contactBtn');
-const contactPopup = document.getElementById('contactPopup');
-contactBtn.addEventListener('click', ()=>{
-  contactPopup.classList.toggle('hidden');
-});
+const contactBtn=document.getElementById('contactBtn');
+const contactPopup=document.getElementById('contactPopup');
+contactBtn.addEventListener('click', ()=>{ contactPopup.classList.toggle('hidden'); });
 
 // === INIT ===
 renderVouchers();
-updatePrice(); // render awal
+updatePrice();
