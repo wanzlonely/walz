@@ -1,295 +1,396 @@
-// === DATA GAME ===
+/* ===========================
+   DATA
+=========================== */
 const games = [
-  { id:'ff',  name:'Free Fire',       theme:'theme-ff',
-    bg:'https://files.catbox.moe/oqnxag.jpeg', logo:'https://files.catbox.moe/oqnxag.jpeg' },
-  { id:'ml',  name:'Mobile Legends',  theme:'theme-ml',
-    bg:'https://files.catbox.moe/h7whee.jpeg', logo:'https://files.catbox.moe/h7whee.jpeg' },
-  { id:'hok', name:'Honor of Kings',  theme:'theme-hok',
-    bg:'https://files.catbox.moe/04zakl.jpeg', logo:'https://files.catbox.moe/04zakl.jpeg' },
-  { id:'roblox', name:'Roblox',       theme:'theme-roblox',
-    bg:'https://files.catbox.moe/ldegjz.png',  logo:'https://files.catbox.moe/ldegjz.png' }
+  {id:'ff',  name:'Free Fire',       bg:'https://files.catbox.moe/oqnxag.jpeg', logo:'https://files.catbox.moe/oqnxag.jpeg', theme:'fire'},
+  {id:'ml',  name:'Mobile Legends',  bg:'https://files.catbox.moe/h7whee.jpeg',  logo:'https://files.catbox.moe/h7whee.jpeg',  theme:'neon'},
+  {id:'hok', name:'Honor of Kings',  bg:'https://files.catbox.moe/04zakl.jpeg',  logo:'https://files.catbox.moe/04zakl.jpeg',  theme:'gold'},
+  {id:'roblox', name:'Roblox',       bg:'https://files.catbox.moe/ldegjz.png',   logo:'https://files.catbox.moe/ldegjz.png',   theme:'pixel'}
 ];
 
-// === DATA PAKET (distribusi untuk filter Hemat/Mid/Sultan) ===
 const harga = {
-  ff: {
-    "70 Diamonds": 9000, "140 Diamonds":18000, "355 Diamonds":45000, "720 Diamonds":90000,
-    "1450 Diamonds":180000, "3000 Diamonds":350000
-  },
-  ml: {
-    "86 Diamonds":23000, "172 Diamonds":45000, "514 Diamonds":120000, "706 Diamonds":160000,
-    "1000 Diamonds":220000, "2000 Diamonds":400000
-  },
-  hok: {
-    "80 Tokens":14000, "240 Tokens":44000, "560 Tokens":100000, "1200 Tokens":210000, "2500 Tokens":400000
-  },
-  roblox: {
-    "80 Robux":12000, "400 Robux":60000, "800 Robux":115000, "1700 Robux":230000, "4000 Robux":500000
-  }
+  ff: {"70 Diamonds":9000,"140 Diamonds":18000,"355 Diamonds":45000,"720 Diamonds":90000,"1450 Diamonds":180000,"3000 Diamonds":350000},
+  ml: {"86 Diamonds":23000,"172 Diamonds":45000,"514 Diamonds":120000,"706 Diamonds":160000,"1000 Diamonds":220000,"2000 Diamonds":400000},
+  hok: {"80 Tokens":14000,"240 Tokens":44000,"560 Tokens":100000,"1200 Tokens":210000,"2500 Tokens":400000},
+  roblox: {"80 Robux":12000,"400 Robux":60000,"800 Robux":115000,"1700 Robux":230000,"4000 Robux":500000}
 };
 
-// === DATA PAYMENT ===
-const payments = [
-  { id:'gopay',     name:'GoPay',      img:'https://files.catbox.moe/7f7kj6.png' },
-  { id:'dana',      name:'Dana',       img:'https://files.catbox.moe/9ozprx.jpg' },
-  { id:'shopeepay', name:'ShopeePay',  img:'https://files.catbox.moe/gub7ik.jpg' },
-  { id:'qris',      name:'QRIS',       img:'https://files.catbox.moe/crlcvj.jpg' }
+const diamondIcon = "https://cdn-icons-png.flaticon.com/512/2907/2907253.png";
+
+const ewallets = [
+  {id:'shopee', name:'ShopeePay', img:'https://files.catbox.moe/gub7ik.jpg'},
+  {id:'dana',   name:'DANA',      img:'https://files.catbox.moe/9ozprx.jpg'},
+  {id:'gopay',  name:'GoPay',     img:'https://files.catbox.moe/7f7kj6.png'},
+  {id:'qris',   name:'QRIS',      img:'https://files.catbox.moe/crlcvj.jpg'}
 ];
 
-// === VOUCHER ala Shopee ===
 const vouchers = [
-  { code:'PROMO10', title:'Diskon 10%',   badge:'BEST',  exp:'2025-12-31', type:'disc', value:0.10 },
-  { code:'HEMAT5',  title:'Potongan 5K',  badge:'HEMAT', exp:'2025-12-31', type:'subs', value:5000 },
-  { code:'WLZSPR',  title:'Spesial 10%',  badge:'NEW',   exp:'2025-12-31', type:'disc', value:0.10 },
+  { code:"WLZSPR", desc:"Diskon spesial 10%", exp:"2025-12-31", discount:0.10, min:20000, only:null },
+  { code:"PROMO10", desc:"Diskon 10%",        exp:"2024-12-31", discount:0.10, min:0,     only:null },
+  { code:"MLHEMAT", desc:"MLBB khusus 12%",   exp:"2026-01-01", discount:0.12, min:30000, only:"ml" }
 ];
 
-// === STATE ===
-let selectedGame = null;
-let selectedPackage = null;
-let selectedPayment = null;
-let activeVoucher = null;
+/* ===========================
+   STATE
+=========================== */
+let selectedGame=null, selectedPackage=null, selectedPayment=null;
+let spinUsed=false;
 
-// === ELEMENTS ===
+/* ===========================
+   THEME TOGGLE
+=========================== */
+const themeBtn = document.getElementById('themeToggle');
+const root = document.documentElement;
+const storedTheme = localStorage.getItem('theme');
+if(storedTheme==='dark'){ root.classList.add('dark'); themeBtn.textContent='🌙'; }
+themeBtn.addEventListener('click', ()=>{
+  root.classList.toggle('dark');
+  const dark = root.classList.contains('dark');
+  themeBtn.textContent = dark ? '🌙' : '☀️';
+  localStorage.setItem('theme', dark?'dark':'light');
+});
+
+/* ===========================
+   HERO BACKGROUND ANIM
+   (berbeda sesuai game)
+=========================== */
+const hero = document.getElementById('hero');
+const bg = document.getElementById('bgAnim');
+const g = bg.getContext('2d');
+function resizeHero(){ bg.width = hero.clientWidth; bg.height = hero.clientHeight; }
+window.addEventListener('resize', resizeHero); resizeHero();
+
+let t=0, currentTheme='neon';
+function drawHero(){
+  g.clearRect(0,0,bg.width,bg.height);
+  if(currentTheme==='fire'){
+    // Fire particles
+    for(let i=0;i<80;i++){
+      const x = Math.sin((i+t*0.03))*bg.width*0.5 + bg.width/2;
+      const y = bg.height - (i*7 + (Math.sin(t*0.06+i)*20));
+      const r = 2 + (i%5);
+      g.fillStyle = `hsla(${30+ i%30},90%,55%,.15)`;
+      g.beginPath(); g.arc(x,y,r,0,Math.PI*2); g.fill();
+    }
+  }else if(currentTheme==='neon'){
+    // Neon waves
+    for(let y=0;y<6;y++){
+      g.beginPath();
+      for(let x=0;x<=bg.width;x+=20){
+        const yy = Math.sin((x*0.01)+t*0.04 + y)*14 + (bg.height/2 + y*14 - 40);
+        if(x===0) g.moveTo(x,yy); else g.lineTo(x,yy);
+      }
+      g.strokeStyle=`hsla(${200+y*8},80%,60%,.45)`; g.lineWidth=2; g.stroke();
+    }
+  }else if(currentTheme==='gold'){
+    // Golden sparks
+    for(let i=0;i<90;i++){
+      const x = (i*17+t*1.5)%bg.width;
+      const y = (Math.sin(i*0.3+t*0.06)*0.4+0.5)*bg.height;
+      g.fillStyle='rgba(255,215,130,.18)';
+      g.fillRect(x,y,3,12);
+    }
+  }else if(currentTheme==='pixel'){
+    // Pixel rain
+    for(let i=0;i<70;i++){
+      const x = (i*21 + t*2) % bg.width;
+      const y = ((i*13 + t*3) % bg.height);
+      g.fillStyle='rgba(120,200,255,.25)';
+      g.fillRect(x,y,6,6);
+    }
+  }
+  t++; requestAnimationFrame(drawHero);
+}
+drawHero();
+
+/* ===========================
+   GAME RENDER
+=========================== */
 const gameGrid = document.getElementById('gameGrid');
-const userSection = document.getElementById('userSection');
-const serverInput = document.getElementById('serverid');
-const packageSection = document.getElementById('packageSection');
-const packageGrid  = document.getElementById('packageGrid');
-const packageFilter = document.getElementById('packageFilter');
-const paymentSection = document.getElementById('paymentSection');
-const paymentGrid   = document.getElementById('paymentGrid');
-const voucherSection = document.getElementById('voucherSection');
-const voucherStrip   = document.getElementById('voucherStrip');
-const stickyBar   = document.getElementById('stickyBar');
-const summaryGame = document.getElementById('summaryGame');
-const summaryPack = document.getElementById('summaryPack');
-const summaryPay  = document.getElementById('summaryPay');
-const stickyPrice = document.getElementById('stickyPrice');
-const checkoutBtn = document.getElementById('checkoutBtn');
-const toastEl     = document.getElementById('toast');
-
-// === HELPERS ===
-const reveal = (node)=>{ node.classList.add('reveal'); setTimeout(()=>node.classList.add('show'), 20); };
-const money = (n)=>"Rp "+(n||0).toLocaleString('id-ID');
-
-function showToast(msg="Berhasil"){
-  toastEl.textContent = msg;
-  toastEl.classList.remove('hidden');
-  requestAnimationFrame(()=>toastEl.classList.add('show'));
-  setTimeout(()=>{
-    toastEl.classList.remove('show');
-    setTimeout(()=>toastEl.classList.add('hidden'), 250);
-  }, 1700);
-}
-
-function setTheme(themeClass){
-  const body = document.body;
-  body.classList.remove('theme-default','theme-ff','theme-ml','theme-hok','theme-roblox');
-  body.classList.add(themeClass || 'theme-default');
-}
-
-// === RENDER GAME ===
-games.forEach(g=>{
+games.forEach(game=>{
   const card = document.createElement('div');
-  card.className = 'game-card';
-  card.innerHTML = `
-    <div class="game-thumb" style="background-image:url('${g.bg}')"></div>
-    <div class="game-mask"></div>
-    <div class="game-meta">
-      <img class="game-logo" src="${g.logo}" alt="${g.name}"/>
-      <div class="game-name">${g.name}</div>
-    </div>
-  `;
+  card.className='game-card';
+  card.style.backgroundImage=`url(${game.bg})`;
+  card.innerHTML = `<img src="${game.logo}" alt="${game.name}"><div>${game.name}</div>`;
   card.addEventListener('click', ()=>{
     document.querySelectorAll('.game-card').forEach(c=>c.classList.remove('selected'));
     card.classList.add('selected');
-
-    selectedGame = g.id;
+    selectedGame = game.id;
     selectedPackage = null;
     selectedPayment = null;
-    activeVoucher = null;
-
-    setTheme(g.theme);
-    userSection.classList.remove('hidden');
-    packageSection.classList.remove('hidden');
-    paymentSection.classList.add('hidden');
-    voucherSection.classList.add('hidden');
-    stickyBar.classList.add('hidden');
-
-    serverInput.classList.toggle('hidden', !(g.id === 'ml'));
-    document.getElementById('idgame').focus();
-
-    renderPackages(g.id);
-    summaryGame.innerHTML = `Game: <b>${g.name}</b>`;
-    summaryPack.innerHTML = "Paket: -";
-    summaryPay.innerHTML  = "Pembayaran: -";
-    stickyPrice.textContent = money(0);
+    // theme hero
+    currentTheme = game.theme;
+    // ML server field
+    const serverInput = document.getElementById('serverid');
+    const serverLabel = document.getElementById('serverLabel');
+    if(game.id === 'ml'){ serverInput.classList.remove('hidden'); serverLabel.classList.remove('hidden'); }
+    else { serverInput.classList.add('hidden'); serverLabel.classList.add('hidden'); serverInput.value=''; }
+    generatePackages(game.id);
+    updatePrice();
   });
   gameGrid.appendChild(card);
-  reveal(card);
 });
 
-// === KATEGORI PAKET berdasarkan harga ===
-function bucket(price){
-  if(price <= 45000) return 'low';
-  if(price <= 180000) return 'mid';
-  return 'high';
-}
+/* ===========================
+   PACKAGE RENDER
+=========================== */
+const packageGrid = document.getElementById('packageGrid');
+function generatePackages(gameId){
+  packageGrid.innerHTML='';
+  const packs = harga[gameId]||{};
+  const labels = ['Best Seller','Hemat','Favorit'];
 
-// === RENDER PACKAGES ===
-function renderPackages(gameId){
-  packageGrid.innerHTML = '';
-  const packs = harga[gameId] || {};
-  const entries = Object.entries(packs);
-
-  // tampilkan filter
-  packageFilter.classList.remove('hidden');
-  packageFilter.querySelectorAll('.chip').forEach(ch=>{
-    ch.classList.remove('chip-active');
-    if(ch.dataset.size === 'all') ch.classList.add('chip-active');
-    ch.onclick = ()=>{
-      packageFilter.querySelectorAll('.chip').forEach(x=>x.classList.remove('chip-active'));
-      ch.classList.add('chip-active');
-      paint(entries, ch.dataset.size);
-    };
-  });
-
-  function paint(list, size='all'){
-    packageGrid.innerHTML = '';
-    list.forEach(([name, price])=>{
-      if(size !== 'all' && bucket(price) !== size) return;
-      const node = document.createElement('div');
-      node.className = 'pkg reveal';
-      node.innerHTML = `
-        <div class="pkg-top">
-          <span class="diamond"></span>
-          <div class="pkg-name">${name}</div>
-        </div>
-        <div class="pkg-price">${money(price)}</div>
-      `;
-      node.addEventListener('click', ()=>{
-        document.querySelectorAll('.pkg').forEach(p=>p.classList.remove('selected'));
-        node.classList.add('selected');
-        selectedPackage = name;
-
-        paymentSection.classList.remove('hidden');
-        voucherSection.classList.remove('hidden');
-        stickyBar.classList.remove('hidden');
-
-        summaryPack.innerHTML = `Paket: <b>${name}</b>`;
-        updatePrice();
-      });
-      packageGrid.appendChild(node);
-      requestAnimationFrame(()=>node.classList.add('show'));
-    });
-  }
-
-  paint(entries, 'all');
-}
-
-// === RENDER PAYMENTS ===
-function renderPayments(total){
-  paymentGrid.innerHTML = '';
-  payments.forEach(p=>{
-    const row = document.createElement('div');
-    row.className = 'pay reveal';
-    row.innerHTML = `
-      <img src="${p.img}" alt="${p.name}"/>
-      <div class="pay-name">${p.name}</div>
-      <div class="pay-right">${money(total || 0)}</div>
-    `;
-    row.addEventListener('click', ()=>{
-      document.querySelectorAll('.pay').forEach(el=>el.classList.remove('selected'));
-      row.classList.add('selected');
-      selectedPayment = p.name;
-      summaryPay.innerHTML = `Pembayaran: <b>${p.name}</b>`;
-    });
-    paymentGrid.appendChild(row);
-    requestAnimationFrame(()=>row.classList.add('show'));
-  });
-}
-
-// === RENDER VOUCHER STRIP ===
-function renderVouchers(){
-  voucherStrip.innerHTML = '';
-  const now = new Date();
-  vouchers.forEach(v=>{
-    const exp = new Date(v.exp);
-    if(exp < now) return;
+  Object.keys(packs).forEach((name, idx)=>{
     const card = document.createElement('div');
-    card.className = 'voucher reveal';
+    card.className = 'package-card';
+    const badge = idx<3 ? `<div class="badge">${labels[idx]}</div>` : '';
     card.innerHTML = `
-      <span class="v-badge">${v.badge}</span>
-      <div>
-        <div class="v-title">${v.title}</div>
-        <div class="v-exp">Berlaku s/d ${v.exp}</div>
+      ${badge}
+      <div class="pkg-top">
+        <img src="${diamondIcon}" alt="diamond" />
+        <div class="pkg-name">${name}</div>
       </div>
+      <div class="pkg-price">Rp ${packs[name].toLocaleString()}</div>
     `;
     card.addEventListener('click', ()=>{
-      document.querySelectorAll('.voucher').forEach(x=>x.classList.remove('active'));
-      card.classList.add('active');
-      activeVoucher = v;
+      document.querySelectorAll('.package-card').forEach(c=>c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedPackage = name;
+      selectedPayment = null;
       updatePrice();
-      showToast(`Voucher ${v.title} aktif`);
     });
-    voucherStrip.appendChild(card);
-    requestAnimationFrame(()=>card.classList.add('show'));
+    packageGrid.appendChild(card);
   });
 }
-renderVouchers();
 
-// === HITUNG TOTAL ===
+/* ===========================
+   PAYMENT RENDER
+=========================== */
+const paymentGrid = document.getElementById('paymentGrid');
+function renderPayments(){
+  paymentGrid.innerHTML='';
+  ewallets.forEach(p=>{
+    const div = document.createElement('div');
+    div.className='payment-option';
+    div.innerHTML = `<img src="${p.img}" alt="${p.name}"><div>${p.name}</div>`;
+    div.addEventListener('click', ()=>{
+      document.querySelectorAll('.payment-option').forEach(x=>x.classList.remove('selected'));
+      div.classList.add('selected');
+      selectedPayment = p.name;
+      updatePrice();
+    });
+    paymentGrid.appendChild(div);
+  });
+}
+renderPayments();
+
+/* ===========================
+   VOUCHER SHELF (Shopee-like)
+=========================== */
+const voucherShelf = document.getElementById('voucherShelf');
+function renderVoucherShelf(){
+  voucherShelf.innerHTML='';
+  const now = new Date();
+  vouchers.forEach(v=>{
+    const expired = new Date(v.exp) < now;
+    const disable = expired ? 'disabled' : '';
+    const onlyTxt = v.only ? `• Khusus ${games.find(g=>g.id===v.only)?.name}` : '';
+    const card = document.createElement('div');
+    card.className='voucher-card';
+    card.innerHTML = `
+      <div class="voucher-left"><div class="perc">${Math.round(v.discount*100)}%</div></div>
+      <div class="voucher-right">
+        <div class="voucher-title">${v.code}</div>
+        <div class="voucher-desc">${v.desc} • Min. Rp${v.min.toLocaleString()} ${onlyTxt}</div>
+        <div class="voucher-meta">
+          <div class="voucher-exp">Exp: ${v.exp}</div>
+          <button class="voucher-apply" ${disable}>Pakai</button>
+        </div>
+      </div>
+    `;
+    const btn = card.querySelector('.voucher-apply');
+    btn.addEventListener('click', ()=>{
+      document.getElementById('voucher').value = v.code;
+      updatePrice();
+      btn.textContent = 'Dipakai ✓';
+    });
+    voucherShelf.appendChild(card);
+  });
+}
+renderVoucherShelf();
+document.getElementById('applyVoucher').addEventListener('click', updatePrice);
+
+/* ===========================
+   TOTAL & SUMMARY
+=========================== */
 function getTotal(){
   if(!selectedGame || !selectedPackage) return 0;
-  const base = harga[selectedGame][selectedPackage] || 0;
-  if(!activeVoucher) return base;
+  let total = harga[selectedGame][selectedPackage] || 0;
 
-  if(activeVoucher.type === 'disc'){
-    return Math.max(0, Math.round(base * (1 - activeVoucher.value)));
+  // voucher input
+  const code = document.getElementById('voucher').value.trim().toUpperCase();
+  if(code){
+    const now = new Date();
+    const v = vouchers.find(x => x.code===code && new Date(x.exp)>=now && total>=x.min && (!x.only || x.only===selectedGame));
+    if(v){ total = Math.round(total * (1 - v.discount)); }
   }
-  if(activeVoucher.type === 'subs'){
-    return Math.max(0, base - activeVoucher.value);
-  }
-  return base;
+
+  // spin bonus (applied via summaryVoucher if exist)
+  const spin = Number(localStorage.getItem('spinDiscount')||0);
+  if(spin>0){ total = Math.round(total * (1 - spin)); }
+
+  return total < 0 ? 0 : total;
 }
 
 function updatePrice(){
-  const total = getTotal();
-  stickyPrice.textContent = money(total);
-  renderPayments(total); // refresh angka di kanan kartu payment
-}
+  const subtotalEl = document.getElementById('summarySubtotal');
+  const titleEl = document.getElementById('summaryTitle');
+  const priceEl = document.getElementById('summaryPrice');
+  const voucherEl = document.getElementById('summaryVoucher');
 
-// === CHECKOUT ===
-checkoutBtn.addEventListener('click', ()=>{
+  if(selectedGame && selectedPackage){
+    const sub = harga[selectedGame][selectedPackage] || 0;
+    titleEl.textContent = selectedPackage;
+    subtotalEl.textContent = 'Rp' + sub.toLocaleString();
+  }else{
+    titleEl.textContent = 'Belum dipilih';
+    subtotalEl.textContent = 'Rp0';
+  }
+
+  // voucher text
+  const parts = [];
+  const inputCode = document.getElementById('voucher').value.trim().toUpperCase();
+  if(inputCode) parts.push(inputCode);
+  const spin = Number(localStorage.getItem('spinDiscount')||0);
+  if(spin>0) parts.push(`Spin ${Math.round(spin*100)}%`);
+  voucherEl.textContent = parts.length? parts.join(' + ') : '—';
+
+  priceEl.textContent = 'Rp' + (getTotal()).toLocaleString();
+}
+document.getElementById('voucher').addEventListener('input', updatePrice);
+
+/* ===========================
+   NICKNAME MOCK CHECK
+=========================== */
+document.getElementById('checkNick').addEventListener('click', ()=>{
   const uid = document.getElementById('idgame').value.trim();
+  const server = document.getElementById('serverid').value.trim();
+  const nickEl = document.getElementById('nickname');
+  if(!uid){ nickEl.textContent='Isi ID dulu'; return; }
+  // Mock nickname generator (tanpa API)
+  const tag = selectedGame ? games.find(g=>g.id===selectedGame)?.name || 'Player' : 'Player';
+  const hash = Array.from(uid).reduce((a,c)=>a+c.charCodeAt(0),0)%9999;
+  const serverTxt = (selectedGame==='ml' && server) ? ` • S${server}` : '';
+  nickEl.textContent = `${tag}#${hash}${serverTxt}`;
+});
+
+/* ===========================
+   SPIN BONUS (Wheel)
+=========================== */
+const spinModal = document.getElementById('spinModal');
+const openSpin = document.getElementById('openSpin');
+const closeSpin = document.getElementById('closeSpin');
+openSpin.addEventListener('click', ()=> spinModal.classList.remove('hidden'));
+closeSpin.addEventListener('click', ()=> spinModal.classList.add('hidden'));
+
+const wheel = document.getElementById('wheel');
+const ctx = wheel.getContext('2d');
+const slices = [
+  {label:'0%', val:0},
+  {label:'5%', val:0.05},
+  {label:'10%', val:0.10},
+  {label:'0%', val:0},
+  {label:'15%', val:0.15},
+  {label:'0%', val:0},
+  {label:'20%', val:0.20},
+  {label:'0%', val:0}
+];
+function drawWheel(rot=0){
+  const R = wheel.width/2;
+  ctx.clearRect(0,0,wheel.width,wheel.height);
+  ctx.save(); ctx.translate(R,R); ctx.rotate(rot);
+  for(let i=0;i<slices.length;i++){
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.arc(0,0,R,i*(2*Math.PI/slices.length),(i+1)*(2*Math.PI/slices.length));
+    ctx.closePath();
+    ctx.fillStyle = i%2? 'rgba(255,152,0,0.9)' : 'rgba(58,161,255,0.9)';
+    ctx.fill();
+    // text
+    ctx.save();
+    ctx.rotate(i*(2*Math.PI/slices.length)+Math.PI/slices.length);
+    ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.font='bold 18px Poppins';
+    ctx.fillText(slices[i].label, R*0.6, 8);
+    ctx.restore();
+  }
+  // pointer
+  ctx.restore();
+  ctx.beginPath();
+  ctx.moveTo(wheel.width/2, 0);
+  ctx.lineTo(wheel.width/2-10, 18);
+  ctx.lineTo(wheel.width/2+10, 18);
+  ctx.closePath();
+  ctx.fillStyle='#ef4444'; ctx.fill();
+}
+drawWheel();
+
+document.getElementById('spinBtn').addEventListener('click', ()=>{
+  if(spinUsed){ document.getElementById('spinResult').textContent='Kamu sudah menggunakan spin hari ini.'; return; }
+  let rot = 0, speed = Math.random()*0.35 + 0.35;
+  const slow = setInterval(()=>{
+    rot += speed; speed *= 0.985; drawWheel(rot);
+    if(speed < 0.01){
+      clearInterval(slow);
+      const idx = Math.floor(((rot%(2*Math.PI))/(2*Math.PI))*slices.length);
+      const sel = slices[(slices.length-idx)%slices.length];
+      localStorage.setItem('spinDiscount', sel.val.toString());
+      spinUsed = true;
+      document.getElementById('spinResult').textContent = sel.val>0 ? `Selamat! Diskon tambahan ${sel.label}` : 'Yah, belum beruntung 😅';
+      updatePrice();
+    }
+  }, 16);
+});
+
+/* ===========================
+   CHECKOUT
+=========================== */
+document.getElementById('checkoutBtn').addEventListener('click', ()=>{
+  const uid = document.getElementById('idgame').value.trim();
+  const serverid = document.getElementById('serverid').value.trim();
+  const voucher = document.getElementById('voucher').value.trim().toUpperCase();
+
   if(!selectedGame || !selectedPackage || !selectedPayment || !uid){
-    alert("Lengkapi pilihan: game, paket, pembayaran, dan isi ID/UID.");
+    alert("Silakan pilih game, paket, metode pembayaran, dan isi ID.");
     return;
   }
-  const gameObj = games.find(g=>g.id === selectedGame);
-  let finalId = uid;
-
-  if(selectedGame === 'ml'){
-    const sid = (document.getElementById('serverid').value || '').trim();
-    if(!sid){ alert("Masukkan juga Server ID untuk Mobile Legends."); return; }
-    finalId = `${uid} (${sid})`;
+  if(selectedGame==='ml' && !serverid){
+    alert("Masukkan Server ID (contoh: 4231) untuk Mobile Legends.");
+    return;
   }
 
+  const gameMap = Object.fromEntries(games.map(g=>[g.id,g.name]));
+  const finalId = selectedGame==='ml' ? `${uid} (${serverid})` : uid;
   const total = getTotal();
-  const voucherText = activeVoucher ? `${activeVoucher.title} (${activeVoucher.code})` : "-";
 
-  const msg =
-`Halo Admin, saya ingin top up:
-Game: ${gameObj ? gameObj.name : selectedGame}
+  const msg = `Halo Admin, saya ingin top up:
+Game: ${gameMap[selectedGame] || selectedGame.toUpperCase()}
 ID: ${finalId}
 Paket: ${selectedPackage}
 Payment: ${selectedPayment}
-Voucher: ${voucherText}
-Total Harga: ${money(total)}`;
+Voucher: ${voucher || "-"}
+Total Harga: Rp ${total.toLocaleString()}`;
 
-  const wa = `https://wa.me/6282298902274?text=${encodeURIComponent(msg)}`;
-  window.open(wa, "_blank");
+  const waUrl = `https://wa.me/6282298902274?text=${encodeURIComponent(msg)}`;
+  window.open(waUrl, "_blank");
 });
 
-// === SMALL INTERACTIONS ===
-document.querySelectorAll('.section').forEach(s=>reveal(s));
+/* ===========================
+   INIT
+=========================== */
+function initDefault(){
+  // pilih game pertama default
+  const first = gameGrid.querySelector('.game-card');
+  if(first) first.click();
+}
+initDefault();
+updatePrice();
