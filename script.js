@@ -30,12 +30,14 @@ const gameGrid=document.getElementById('gameGrid');
 games.forEach(g=>{
   const div=document.createElement('div');
   div.className='game-card';
-  div.innerHTML=`<img src="${g.logo}" width="80"><div>${g.name}</div>`;
+  div.innerHTML=`<img src="${g.logo}" alt="${g.name}"><div>${g.name}</div>`;
   div.addEventListener('click',()=>{
     document.querySelectorAll('.game-card').forEach(gc=>gc.classList.remove('selected'));
     div.classList.add('selected');
     selectedGame=g.id;
     generatePackages(g.id);
+    document.getElementById('voucherSection').style.display='block';
+
     if(g.id==='ml'){
       document.getElementById('serverContainer').style.display='block';
     } else {
@@ -69,7 +71,7 @@ const paymentGrid=document.getElementById('paymentGrid');
 payments.forEach(p=>{
   const div=document.createElement('div');
   div.className='payment-option';
-  div.innerHTML=`<img src="${p.img}"><div>${p.name}</div>`;
+  div.innerHTML=`<img src="${p.img}" alt="${p.name}"><div>${p.name}</div>`;
   div.addEventListener('click',()=>{
     document.querySelectorAll('.payment-option').forEach(po=>po.classList.remove('selected'));
     div.classList.add('selected');
@@ -102,7 +104,7 @@ document.getElementById('checkoutBtn').addEventListener('click',()=>{
   const uid=document.getElementById('idgame').value.trim();
   const server=document.getElementById('serverId').value.trim();
   if(!selectedGame||!selectedPackage||!selectedPayment||!uid){
-    alert("Lengkapi semua data sebelum checkout!");
+    alert("⚠️ Lengkapi semua data sebelum checkout!");
     return;
   }
   let total=harga[selectedGame][selectedPackage];
@@ -110,9 +112,11 @@ document.getElementById('checkoutBtn').addEventListener('click',()=>{
   if(voucher==='PROMO10') total*=0.9;
   if(voucher==='HEMAT20') total*=0.8;
 
-  let msg=`Halo Admin, saya ingin top up:\nGame: ${selectedGame}\nID: ${uid}`;
+  let msg=`Halo Admin, saya ingin top up:\n`;
+  msg+=`Game: ${games.find(g=>g.id===selectedGame).name}\n`;
+  msg+=`ID: ${uid}`;
   if(selectedGame==='ml' && server) msg+=`\nServer: ${server}`;
   msg+=`\nProduk: ${selectedPackage}\nPayment: ${selectedPayment}\nTotal: Rp ${total.toLocaleString()}`;
-  
+
   alert(msg);
 });
