@@ -1,50 +1,101 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Demonz TopUp</title>
-<link rel="stylesheet" href="style.css?v=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top Up Game Profesional Final</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <header>
+    <h1>Top Up Game Profesional</h1>
+    <div class="filter-container">
+      <label for="categoryFilter">Filter Kategori:</label>
+      <select id="categoryFilter">
+        <option value="all">Semua</option>
+        <option value="Battle Royale">Battle Royale</option>
+        <option value="MOBA">MOBA</option>
+        <option value="RPG">RPG</option>
+        <option value="Sandbox">Sandbox</option>
+      </select>
+    </div>
+  </header>
 
-<header class="navbar">
-  <div class="logo">Demonz <span>TopUp</span></div>
-</header>
+  <main class="game-container">
+    <!-- Card Game Template -->
+    <div class="game-card" data-game="Free Fire" data-category="Battle Royale">
+      <div class="img-container">
+        <img src="https://i.ibb.co/6X9n3jZ/freefire.png" alt="Free Fire">
+      </div>
+      <h2>Free Fire</h2>
+      <label>ID Game</label>
+      <input type="text" class="idInput" placeholder="Masukkan ID Game">
 
-<main class="container">
+      <label>Pilih Paket</label>
+      <div class="package-list">
+        <span class="package badge-low" data-price="10 Diamond">10 Diamond</span>
+        <span class="package badge-medium" data-price="50 Diamond">50 Diamond</span>
+        <span class="package badge-high" data-price="100 Diamond">100 Diamond</span>
+        <span class="package badge-high" data-price="500 Diamond">500 Diamond</span>
+      </div>
 
-  <!-- GAME -->
-  <section class="game-section">
-    <h2>Top Up Game</h2>
-    <div id="gameGrid" class="game-grid"></div>
-  </section>
+      <label>Metode Pembayaran</label>
+      <select class="payment">
+        <option value="">--Pilih Metode--</option>
+        <option value="Gopay">Gopay</option>
+        <option value="Dana">Dana</option>
+        <option value="OVO">OVO</option>
+        <option value="Transfer Bank">Transfer Bank</option>
+      </select>
 
-  <!-- CHECKOUT -->
-  <section class="checkout-card" id="checkoutCard" style="display:none;">
-    <h3 id="selectedGameName"></h3>
-    <input type="text" id="idgame" placeholder="Masukkan ID Game">
-    <div id="serverContainer" style="display:none;">
-      <input type="text" id="serverId" placeholder="Server ID (MLBB)">
+      <label>Kode Voucher (Opsional)</label>
+      <input type="text" class="voucher" placeholder="Masukkan kode voucher">
+
+      <button class="buyBtn">Beli Sekarang</button>
     </div>
 
-    <div id="packageGrid" class="package-grid"></div>
+    <!-- Tambahkan Card Game lainnya sesuai kebutuhan -->
+    <!-- Contoh Mobile Legends -->
+    <div class="game-card" data-game="Mobile Legends" data-category="MOBA">
+      <div class="img-container">
+        <img src="https://i.ibb.co/2S5r1sq/ml.png" alt="Mobile Legends">
+      </div>
+      <h2>Mobile Legends</h2>
+      <label>ID Game</label>
+      <input type="text" class="idInput" placeholder="Masukkan ID Game">
 
-    <h4>Metode Pembayaran</h4>
-    <div id="paymentGrid" class="payment-grid"></div>
+      <label>Pilih Paket</label>
+      <div class="package-list">
+        <span class="package badge-low" data-price="10 Diamond">10 Diamond</span>
+        <span class="package badge-medium" data-price="50 Diamond">50 Diamond</span>
+        <span class="package badge-high" data-price="100 Diamond">100 Diamond</span>
+        <span class="package badge-high" data-price="500 Diamond">500 Diamond</span>
+      </div>
 
-    <input type="text" id="voucherInput" placeholder="Masukkan kode voucher">
+      <label>Metode Pembayaran</label>
+      <select class="payment">
+        <option value="">--Pilih Metode--</option>
+        <option value="Gopay">Gopay</option>
+        <option value="Dana">Dana</option>
+        <option value="OVO">OVO</option>
+        <option value="Transfer Bank">Transfer Bank</option>
+      </select>
 
-    <div id="stickyPrice">Total: Rp 0</div>
-    <button id="checkoutBtn">Bayar Sekarang</button>
-  </section>
+      <label>Kode Voucher (Opsional)</label>
+      <input type="text" class="voucher" placeholder="Masukkan kode voucher">
 
-</main>
+      <button class="buyBtn">Beli Sekarang</button>
+    </div>
 
-<footer>
-<p>© 2025 Demonz TopUp</p>
-</footer>
+  </main>
 
-<script src="script.js?v=1"></script>
+  <!-- Popup Notifikasi -->
+  <div id="popup" class="popup">
+    <div class="popup-content">
+      <p>Data berhasil dikirim! Mengarahkan ke WhatsApp...</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
