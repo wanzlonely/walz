@@ -1,9 +1,9 @@
 // === DATA GAME ===
 const games = [
-  {id:'ff', name:'Free Fire', bg:'https://files.catbox.moe/oqnxag.jpeg', logo:'https://files.catbox.moe/oqnxag.jpeg'},
-  {id:'ml', name:'Mobile Legends', bg:'https://files.catbox.moe/h7whee.jpeg', logo:'https://files.catbox.moe/h7whee.jpeg'},
-  {id:'hok', name:'Honor of Kings', bg:'https://files.catbox.moe/04zakl.jpeg', logo:'https://files.catbox.moe/04zakl.jpeg'},
-  {id:'roblox', name:'Roblox', bg:'https://files.catbox.moe/ldegjz.png', logo:'https://files.catbox.moe/ldegjz.png'}
+  {id:'ff', name:'Free Fire', bg:'https://files.catbox.moe/oqnxag.jpeg'},
+  {id:'ml', name:'Mobile Legends', bg:'https://files.catbox.moe/h7whee.jpeg'},
+  {id:'hok', name:'Honor of Kings', bg:'https://files.catbox.moe/04zakl.jpeg'},
+  {id:'roblox', name:'Roblox', bg:'https://files.catbox.moe/ldegjz.png'}
 ];
 
 // === DATA PAKET ===
@@ -28,12 +28,12 @@ const vouchers = [
   { code:"PROMO10", desc:"Diskon 10%",        exp:"2024-12-31", discount:0.10 }
 ];
 
-// === ICON per game ===
+// === ICON PER GAME (diamond biru universal) ===
 const gameIcons = {
-  ff:"https://cdn-icons-png.flaticon.com/512/1055/1055646.png",
-  ml:"https://cdn-icons-png.flaticon.com/512/1055/1055646.png",
-  hok:"https://cdn-icons-png.flaticon.com/512/2985/2985150.png",
-  roblox:"https://cdn-icons-png.flaticon.com/512/906/906349.png"
+  ff:"https://cdn-icons-png.flaticon.com/512/1828/1828817.png",
+  ml:"https://cdn-icons-png.flaticon.com/512/1828/1828817.png",
+  hok:"https://cdn-icons-png.flaticon.com/512/1828/1828817.png",
+  roblox:"https://cdn-icons-png.flaticon.com/512/1828/1828817.png"
 };
 
 // === STATE ===
@@ -44,30 +44,24 @@ let selectedPayment = null;
 // === BUBBLE BACKGROUND ===
 const bubbleCanvas = document.getElementById('bubbleCanvas');
 const bctx = bubbleCanvas.getContext('2d');
-function resizeBubbles(){
-  bubbleCanvas.width = window.innerWidth;
-  bubbleCanvas.height = window.innerHeight;
-}
-resizeBubbles();
-window.addEventListener('resize', resizeBubbles);
-
+function resizeBubbles(){bubbleCanvas.width=window.innerWidth;bubbleCanvas.height=window.innerHeight}
+resizeBubbles();window.addEventListener('resize',resizeBubbles);
 const bubbles = Array.from({length:40}).map(()=>({
-  x: Math.random()*window.innerWidth,
-  y: window.innerHeight + Math.random()*window.innerHeight,
-  r: Math.random()*6 + 2,
-  s: Math.random()*0.6 + 0.2,
-  drift: (Math.random()-0.5)*0.6
+  x:Math.random()*window.innerWidth,
+  y:window.innerHeight+Math.random()*window.innerHeight,
+  r:Math.random()*6+2,
+  s:Math.random()*0.6+0.2,
+  drift:(Math.random()-0.5)*0.6
 }));
 function drawBubbles(){
   bctx.clearRect(0,0,bubbleCanvas.width,bubbleCanvas.height);
   bubbles.forEach(b=>{
-    b.y -= b.s;
-    b.x += b.drift;
-    if(b.y < -20){ b.y = window.innerHeight + 20; b.x = Math.random()*window.innerWidth; }
-    const grad = bctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r*2.2);
+    b.y-=b.s; b.x+=b.drift;
+    if(b.y<-20){b.y=window.innerHeight+20;b.x=Math.random()*window.innerWidth;}
+    const grad=bctx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r*2.2);
     grad.addColorStop(0,'rgba(255,255,255,0.18)');
     grad.addColorStop(1,'rgba(255,255,255,0)');
-    bctx.fillStyle = grad;
+    bctx.fillStyle=grad;
     bctx.beginPath(); bctx.arc(b.x,b.y,b.r*2,0,Math.PI*2); bctx.fill();
   });
   requestAnimationFrame(drawBubbles);
@@ -75,21 +69,14 @@ function drawBubbles(){
 drawBubbles();
 
 // === PARTICLES (BURST) ===
-const particleCanvas = document.getElementById('particleCanvas');
-const pctx = particleCanvas.getContext('2d');
-function resizeParticles(){ particleCanvas.width=window.innerWidth; particleCanvas.height=window.innerHeight }
-resizeParticles(); window.addEventListener('resize', resizeParticles);
-
+const particleCanvas=document.getElementById('particleCanvas');
+const pctx=particleCanvas.getContext('2d');
+function resizeParticles(){particleCanvas.width=window.innerWidth;particleCanvas.height=window.innerHeight}
+resizeParticles();window.addEventListener('resize',resizeParticles);
 function createParticles(x,y,count=24){
   const parts=[];
   for(let i=0;i<count;i++){
-    parts.push({
-      x,y,
-      r:Math.random()*3+2,
-      dx:(Math.random()-0.5)*6,
-      dy:(Math.random()-0.5)*6,
-      a:1
-    });
+    parts.push({x,y,r:Math.random()*3+2,dx:(Math.random()-0.5)*6,dy:(Math.random()-0.5)*6,a:1});
   }
   function tick(){
     pctx.clearRect(0,0,particleCanvas.width,particleCanvas.height);
@@ -110,29 +97,28 @@ games.forEach(game=>{
   const div=document.createElement('div');
   div.className='game-card';
   div.style.background=`url(${game.bg}) center/cover no-repeat`;
-  div.innerHTML=`<div class="overlay"></div><img src="${game.logo}" alt=""><div>${game.name}</div>`;
+  div.innerHTML=`<div class="overlay"></div><div>${game.name}</div>`;
   div.addEventListener('click',()=>{
     document.querySelectorAll('.game-card').forEach(g=>g.classList.remove('selected'));
     div.classList.add('selected');
 
-    selectedGame = game.id;
-    selectedPackage = null;
-    selectedPayment = null;
+    selectedGame=game.id;
+    selectedPackage=null;
+    selectedPayment=null;
 
-    // ML: tampilkan Server ID
-    const serverInput = document.getElementById('serverid');
-    if(game.id === 'ml'){
+    const serverInput=document.getElementById('serverid');
+    if(game.id==='ml'){
       serverInput.classList.remove('hidden');
-    } else {
+    }else{
       serverInput.classList.add('hidden');
-      serverInput.value = "";
+      serverInput.value="";
     }
 
     generatePackages(game.id);
     updatePrice();
 
-    const rect = div.getBoundingClientRect();
-    createParticles(rect.left + rect.width/2, rect.top + rect.height/2, 28);
+    const rect=div.getBoundingClientRect();
+    createParticles(rect.left+rect.width/2,rect.top+rect.height/2,28);
   });
   gameGrid.appendChild(div);
 });
@@ -141,7 +127,7 @@ games.forEach(game=>{
 const packageGrid=document.getElementById('packageGrid');
 function generatePackages(gameId){
   packageGrid.innerHTML='';
-  const packs=harga[gameId]||{};
+  const packs = harga[gameId] || {};
   Object.keys(packs).forEach(name=>{
     const card=document.createElement('div');
     card.className='flip-card';
@@ -154,12 +140,11 @@ function generatePackages(gameId){
       document.querySelectorAll('.flip-card').forEach(el=>el.classList.remove('selected'));
       card.classList.add('selected');
 
-      selectedPackage = name;
-      selectedPayment = null; 
+      selectedPackage=name;
       updatePrice();
 
-      const rect = card.getBoundingClientRect();
-      createParticles(rect.left + rect.width/2, rect.top + rect.height/2, 30);
+      const rect=card.getBoundingClientRect();
+      createParticles(rect.left+rect.width/2,rect.top+rect.height/2,30);
     });
     packageGrid.appendChild(card);
   });
@@ -185,14 +170,12 @@ function renderVouchers(){
     list.appendChild(item);
   });
 }
-renderVouchers();
 
-// === PAYMENT RENDER ===
+// === PAYMENT RENDER (SELALU TAMPIL) ===
 function renderPayments(total=null){
   const list=document.getElementById('ewalletList');
   list.innerHTML='';
-  if(!selectedGame || !selectedPackage) return;
-  if(total === null) total = getTotal();
+  if(total===null) total=getTotal();
 
   ewallets.forEach(p=>{
     const row=document.createElement('div');
@@ -208,9 +191,10 @@ function renderPayments(total=null){
       document.querySelectorAll('.payment-item').forEach(el=>el.classList.remove('selected'));
       row.classList.add('selected');
       selectedPayment=p.name;
-      updatePrice(); 
-      const rect = row.getBoundingClientRect();
-      createParticles(rect.left + rect.width - 30, rect.top + rect.height/2, 24);
+      updatePrice();
+
+      const rect=row.getBoundingClientRect();
+      createParticles(rect.left+rect.width-30,rect.top+rect.height/2,24);
     });
     list.appendChild(row);
   });
@@ -234,6 +218,7 @@ function updatePrice(){
   const total = getTotal();
   const summaryTitle = document.getElementById('summaryTitle');
   const summaryPrice = document.getElementById('summaryPrice');
+  const summarySub = document.getElementById('summarySub');
 
   if(selectedGame && selectedPackage){
     summaryTitle.textContent = selectedPackage;
@@ -241,6 +226,12 @@ function updatePrice(){
   } else {
     summaryTitle.textContent = "Paket belum dipilih";
     summaryPrice.textContent = "Rp0";
+  }
+
+  if(selectedPayment){
+    summarySub.textContent = `Siap checkout via ${selectedPayment}`;
+  }else{
+    summarySub.textContent = "Pilih paket & payment";
   }
 
   renderPayments(total);
@@ -283,11 +274,11 @@ Total Harga: Rp ${total.toLocaleString()}`;
   setTimeout(()=>{
     const waUrl = `https://wa.me/6282298902274?text=${encodeURIComponent(msg)}`;
     window.open(waUrl, "_blank");
-  }, 800);
+  }, 400);
 });
 
 // === LISTENERS ===
-document.getElementById('voucher').addEventListener('input', ()=>{ updatePrice(); });
+document.getElementById('voucher').addEventListener('input', updatePrice);
 
 // === FLOATING CONTACT ===
 const contactBtn = document.getElementById('contactBtn');
@@ -295,3 +286,7 @@ const contactPopup = document.getElementById('contactPopup');
 contactBtn.addEventListener('click', ()=>{
   contactPopup.classList.toggle('hidden');
 });
+
+// === INIT ===
+renderVouchers();
+updatePrice(); // render awal
