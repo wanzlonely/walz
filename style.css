@@ -1,50 +1,188 @@
 /* RESET */
-* {margin:0;padding:0;box-sizing:border-box;}
-body {font-family:'Poppins',sans-serif;background:#f9fafc;color:#333;}
+* {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
 
-/* HEADER */
-.header {background:#6c63ff;color:#fff;padding:1rem;text-align:center;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
-.logo {font-size:1.5rem;font-weight:700;}
+body {
+  background: #f9f9f9;
+  color: #333;
+}
 
-/* CONTAINER */
-.container {max-width:900px;margin:1rem auto;padding:1rem;}
+/* NAVBAR */
+.navbar {
+  background: #111;
+  color: #fff;
+  display: flex; justify-content: space-between;
+  padding: 15px 30px;
+  align-items: center;
+  position: sticky; top: 0;
+  z-index: 1000;
+}
 
-/* CARD SECTION */
-.card {background:#fff;border-radius:12px;padding:1.2rem;margin-bottom:1.2rem;box-shadow:0 4px 10px rgba(0,0,0,0.05);}
-.card h2 {margin-bottom:1rem;font-size:1.2rem;color:#444;}
+.navbar .logo {
+  font-size: 22px; font-weight: bold;
+}
+.navbar .logo span { color: #ff5722; }
+.navbar nav a {
+  margin: 0 10px;
+  text-decoration: none;
+  color: #fff;
+  transition: 0.3s;
+}
+.navbar nav a:hover { color: #ff9800; }
 
-/* GRID */
-.grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1rem;}
+/* HERO */
+.hero {
+  background: url('https://files.catbox.moe/h7whee.jpeg') center/cover no-repeat;
+  color: #fff;
+  text-align: center;
+  padding: 100px 20px;
+  position: relative;
+}
+.hero::after {
+  content: "";
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+}
+.hero-content {
+  position: relative; z-index: 1;
+}
+.hero h1 { font-size: 36px; margin-bottom: 10px; }
+.hero p { font-size: 18px; margin-bottom: 20px; }
+.btn-primary {
+  background: #ff5722; color: #fff;
+  padding: 10px 20px; border-radius: 8px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+.btn-primary:hover { background: #ff9800; }
 
-/* GAME CARD */
-.game-card {position:relative;border-radius:12px;overflow:hidden;cursor:pointer;text-align:center;padding:1rem;transition:.3s;border:2px solid transparent;background:#f0f0f0;}
-.game-card img {width:50px;height:50px;margin-bottom:.5rem;border-radius:50%;}
-.game-card.selected {border-color:#6c63ff;background:#eef0ff;transform:scale(1.05);}
+/* PROMO */
+.promo {
+  padding: 40px 20px; background: #fff;
+  text-align: center;
+}
+.promo-slider {
+  display: flex; overflow-x: auto; gap: 15px;
+  margin-top: 20px;
+}
+.promo-card {
+  min-width: 250px; padding: 15px;
+  background: #ffefdb;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
 
-/* INPUT */
-input {width:100%;padding:.8rem;border:2px solid #ddd;border-radius:8px;margin-bottom:.5rem;transition:.3s;}
-input:focus {border-color:#6c63ff;outline:none;}
+/* GAME */
+.game-section, .package-section, .voucher-section, .payment-section {
+  padding: 40px 20px;
+}
+h2 { margin-bottom: 15px; }
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(120px,1fr));
+  gap: 15px;
+}
+.game-card {
+  background: #eee; border-radius: 10px;
+  padding: 20px; text-align: center;
+  cursor: pointer; transition: 0.3s;
+}
+.game-card.selected { border: 3px solid #ff9800; transform: scale(1.05); }
 
-/* PACKAGE CARD */
-.pkg-card {background:#fff;border:2px solid #ddd;border-radius:10px;padding:1rem;text-align:center;cursor:pointer;transition:.3s;position:relative;}
-.pkg-card .icon {font-size:1.5rem;margin-bottom:.5rem;}
-.pkg-card:hover {border-color:#6c63ff;box-shadow:0 4px 10px rgba(0,0,0,0.1);}
-.pkg-card.selected {border-color:#6c63ff;background:#eef0ff;transform:scale(1.05);}
+/* ID */
+.id-section {
+  padding: 20px;
+  background: #fff;
+  text-align: center;
+}
+.id-section input {
+  width: 80%; padding: 10px;
+  margin: 10px auto; display: block;
+  border-radius: 8px; border: 1px solid #ccc;
+}
+
+/* PACKAGE */
+.package-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
+  gap: 15px;
+}
+.package-card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.package-card:hover { border-color: #ff9800; }
+.package-card.selected { border: 2px solid #ff5722; background: #fff7f2; }
 
 /* VOUCHER */
-.voucher-box {display:flex;gap:.5rem;}
-.voucher-box input {flex:1;}
+.voucher-list {
+  display: flex; gap: 10px;
+  flex-wrap: wrap;
+}
+.voucher-card {
+  background: #fff8e1;
+  padding: 10px 15px;
+  border: 1px dashed #ff9800;
+  border-radius: 8px;
+  cursor: pointer;
+}
+#voucherInput {
+  margin-top: 15px;
+  padding: 10px;
+  width: 80%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
 
 /* PAYMENT */
-.payment-option {border:2px solid #ddd;border-radius:10px;padding:.8rem;text-align:center;cursor:pointer;transition:.3s;background:#fff;}
-.payment-option img {width:60px;height:40px;object-fit:contain;margin-bottom:.5rem;}
-.payment-option.selected {border-color:#ff9800;background:#fff5e6;transform:scale(1.05);}
+.payment-grid {
+  display: flex; gap: 15px;
+  flex-wrap: wrap;
+}
+.payment-option {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 10px; border-radius: 10px;
+  text-align: center; flex: 1 1 100px;
+  cursor: pointer; transition: 0.3s;
+}
+.payment-option img {
+  width: 60px; height: auto;
+}
+.payment-option.selected {
+  border: 2px solid #ff5722;
+  background: #fff7f2;
+}
 
 /* CHECKOUT */
-.checkout {background:#fff;padding:1rem;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.08);text-align:center;}
-#stickyPrice {font-size:1.2rem;font-weight:600;margin-bottom:1rem;}
-#checkoutBtn {background:#6c63ff;color:#fff;border:none;padding:1rem 2rem;border-radius:12px;font-size:1rem;cursor:pointer;transition:.3s;}
-#checkoutBtn:hover {background:#574fd6;}
+.checkout {
+  text-align: center;
+  padding: 30px 20px;
+}
+#stickyPrice {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+#checkoutBtn {
+  background: #ff5722; color: #fff;
+  padding: 12px 30px;
+  border: none; border-radius: 8px;
+  cursor: pointer; transition: 0.3s;
+}
+#checkoutBtn:hover { background: #ff9800; }
 
 /* FOOTER */
-.footer {text-align:center;font-size:.9rem;color:#777;margin:2rem 0;}
+footer {
+  background: #111; color: #fff;
+  text-align: center; padding: 20px;
+  margin-top: 30px;
+}
