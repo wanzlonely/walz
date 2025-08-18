@@ -1,147 +1,151 @@
-body {
-  font-family: 'Poppins', sans-serif;
-  background: #f0f2f5;
-  margin: 0;
-}
+/* RESET & BODY */
+* {margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif;}
+body {background:#2d2d2d; color:#fff; line-height:1.6;}
 
+/* HEADER */
 header {
-  text-align: center;
-  padding: 20px;
-  background: #007bff;
-  color: white;
+  background:#1a1a1a;
+  padding:1rem 2rem;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
+header img {height:40px;}
+nav a {color:#fff; text-decoration:none; margin-left:1rem; font-weight:600;}
+nav a:hover {color:#ff9800;}
 
-h1 {
-  margin: 0;
+/* HERO */
+.hero {
+  text-align:center;
+  padding:4rem 1rem;
+  background:linear-gradient(135deg,#ff5722,#ff9800);
+  border-radius:15px;
+  margin:1rem 2rem;
+  box-shadow:0 8px 25px rgba(0,0,0,0.4);
 }
+.hero h1 {font-size:2.8rem; margin-bottom:0.5rem;}
+.hero p {margin-bottom:1.5rem;}
+.btn {display:inline-block; padding:12px 24px; background:#ff9800; color:#fff; border-radius:30px; text-decoration:none; transition:0.3s;}
+.btn:hover {background:#ff5722; transform:scale(1.05);}
 
-.filter-container {
-  margin-top: 10px;
+/* CATEGORY GRID */
+.category-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:1rem;
+  padding:2rem;
 }
-
-.filter-container select {
-  padding: 6px;
-  border-radius: 6px;
-  border: none;
-  font-weight: bold;
+.category-card {
+  background:#1a1a1a;
+  border-radius:10px;
+  padding:1rem;
+  text-align:center;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
+.category-card img {width:100%; border-radius:8px; margin-bottom:0.5rem;}
+.category-card:hover {transform:scale(1.05); box-shadow:0 4px 12px rgba(0,0,0,0.3);}
 
-.game-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  padding: 20px;
+/* PACKAGE FLIP CARD */
+.package-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+  gap:1rem;
+  padding:2rem;
 }
-
-.game-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-  padding: 15px;
-  transition: transform 0.3s;
+.flip-card {perspective:1000px;}
+.flip-card-inner {
+  position:relative;
+  width:100%;
+  height:100px;
+  text-align:center;
+  transition:transform 0.6s;
+  transform-style:preserve-3d;
+  cursor:pointer;
 }
-
-.game-card:hover {
-  transform: translateY(-5px);
-}
-
-.img-container {
-  width: 100px;
-  height: 100px;
-  margin: 0 auto;
-  overflow: hidden;
-  border-radius: 12px;
-  transition: transform 0.3s;
-}
-
-.img-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transition: transform 0.3s;
-}
-
-.img-container:hover img {
-  transform: scale(1.2);
-}
-
-h2 {
-  margin: 10px 0;
-  text-align: center;
-}
-
-label {
-  display: block;
-  margin-top: 10px;
-  font-weight: bold;
-}
-
-input, select {
-  width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-.package-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 5px;
-}
-
-.package {
-  padding: 5px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  color: white;
-  transition: 0.3s;
-}
-
-.badge-low { background: #28a745; }
-.badge-medium { background: #ff9800; }
-.badge-high { background: #f44336; }
-
-.package:hover, .package.active {
-  opacity: 0.8;
-}
-
-.buyBtn {
-  margin-top: 15px;
-  width: 100%;
-  padding: 10px;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: 0.3s;
-}
-
-.buyBtn:hover {
-  background: #0056b3;
-}
-
-/* Popup */
-.popup {
-  display: none;
-  position: fixed;
-  top:0;
-  left:0;
+.flip-card:hover .flip-card-inner {transform:rotateY(180deg);}
+.flip-card-front, .flip-card-back {
+  position:absolute;
   width:100%;
   height:100%;
-  background: rgba(0,0,0,0.5);
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
+  backface-visibility:hidden;
+  border-radius:10px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  box-shadow:0 2px 8px rgba(0,0,0,0.3);
 }
+.flip-card-front {background:#1a1a1a; color:#fff;}
+.flip-card-back {background:#ff5722; color:#fff; transform:rotateY(180deg); font-weight:600; font-size:14px;}
+.pkg-name {font-weight:600; margin-bottom:5px;}
+.pkg-price {color:#ff9800; font-weight:700;}
 
+/* PAYMENT METHODS */
+.payment-methods {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-around;
+  padding:2rem;
+}
+.payment-method {
+  background:#1a1a1a;
+  border-radius:10px;
+  padding:1rem;
+  text-align:center;
+  width:120px;
+  margin:0.5rem;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.payment-method img {width:50px; height:50px; object-fit:contain; margin-bottom:0.5rem;}
+.payment-method:hover {transform:scale(1.05); box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+
+/* CHECKOUT BUTTON */
+#checkoutBtn {
+  background:#ff9800;
+  color:#fff;
+  padding:1rem 2rem;
+  border:none;
+  border-radius:25px;
+  font-size:1.2rem;
+  cursor:pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+#checkoutBtn:hover {transform:scale(1.05); box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+
+/* POPUP LOADER */
+.popup {
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.7);
+  display:flex; justify-content:center; align-items:center;
+  opacity:0; visibility:hidden;
+  transition:0.3s;
+  z-index:9999;
+}
+.popup.active {opacity:1; visibility:visible;}
 .popup-content {
-  background: white;
-  padding: 20px 30px;
-  border-radius: 12px;
-  text-align: center;
-  font-weight: bold;
+  background:#1a1a1a;
+  padding:2rem;
+  border-radius:15px;
+  text-align:center;
+  max-width:300px;
+  box-shadow:0 5px 20px rgba(0,0,0,0.5);
+}
+.loader {
+  border:6px solid #f3f3f3;
+  border-top:6px solid #ff9800;
+  border-radius:50%;
+  width:50px; height:50px;
+  margin:auto 0 1rem;
+  animation:spin 1s linear infinite;
+}
+@keyframes spin {100% {transform:rotate(360deg);}}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  header {flex-direction:column; align-items:flex-start;}
+  .category-grid, .package-grid {grid-template-columns:repeat(auto-fill,minmax(120px,1fr));}
+  .payment-method {width:100px;}
+  #checkoutBtn {width:100%;}
 }
