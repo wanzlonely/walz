@@ -1,90 +1,48 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Demonz TopUp</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demonz TopUp</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header class="navbar">
-    <div class="logo">Demonz <span>TopUp</span></div>
-    <nav>
-      <a href="#">Beranda</a>
-      <a href="#games">Game</a>
-      <a href="#voucher">Voucher</a>
-      <a href="#payment">Pembayaran</a>
-    </nav>
-  </header>
+<header class="navbar">
+  <div class="logo">Demonz <span>TopUp</span></div>
+</header>
 
-  <!-- HERO BANNER -->
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Top Up Game Favoritmu</h1>
-      <p>Murah, Cepat, dan Aman – Tanpa Ribet</p>
-      <a href="#games" class="btn-primary">Mulai Top Up</a>
-    </div>
+<main class="container">
+
+  <section class="game-section">
+    <h2>Top Up Game</h2>
+    <div id="gameGrid" class="game-grid"></div>
   </section>
 
-  <!-- PROMO SLIDER -->
-  <section class="promo">
-    <h2>🎉 Promo Spesial</h2>
-    <div class="promo-slider">
-      <div class="promo-card">Diskon 10% dengan kode <b>PROMO10</b></div>
-      <div class="promo-card">Cashback hingga Rp 20.000 via Shopeepay</div>
-      <div class="promo-card">Top Up Cepat <b>24 Jam</b></div>
-    </div>
-  </section>
-
-  <!-- GAME LIST -->
-  <section id="games" class="game-section">
-    <h2>Pilih Game</h2>
-    <div class="game-grid" id="gameGrid"></div>
-  </section>
-
-  <!-- INPUT ID -->
-  <section class="id-section">
-    <h2>Masukkan ID</h2>
+  <section class="checkout-card" id="checkoutCard" style="display:none;">
+    <h3 id="selectedGameName"></h3>
     <input type="text" id="idgame" placeholder="Masukkan ID Game">
     <div id="serverContainer" style="display:none;">
-      <input type="text" id="serverId" placeholder="Server ID (Khusus Mobile Legends)">
+      <input type="text" id="serverId" placeholder="Server ID (MLBB)">
     </div>
-  </section>
 
-  <!-- PRODUK -->
-  <section class="package-section">
-    <h2>Pilih Produk</h2>
     <div id="packageGrid" class="package-grid"></div>
-  </section>
 
-  <!-- VOUCHER -->
-  <section id="voucher" class="voucher-section">
-    <h2>Pakai Voucher</h2>
-    <div class="voucher-list">
-      <div class="voucher-card" data-code="PROMO10">PROMO10 - Diskon 10%</div>
-      <div class="voucher-card" data-code="HEMAT20">HEMAT20 - Diskon 20%</div>
-    </div>
-    <input type="text" id="voucherInput" placeholder="Masukkan kode voucher">
-  </section>
-
-  <!-- PEMBAYARAN -->
-  <section id="payment" class="payment-section">
-    <h2>Metode Pembayaran</h2>
+    <h4>Metode Pembayaran</h4>
     <div id="paymentGrid" class="payment-grid"></div>
-  </section>
 
-  <!-- CHECKOUT -->
-  <section class="checkout">
+    <input type="text" id="voucherInput" placeholder="Masukkan kode voucher">
+
     <div id="stickyPrice">Total: Rp 0</div>
     <button id="checkoutBtn">Bayar Sekarang</button>
   </section>
 
-  <footer>
-    <p>© 2025 Demonz TopUp. All rights reserved.</p>
-  </footer>
+</main>
 
-  <script src="script.js"></script>
+<footer>
+<p>© 2025 Demonz TopUp</p>
+</footer>
+
+<script src="script.js"></script>
 </body>
 </html>
