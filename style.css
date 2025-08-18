@@ -1,53 +1,147 @@
-* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
-body { background:#f5f5f5; color:#333; }
-
-.navbar { background:#111; color:#fff; padding:15px 20px; text-align:center; }
-.navbar .logo span { color:#ff5722; font-weight:bold; }
-
-.container { max-width:1000px; margin:20px auto; padding:0 15px; }
-h2 { color:#ff5722; margin-bottom:15px; }
-
-/* Game Grid */
-.game-grid {
-  display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-  gap:15px;
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f0f2f5;
+  margin: 0;
 }
+
+header {
+  text-align: center;
+  padding: 20px;
+  background: #007bff;
+  color: white;
+}
+
+h1 {
+  margin: 0;
+}
+
+.filter-container {
+  margin-top: 10px;
+}
+
+.filter-container select {
+  padding: 6px;
+  border-radius: 6px;
+  border: none;
+  font-weight: bold;
+}
+
+.game-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
 .game-card {
-  background:#fff; border-radius:10px; padding:10px; text-align:center;
-  cursor:pointer; transition:0.3s; border:1px solid #ddd;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  padding: 15px;
+  transition: transform 0.3s;
 }
-.game-card:hover { transform:scale(1.05); }
-.game-card.selected { border:2px solid #ff5722; background:#fff7f2; }
 
-/* Checkout Card */
-.checkout-card {
-  background:#fff; border-radius:12px; padding:20px; margin-top:20px;
-  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+.game-card:hover {
+  transform: translateY(-5px);
 }
-.checkout-card h3 { color:#ff5722; margin-bottom:15px; }
-.checkout-card input { width:100%; padding:10px; margin:8px 0; border:1px solid #ccc; border-radius:8px; }
 
-/* Package Grid */
-.package-grid {
-  display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px; margin:10px 0;
+.img-container {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 12px;
+  transition: transform 0.3s;
 }
-.package-card {
-  background:#fff; border:1px solid #ddd; border-radius:10px; padding:10px; text-align:center;
-  cursor:pointer; transition:0.3s;
+
+.img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s;
 }
-.package-card:hover { transform:scale(1.05); }
-.package-card.selected { border:2px solid #ff5722; background:#fff7f2; }
 
-/* Payment Grid */
-.payment-grid { display:flex; gap:10px; flex-wrap:wrap; margin:10px 0; }
-.payment-option { flex:1 1 80px; border:1px solid #ddd; border-radius:10px; padding:8px; text-align:center; cursor:pointer; transition:0.3s; }
-.payment-option:hover { transform:scale(1.05); }
-.payment-option.selected { border:2px solid #ff5722; background:#fff7f2; }
-.payment-option img { width:50px; height:auto; }
+.img-container:hover img {
+  transform: scale(1.2);
+}
 
-/* Checkout */
-#stickyPrice { font-weight:bold; margin:10px 0; font-size:18px; }
-#checkoutBtn { background:#ff5722; color:#fff; border:none; padding:12px 25px; border-radius:8px; cursor:pointer; transition:0.3s; }
-#checkoutBtn:hover { background:#ff9800; }
+h2 {
+  margin: 10px 0;
+  text-align: center;
+}
 
-footer { text-align:center; padding:15px; font-size:14px; color:#555; margin-top:30px; }
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.package-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.package {
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  transition: 0.3s;
+}
+
+.badge-low { background: #28a745; }
+.badge-medium { background: #ff9800; }
+.badge-high { background: #f44336; }
+
+.package:hover, .package.active {
+  opacity: 0.8;
+}
+
+.buyBtn {
+  margin-top: 15px;
+  width: 100%;
+  padding: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.buyBtn:hover {
+  background: #0056b3;
+}
+
+/* Popup */
+.popup {
+  display: none;
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popup-content {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: bold;
+}
