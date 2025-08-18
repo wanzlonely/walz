@@ -1,60 +1,82 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Top Up Premium</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Top Up Premium | Mirip Codashop</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <header>
-    <h1>Top Up Premium</h1>
+<body class="theme-default">
+  <!-- NAV -->
+  <header class="navbar">
+    <div class="brand">
+      <span class="logo">TopUp</span><span class="accent">Store</span>
+    </div>
   </header>
 
-  <!-- GAME SELECTION -->
-  <section class="game-section">
-    <h2>Pilih Game</h2>
-    <div id="gameGrid" class="grid"></div>
-  </section>
+  <main class="container">
+    <!-- SECTION: PILIH GAME -->
+    <section class="section">
+      <h2 class="section-title">Pilih Game</h2>
+      <div id="gameGrid" class="grid game-grid"></div>
+    </section>
 
-  <!-- ID INPUT -->
-  <section class="id-section">
-    <h2>Masukkan ID Game</h2>
-    <input type="text" id="idgame" placeholder="User ID">
-    <div id="serverIdContainer" style="display:none;">
-      <input type="text" id="serverid" placeholder="Server ID">
+    <!-- SECTION: DATA PENGGUNA -->
+    <section id="userSection" class="section hidden">
+      <h2 class="section-title">Masukkan Data</h2>
+      <div class="input-row">
+        <input id="idgame" class="input" type="text" placeholder="Masukkan ID/UID Game" />
+        <input id="serverid" class="input hidden" type="text" inputmode="numeric" placeholder="Server ID (khusus Mobile Legends)" />
+      </div>
+      <p class="help">Pastikan ID benar. Untuk Mobile Legends, contoh: <b>12345678</b> (Server ID: <b>1234</b>).</p>
+    </section>
+
+    <!-- SECTION: PAKET DIAMOND -->
+    <section id="packageSection" class="section hidden">
+      <div class="section-head">
+        <h2 class="section-title">Pilih Paket</h2>
+        <div id="packageFilter" class="filter hidden">
+          <button data-size="all" class="chip chip-active">Semua</button>
+          <button data-size="low" class="chip">Hemat</button>
+          <button data-size="mid" class="chip">Menengah</button>
+          <button data-size="high" class="chip">Sultan</button>
+        </div>
+      </div>
+      <div id="packageGrid" class="grid package-grid"></div>
+    </section>
+
+    <!-- SECTION: PEMBAYARAN -->
+    <section id="paymentSection" class="section hidden">
+      <h2 class="section-title">Metode Pembayaran</h2>
+      <div id="paymentGrid" class="grid payment-grid"></div>
+    </section>
+
+    <!-- SECTION: VOUCHER ala Shopee -->
+    <section id="voucherSection" class="section hidden">
+      <h2 class="section-title">Voucher Promo</h2>
+      <div id="voucherStrip" class="voucher-strip">
+        <!-- voucher cards will be injected -->
+      </div>
+      <p class="help">Klik voucher untuk mengaktifkan. Tanpa input manual.</p>
+    </section>
+  </main>
+
+  <!-- STICKY BAR -->
+  <div id="stickyBar" class="sticky hidden">
+    <div class="summary">
+      <div id="summaryGame" class="sum-line">Game: -</div>
+      <div id="summaryPack" class="sum-line">Paket: -</div>
+      <div id="summaryPay" class="sum-line">Pembayaran: -</div>
     </div>
-  </section>
-
-  <!-- PACKAGE -->
-  <section class="package-section">
-    <h2>Pilih Diamond</h2>
-    <div id="packageGrid" class="grid"></div>
-  </section>
-
-  <!-- PAYMENT -->
-  <section class="payment-section">
-    <h2>Pilih Metode Pembayaran</h2>
-    <div id="paymentGrid" class="grid"></div>
-  </section>
-
-  <!-- VOUCHER -->
-  <section class="voucher-section">
-    <h2>Voucher Promo</h2>
-    <div class="voucher-list" id="voucherList">
-      <div class="voucher" data-code="PROMO10">PROMO10 - Diskon 10%</div>
-      <div class="voucher" data-code="VIP20">VIP20 - Diskon 20%</div>
+    <div class="cta">
+      <div id="stickyPrice" class="price">Rp 0</div>
+      <button id="checkoutBtn" class="btn-primary">Checkout WhatsApp</button>
     </div>
-    <input type="text" id="voucher" placeholder="Masukkan Kode Voucher">
-  </section>
+  </div>
 
-  <!-- CHECKOUT -->
-  <footer>
-    <div id="stickyPrice">Total: Rp 0</div>
-    <button id="checkoutBtn">Checkout</button>
-  </footer>
+  <!-- TOAST -->
+  <div id="toast" class="toast hidden">Voucher aktif</div>
 
-  <canvas id="particleCanvas"></canvas>
   <script src="script.js"></script>
 </body>
-        </html>
+                                                                                                                  </html>
