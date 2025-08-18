@@ -3,80 +3,211 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Top Up Premium | Mirip Codashop</title>
+  <title>Top Up Center — Premium</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
-<body class="theme-default">
-  <!-- NAV -->
+<body>
+  <!-- NAVBAR -->
   <header class="navbar">
-    <div class="brand">
-      <span class="logo">TopUp</span><span class="accent">Store</span>
+    <div class="container nav-inner">
+      <div class="brand">
+        <div class="brand-logo">⚡</div>
+        <div class="brand-name">TopUp Center</div>
+      </div>
+      <nav class="nav-links">
+        <a href="#produk">Produk</a>
+        <a href="#promo">Promo</a>
+        <a href="#order">Order</a>
+        <a href="#testimoni">Testimoni</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <button id="themeToggle" class="theme-btn" aria-label="Toggle theme">☀️</button>
     </div>
   </header>
 
-  <main class="container">
-    <!-- SECTION: PILIH GAME -->
-    <section class="section">
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <canvas id="bgAnim"></canvas>
+    <div class="container hero-inner">
+      <h1>Top Up Instan • Aman • Resmi</h1>
+      <p>Pilih game favoritmu, gunakan voucher, dapatkan bonus spin—bayar via e-wallet atau QRIS.</p>
+      <a href="#produk" class="btn-primary">Mulai Top Up</a>
+    </div>
+  </section>
+
+  <!-- PRODUK / GAME -->
+  <section id="produk" class="section">
+    <div class="container">
       <h2 class="section-title">Pilih Game</h2>
-      <div id="gameGrid" class="grid game-grid"></div>
-    </section>
+      <p class="section-subtitle">Klik kartu game untuk melihat paket diamond/coins</p>
 
-    <!-- SECTION: DATA PENGGUNA -->
-    <section id="userSection" class="section hidden">
-      <h2 class="section-title">Masukkan Data</h2>
-      <div class="input-row">
-        <input id="idgame" class="input" type="text" placeholder="Masukkan ID/UID Game" />
-        <input id="serverid" class="input hidden" type="text" inputmode="numeric" placeholder="Server ID (khusus Mobile Legends)" />
-      </div>
-      <p class="help">Pastikan ID benar. Untuk Mobile Legends, contoh: <b>12345678</b> (Server ID: <b>1234</b>).</p>
-    </section>
+      <div id="gameGrid" class="game-grid"></div>
 
-    <!-- SECTION: PAKET DIAMOND -->
-    <section id="packageSection" class="section hidden">
-      <div class="section-head">
-        <h2 class="section-title">Pilih Paket</h2>
-        <div id="packageFilter" class="filter hidden">
-          <button data-size="all" class="chip chip-active">Semua</button>
-          <button data-size="low" class="chip">Hemat</button>
-          <button data-size="mid" class="chip">Menengah</button>
-          <button data-size="high" class="chip">Sultan</button>
+      <h3 class="section-title mt-40">Pilih Paket</h3>
+      <div id="packageGrid" class="package-grid"></div>
+    </div>
+  </section>
+
+  <!-- PROMO / VOUCHER -->
+  <section id="promo" class="section section-soft">
+    <div class="container">
+      <div class="promo-head">
+        <h2 class="section-title">Voucher & Bonus</h2>
+        <div class="voucher-input">
+          <input id="voucher" type="text" placeholder="Masukkan kode voucher (opsional)" />
+          <button id="applyVoucher" class="btn-outline">Terapkan</button>
         </div>
       </div>
-      <div id="packageGrid" class="grid package-grid"></div>
-    </section>
 
-    <!-- SECTION: PEMBAYARAN -->
-    <section id="paymentSection" class="section hidden">
-      <h2 class="section-title">Metode Pembayaran</h2>
-      <div id="paymentGrid" class="grid payment-grid"></div>
-    </section>
+      <div id="voucherShelf" class="voucher-shelf"><!-- voucher cards inserted here --></div>
 
-    <!-- SECTION: VOUCHER ala Shopee -->
-    <section id="voucherSection" class="section hidden">
-      <h2 class="section-title">Voucher Promo</h2>
-      <div id="voucherStrip" class="voucher-strip">
-        <!-- voucher cards will be injected -->
+      <div class="spin-wrap">
+        <div class="spin-left">
+          <h3>Spin Bonus Harian</h3>
+          <p>Coba peruntungan untuk dapat diskon tambahan hingga 20% 🎉</p>
+        </div>
+        <button id="openSpin" class="btn-primary">Spin Sekarang</button>
       </div>
-      <p class="help">Klik voucher untuk mengaktifkan. Tanpa input manual.</p>
-    </section>
-  </main>
-
-  <!-- STICKY BAR -->
-  <div id="stickyBar" class="sticky hidden">
-    <div class="summary">
-      <div id="summaryGame" class="sum-line">Game: -</div>
-      <div id="summaryPack" class="sum-line">Paket: -</div>
-      <div id="summaryPay" class="sum-line">Pembayaran: -</div>
     </div>
-    <div class="cta">
-      <div id="stickyPrice" class="price">Rp 0</div>
-      <button id="checkoutBtn" class="btn-primary">Checkout WhatsApp</button>
+  </section>
+
+  <!-- ORDER -->
+  <section id="order" class="section">
+    <div class="container">
+      <h2 class="section-title">Detail Order</h2>
+
+      <div class="order-grid">
+        <div class="order-card card">
+          <h3>Data Akun</h3>
+          <label>ID / UID</label>
+          <input id="idgame" type="text" placeholder="Contoh: 123456789" />
+
+          <label id="serverLabel" class="hidden">Server ID (khusus Mobile Legends)</label>
+          <input id="serverid" class="hidden" type="text" placeholder="Contoh: 4231" />
+
+          <div class="nickname-preview">
+            <div class="nick-left">
+              <span class="dot"></span>
+              <div>
+                <div class="nick-title">Nickname</div>
+                <div id="nickname" class="nick-name">—</div>
+              </div>
+            </div>
+            <button id="checkNick" class="btn-outline-sm">Cek</button>
+          </div>
+        </div>
+
+        <div class="order-card card">
+          <h3>Metode Pembayaran</h3>
+          <div id="paymentGrid" class="payment-grid"></div>
+          <small class="muted">Kami mendukung ShopeePay, DANA, GoPay & QRIS.</small>
+        </div>
+
+        <div class="order-card card sticky-summary">
+          <h3>Ringkasan</h3>
+          <div class="summary-row">
+            <span class="muted">Paket</span>
+            <span id="summaryTitle">Belum dipilih</span>
+          </div>
+          <div class="summary-row">
+            <span class="muted">Subtotal</span>
+            <span id="summarySubtotal">Rp0</span>
+          </div>
+          <div class="summary-row">
+            <span class="muted">Voucher</span>
+            <span id="summaryVoucher">—</span>
+          </div>
+          <div class="summary-total">
+            <span>Total</span>
+            <span id="summaryPrice">Rp0</span>
+          </div>
+          <button id="checkoutBtn" class="btn-checkout glow">Bayar Sekarang</button>
+          <div class="tiny mt-8">Dengan menekan “Bayar Sekarang” Anda akan diarahkan ke WhatsApp Admin.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONI -->
+  <section id="testimoni" class="section section-soft">
+    <div class="container">
+      <h2 class="section-title">Testimoni Pelanggan</h2>
+      <div class="testi-grid">
+        <div class="testi-card">
+          <div class="stars">★★★★★</div>
+          <p>Top up cepet banget, 2 menit langsung masuk. Recomended!</p>
+          <div class="testi-meta">R***n • MLBB</div>
+        </div>
+        <div class="testi-card">
+          <div class="stars">★★★★★</div>
+          <p>Harga murah, respon admin ramah. Bakal langganan terus.</p>
+          <div class="testi-meta">A***a • Free Fire</div>
+        </div>
+        <div class="testi-card">
+          <div class="stars">★★★★☆</div>
+          <p>Voucher promonya mantap, lumayan hemat!</p>
+          <div class="testi-meta">M***i • Roblox</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="section">
+    <div class="container">
+      <h2 class="section-title">FAQ</h2>
+      <div class="faq-list">
+        <details>
+          <summary>Berapa lama proses top up?</summary>
+          <p>Umumnya instan 1–5 menit setelah pembayaran terkonfirmasi.</p>
+        </details>
+        <details>
+          <summary>Apakah aman?</summary>
+          <p>Ya. Kami hanya memerlukan ID/Server untuk proses top up, tanpa akses ke akun.</p>
+        </details>
+        <details>
+          <summary>Bagaimana cara klaim voucher?</summary>
+          <p>Pilih voucher di rak promo atau masukkan kode secara manual di kolom voucher.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <div class="brand-logo">⚡</div>
+        <div>
+          <div class="brand-name">TopUp Center</div>
+          <div class="muted tiny">© 2025 All rights reserved.</div>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat & Ketentuan</a>
+        <a href="#contact">Kontak</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- FLOATING WA -->
+  <a href="#" id="contactBtn" class="fab">💬</a>
+
+  <!-- SPIN MODAL -->
+  <div id="spinModal" class="modal hidden">
+    <div class="modal-content">
+      <button id="closeSpin" class="modal-close">✕</button>
+      <h3>Spin Bonus</h3>
+      <canvas id="wheel" width="320" height="320"></canvas>
+      <button id="spinBtn" class="btn-primary mt-16">Putar Roda</button>
+      <p id="spinResult" class="mt-12"></p>
     </div>
   </div>
 
-  <!-- TOAST -->
-  <div id="toast" class="toast hidden">Voucher aktif</div>
-
+  <!-- SCRIPTS -->
   <script src="script.js"></script>
 </body>
-                                                                                                                  </html>
+        </html>
