@@ -3,54 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Top-Up Game</title>
+<title>Top Up Game</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <canvas id="bubbleCanvas"></canvas>
 <canvas id="particleCanvas"></canvas>
 
-<header>
-  <h1>Top-Up Game</h1>
-</header>
-
-<section id="gamesSection">
+<div class="container">
   <h2>Pilih Game</h2>
   <div id="gameGrid"></div>
-</section>
 
-<section id="packageSection">
   <h2>Pilih Paket</h2>
   <div id="packageGrid"></div>
-</section>
 
-<section id="voucherSection">
+  <h2>Masukkan ID Game</h2>
+  <div class="input-wrapper">
+    <input type="text" id="idgame" placeholder="ID Game">
+    <input type="text" id="serverid" class="hidden" placeholder="Server ID (ML)">
+  </div>
+
   <h2>Voucher</h2>
-  <input type="text" id="voucher" placeholder="Masukkan kode voucher">
+  <div class="voucher-wrapper">
+    <input type="text" id="voucher" placeholder="Masukkan kode voucher">
+    <button id="applyVoucher">Terapkan</button>
+  </div>
+  <div id="voucherMsg"></div>
   <div id="voucherList"></div>
-</section>
 
-<section id="paymentSection">
-  <h2>Pilih Pembayaran</h2>
+  <h2>Pilih Payment</h2>
   <div id="ewalletList"></div>
-</section>
 
-<section id="summarySection">
-  <h2>Ringkasan</h2>
-  <div id="summaryTitle">Paket belum dipilih</div>
-  <div id="summaryPrice">Rp0</div>
-  <div id="summarySub">Pilih paket & payment</div>
-  <input type="text" id="idgame" placeholder="Masukkan ID Game">
-  <input type="text" id="serverid" placeholder="Masukkan Server ID" class="hidden">
-  <button id="checkoutBtn">Checkout via WhatsApp</button>
-</section>
+  <div id="summary">
+    <div id="summaryTitle">Paket belum dipilih</div>
+    <div id="summaryPrice">Rp0</div>
+    <div id="summarySub">Pilih paket & payment</div>
+    <button id="checkoutBtn">Checkout</button>
+  </div>
+</div>
 
-<button id="contactBtn">Kontak</button>
+<!-- Modal Konfirmasi Order -->
+<div id="orderModal" class="modal hidden">
+  <div class="modal-content">
+    <h3>Konfirmasi Order</h3>
+    <p id="orderDetails"></p>
+    <div class="modal-buttons">
+      <button id="confirmOrder">Lanjutkan</button>
+      <button id="cancelOrder">Batal</button>
+    </div>
+  </div>
+</div>
+
+<div id="contactBtn">CS</div>
 <div id="contactPopup" class="hidden">
-  <p>WhatsApp: 08892119837</p>
-  <p>Email: wanzlon@example.com</p>
+  <div>WhatsApp: 08892119837</div>
+  <div>Email: wanzlon@example.com</div>
 </div>
 
 <script src="script.js"></script>
 </body>
-</html>
+  </html>
