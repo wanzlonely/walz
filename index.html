@@ -3,99 +3,132 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Top Up Game Profesional Final</title>
+  <title>Top Up Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <!-- HEADER -->
   <header>
-    <h1>Top Up Game Profesional</h1>
-    <div class="filter-container">
-      <label for="categoryFilter">Filter Kategori:</label>
-      <select id="categoryFilter">
-        <option value="all">Semua</option>
-        <option value="Battle Royale">Battle Royale</option>
-        <option value="MOBA">MOBA</option>
-        <option value="RPG">RPG</option>
-        <option value="Sandbox">Sandbox</option>
-      </select>
-    </div>
+    <img src="logo.png" alt="Logo" />
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Game</a>
+      <a href="#">Metode Pembayaran</a>
+      <a href="#">Kontak</a>
+    </nav>
   </header>
 
-  <main class="game-container">
-    <!-- Card Game Template -->
-    <div class="game-card" data-game="Free Fire" data-category="Battle Royale">
-      <div class="img-container">
-        <img src="https://i.ibb.co/6X9n3jZ/freefire.png" alt="Free Fire">
-      </div>
-      <h2>Free Fire</h2>
-      <label>ID Game</label>
-      <input type="text" class="idInput" placeholder="Masukkan ID Game">
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <h1>Top Up Game Cepat & Aman</h1>
+    <p>Pilih game favoritmu dan lakukan top up hanya dalam beberapa langkah!</p>
+    <a href="#games" class="btn">Mulai Sekarang</a>
+  </section>
 
-      <label>Pilih Paket</label>
-      <div class="package-list">
-        <span class="package badge-low" data-price="10 Diamond">10 Diamond</span>
-        <span class="package badge-medium" data-price="50 Diamond">50 Diamond</span>
-        <span class="package badge-high" data-price="100 Diamond">100 Diamond</span>
-        <span class="package badge-high" data-price="500 Diamond">500 Diamond</span>
-      </div>
-
-      <label>Metode Pembayaran</label>
-      <select class="payment">
-        <option value="">--Pilih Metode--</option>
-        <option value="Gopay">Gopay</option>
-        <option value="Dana">Dana</option>
-        <option value="OVO">OVO</option>
-        <option value="Transfer Bank">Transfer Bank</option>
-      </select>
-
-      <label>Kode Voucher (Opsional)</label>
-      <input type="text" class="voucher" placeholder="Masukkan kode voucher">
-
-      <button class="buyBtn">Beli Sekarang</button>
+  <!-- GAME GRID -->
+  <section id="games" class="category-grid">
+    <div class="category-card">
+      <img src="freefire.png" alt="Free Fire">
+      <p>Free Fire</p>
     </div>
-
-    <!-- Tambahkan Card Game lainnya sesuai kebutuhan -->
-    <!-- Contoh Mobile Legends -->
-    <div class="game-card" data-game="Mobile Legends" data-category="MOBA">
-      <div class="img-container">
-        <img src="https://i.ibb.co/2S5r1sq/ml.png" alt="Mobile Legends">
-      </div>
-      <h2>Mobile Legends</h2>
-      <label>ID Game</label>
-      <input type="text" class="idInput" placeholder="Masukkan ID Game">
-
-      <label>Pilih Paket</label>
-      <div class="package-list">
-        <span class="package badge-low" data-price="10 Diamond">10 Diamond</span>
-        <span class="package badge-medium" data-price="50 Diamond">50 Diamond</span>
-        <span class="package badge-high" data-price="100 Diamond">100 Diamond</span>
-        <span class="package badge-high" data-price="500 Diamond">500 Diamond</span>
-      </div>
-
-      <label>Metode Pembayaran</label>
-      <select class="payment">
-        <option value="">--Pilih Metode--</option>
-        <option value="Gopay">Gopay</option>
-        <option value="Dana">Dana</option>
-        <option value="OVO">OVO</option>
-        <option value="Transfer Bank">Transfer Bank</option>
-      </select>
-
-      <label>Kode Voucher (Opsional)</label>
-      <input type="text" class="voucher" placeholder="Masukkan kode voucher">
-
-      <button class="buyBtn">Beli Sekarang</button>
+    <div class="category-card">
+      <img src="ml.png" alt="Mobile Legends">
+      <p>Mobile Legends</p>
     </div>
+    <div class="category-card">
+      <img src="pubg.png" alt="PUBG">
+      <p>PUBG</p>
+    </div>
+    <div class="category-card">
+      <img src="genshin.png" alt="Genshin Impact">
+      <p>Genshin Impact</p>
+    </div>
+  </section>
 
-  </main>
+  <!-- PACKAGE TOP-UP GRID -->
+  <section class="package-grid">
+    <div class="flip-card">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <p class="pkg-name">Diamond 50</p>
+          <p class="pkg-price">Rp 10.000</p>
+        </div>
+        <div class="flip-card-back">
+          <p>Beli Sekarang</p>
+        </div>
+      </div>
+    </div>
+    <div class="flip-card">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <p class="pkg-name">Diamond 100</p>
+          <p class="pkg-price">Rp 18.000</p>
+        </div>
+        <div class="flip-card-back">
+          <p>Beli Sekarang</p>
+        </div>
+      </div>
+    </div>
+    <div class="flip-card">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <p class="pkg-name">Diamond 500</p>
+          <p class="pkg-price">Rp 80.000</p>
+        </div>
+        <div class="flip-card-back">
+          <p>Beli Sekarang</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <!-- Popup Notifikasi -->
-  <div id="popup" class="popup">
+  <!-- PAYMENT METHODS -->
+  <section class="payment-methods">
+    <div class="payment-method">
+      <img src="gopay.png" alt="Gopay">
+      <p>Gopay</p>
+    </div>
+    <div class="payment-method">
+      <img src="shopeepay.png" alt="ShopeePay">
+      <p>ShopeePay</p>
+    </div>
+    <div class="payment-method">
+      <img src="dana.png" alt="Dana">
+      <p>Dana</p>
+    </div>
+    <div class="payment-method">
+      <img src="bank.png" alt="Bank Transfer">
+      <p>Bank Transfer</p>
+    </div>
+  </section>
+
+  <!-- CHECKOUT BUTTON -->
+  <section style="text-align:center; margin: 2rem 0;">
+    <button id="checkoutBtn">Checkout</button>
+  </section>
+
+  <!-- POPUP LOADER -->
+  <div class="popup" id="popupLoader">
     <div class="popup-content">
-      <p>Data berhasil dikirim! Mengarahkan ke WhatsApp...</p>
+      <div class="loader"></div>
+      <p>Proses Top Up...</p>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const popup = document.getElementById('popupLoader');
+
+    checkoutBtn.addEventListener('click', () => {
+      popup.classList.add('active');
+      setTimeout(() => {
+        popup.classList.remove('active');
+        alert('Top Up Berhasil!');
+      }, 2500);
+    });
+  </script>
+
 </body>
 </html>
