@@ -1,57 +1,61 @@
-const waNumber = '6282298902274';
+// PILIH PAKET
+const packages = document.querySelectorAll('.flip-card');
+const stickyPrice = document.createElement('div');
+stickyPrice.id = 'stickyPrice';
+document.body.insertBefore(stickyPrice, document.body.firstChild);
 
-// Filter kategori
-const categoryFilter = document.getElementById('categoryFilter');
-categoryFilter.addEventListener('change', () => {
-  const selected = categoryFilter.value;
-  const cards = document.querySelectorAll('.game-card');
-  cards.forEach(card => {
-    if(selected === 'all' || card.dataset.category === selected){
-      card.style.display = 'block';
-    } else {
-      card.style.display = 'none';
-    }
-  });
-});
+let selectedPackagePrice = 0;
 
-// Pilih paket
-const packageButtons = document.querySelectorAll('.package');
-packageButtons.forEach(pkg => {
+packages.forEach(pkg => {
   pkg.addEventListener('click', () => {
-    const parent = pkg.parentElement;
-    parent.querySelectorAll('.package').forEach(p => p.classList.remove('active'));
-    pkg.classList.add('active');
+    // Reset semua
+    packages.forEach(p => p.classList.remove('selected'));
+    // Pilih paket
+    pkg.classList.add('selected');
+    const priceText = pkg.querySelector('.pkg-price').innerText;
+    selectedPackagePrice = priceText;
+    stickyPrice.innerText = `Harga: ${selectedPackagePrice}`;
   });
 });
 
-// Tombol beli
-const buyButtons = document.querySelectorAll('.buyBtn');
-const popup = document.getElementById('popup');
+// PILIH METODE PEMBAYARAN
+const paymentOptions = document.querySelectorAll('.payment-method');
+let selectedPayment = null;
 
-buyButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const card = btn.closest('.game-card');
-    const gameName = card.dataset.game;
-    const gameId = card.querySelector('.idInput').value.trim();
-    const selectedPackage = card.querySelector('.package.active');
-    const payment = card.querySelector('.payment').value;
-    const voucher = card.querySelector('.voucher').value.trim();
-
-    if(!gameId || !selectedPackage || !payment){
-      alert('Mohon lengkapi semua data: ID Game, Paket, Metode Pembayaran!');
-      return;
-    }
-
-    const packageName = selectedPackage.dataset.price;
-    let message = `Halo, saya ingin membeli top up:\nGame: ${gameName}\nID Game: ${gameId}\nPaket: ${packageName}\nMetode Pembayaran: ${payment}`;
-    if(voucher) message += `\nKode Voucher: ${voucher}`;
-
-    // Tampilkan popup sukses
-    popup.style.display = 'flex';
-    setTimeout(() => {
-      popup.style.display = 'none';
-      const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
-      window.open(url, '_blank');
-    }, 1500); // 1.5 detik sebelum diarahkan ke WhatsApp
+paymentOptions.forEach(method => {
+  method.addEventListener('click', () => {
+    // Reset semua
+    paymentOptions.forEach(m => m.classList.remove('selected'));
+    // Pilih metode
+    method.classList.add('selected');
+    selectedPayment = method.querySelector('p').innerText;
   });
+});
+
+// CHECKOUT BUTTON
+const checkoutBtn = document.getElementById('checkoutBtn');
+const popup = document.getElementById('popupLoader');
+
+checkoutBtn.addEventListener('click', () => {
+  if (!selectedPackagePrice) {
+    alert('Pilih paket terlebih dahulu!');
+    return;
+  }
+  if (!selectedPayment) {
+    alert('Pilih metode pembayaran!');
+    return;
+  }
+  
+  popup.classList.add('active');
+
+  setTimeout(() => {
+    popup.classList.remove('active');
+    alert(`Top Up Berhasil!\nPaket: ${selectedPackagePrice}\nMetode: ${selectedPayment}`);
+    // Reset
+    packages.forEach(p => p.classList.remove('selected'));
+    paymentOptions.forEach(m => m.classList.remove('selected'));
+    stickyPrice.innerText = '';
+    selectedPackagePrice = 0;
+    selectedPayment = null;
+  }, 2500);
 });
