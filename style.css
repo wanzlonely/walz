@@ -1,136 +1,198 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-}
-body {
-  background: #0e0e0e;
-  color: #fff;
-  overflow-x: hidden;
-}
-header {
-  text-align: center;
-  padding: 20px;
-  background: linear-gradient(45deg, #ff9800, #ff5722);
-  font-size: 24px;
-  font-weight: bold;
-}
-h2 {
-  margin: 20px 10px;
-}
-.grid {
-  display: grid;
-  gap: 15px;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  padding: 10px;
+:root{
+  --bg:#f6f7fb;
+  --text:#233044;
+  --muted:#6f7a8a;
+  --card:#ffffff;
+  --primary:#6a11cb;
+  --primary-2:#2575fc;
+  --success:#2ecc71;
+  --ring:#cfd7ff;
+  --chip:#eef2ff;
+  --chip-active:#dfe6ff;
+  --shadow:0 10px 24px rgba(18, 24, 40, .08);
+  --radius:16px;
 }
 
-/* Game cards */
-.game-card {
-  position: relative;
-  border-radius: 15px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform .3s;
-}
-.game-card img {
-  width: 60px;
-  margin: 10px;
-  border-radius: 10px;
-}
-.game-card div {
-  font-weight: bold;
-  padding: 10px;
-  text-align: center;
-}
-.game-card.selected {
-  outline: 3px solid #ff9800;
-  transform: scale(1.05);
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family: "Poppins", system-ui, -apple-system, Arial, sans-serif;
+  color:var(--text);
+  background:var(--bg);
+  min-height:100vh;
+  transition:background .5s ease;
 }
 
-/* Package cards */
-.package-card {
-  background: rgba(30, 30, 30, 0.9);
-  border-radius: 12px;
-  padding: 15px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
+/* THEMES per game (animasi halus gradient seperti Codashop vibe) */
+.theme-default{
+  background: radial-gradient(1200px 800px at 80% -10%, #e9f1ff, transparent 60%),
+              radial-gradient(900px 600px at -10% 120%, #f8ecff, transparent 60%),
+              var(--bg);
 }
-.package-card img {
-  width: 28px;
-  vertical-align: middle;
-  margin-right: 5px;
+.theme-ff{
+  background: radial-gradient(1200px 800px at 10% -10%, #ffe6e6, transparent 60%),
+              radial-gradient(900px 600px at 120% 110%, #fff2cc, transparent 60%),
+              #fff8f8;
 }
-.package-card:hover {
-  transform: scale(1.05);
-  border: 2px solid #ff9800;
+.theme-ml{
+  background: radial-gradient(1200px 800px at 90% -20%, #e9efff, transparent 60%),
+              radial-gradient(900px 600px at -10% 120%, #f1e7ff, transparent 60%),
+              #f8f9ff;
 }
-.package-card.selected {
-  border: 2px solid #ff9800;
-  background: linear-gradient(145deg, #2e2e2e, #1c1c1c);
+.theme-hok{
+  background: radial-gradient(1200px 800px at 10% -10%, #e6fff7, transparent 60%),
+              radial-gradient(900px 600px at 120% 110%, #e6f3ff, transparent 60%),
+              #f6fffb;
 }
-
-/* Payment */
-.payment-option {
-  background: #222;
-  border-radius: 12px;
-  padding: 10px;
-  text-align: center;
-  cursor: pointer;
-  transition: 0.3s;
-}
-.payment-option img {
-  width: 60px;
-  border-radius: 10px;
-}
-.payment-option.selected {
-  border: 2px solid #ff5722;
-  transform: scale(1.05);
+.theme-roblox{
+  background: radial-gradient(1200px 800px at 90% -20%, #ffecec, transparent 60%),
+              radial-gradient(900px 600px at -10% 120%, #fff2f2, transparent 60%),
+              #fff9f9;
 }
 
-/* Voucher */
-.voucher-list {
-  display: flex;
-  gap: 10px;
-  padding: 10px;
+.navbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:center;
+  padding:14px 18px;
+  background:linear-gradient(135deg,var(--primary),var(--primary-2));
+  color:#fff;border-bottom-left-radius:16px;border-bottom-right-radius:16px;
+  box-shadow:0 6px 18px rgba(37,117,252,.22);
 }
-.voucher {
-  background: #333;
-  padding: 8px 15px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-.voucher:hover {
-  background: #ff9800;
-}
-#voucher {
-  margin: 15px;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  width: calc(100% - 30px);
-}
+.brand{font-weight:700;letter-spacing:.2px}
+.logo{font-size:20px}
+.accent{color:#ffea77;margin-left:3px}
 
-/* Checkout */
-footer {
-  padding: 20px;
-  text-align: center;
-  background: #111;
+.container{max-width:1050px;margin:20px auto;padding:0 16px}
+.section{margin:22px 0}
+.section-title{margin:0 0 12px 2px;font-size:18px}
+.help{color:var(--muted);font-size:13px;margin:8px 2px}
+
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.input{
+  padding:12px 14px;border:1px solid #e6eaf5;border-radius:12px;background:#fff;
+  outline:none;transition:box-shadow .2s,border-color .2s;
 }
-#stickyPrice {
-  font-size: 18px;
-  margin-bottom: 10px;
+.input:focus{border-color:#b9c3ff;box-shadow:0 0 0 4px #eff3ff}
+
+/* GRID */
+.grid{display:grid;gap:14px}
+.game-grid{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+.package-grid{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.payment-grid{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+
+/* GAME CARD */
+.game-card{
+  position:relative;overflow:hidden;border-radius:var(--radius);
+  background:var(--card);box-shadow:var(--shadow);cursor:pointer;
+  min-height:140px;isolation:isolate;border:1px solid #edf0f8;
+  transform:translateY(0);transition:transform .25s, box-shadow .25s;
 }
-#checkoutBtn {
-  padding: 15px 30px;
-  font-size: 18px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  background: linear-gradient(45deg, #ff9800, #ff5722);
-  color: white;
-    }
+.game-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(18,24,40,.12)}
+.game-thumb{
+  position:absolute;inset:0;background-size:cover;background-position:center;filter:saturate(1.1) contrast(1.02);
+  transform:scale(1.03);transition:transform .4s;
+}
+.game-card:hover .game-thumb{transform:scale(1.06)}
+.game-mask{
+  position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.55),rgba(0,0,0,.05));
+}
+.game-meta{
+  position:absolute;left:12px;right:12px;bottom:12px;z-index:2;color:#fff;
+  display:flex;align-items:center;gap:10px
+}
+.game-logo{width:36px;height:36px;border-radius:9px;object-fit:cover;border:2px solid rgba(255,255,255,.7);background:#fff}
+.game-name{font-weight:600;text-shadow:0 2px 8px rgba(0,0,0,.45)}
+.game-card.selected{outline:3px solid #9db4ff}
+
+/* PACKAGE CARD (diamond) */
+.pkg{
+  position:relative;background:#fff;border-radius:14px;border:1px solid #edf0f8;
+  box-shadow:var(--shadow);padding:14px;cursor:pointer;transition:transform .2s, box-shadow .25s, border-color .2s;
+}
+.pkg:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(18,24,40,.12)}
+.pkg.selected{border-color:#a7b8ff;box-shadow:0 0 0 4px #eef2ff inset}
+.pkg-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.diamond{
+  width:22px;height:22px;display:inline-block;flex:0 0 22px;
+  background: conic-gradient(from 180deg at 50% 50%, #83a4ff, #b1c7ff, #83a4ff);
+  clip-path: polygon(50% 0%, 100% 35%, 75% 100%, 25% 100%, 0% 35%);
+  filter: drop-shadow(0 2px 6px rgba(104,122,255,.35));
+}
+.pkg-name{font-weight:600}
+.pkg-price{font-weight:700;color:var(--success)}
+.pkg-badge{position:absolute;top:10px;right:10px;font-size:12px;background:#ffedd5;color:#b45309;padding:4px 8px;border-radius:999px}
+
+/* PAYMENT CARD */
+.pay{
+  display:flex;align-items:center;gap:10px;background:#fff;border-radius:14px;border:1px solid #edf0f8;
+  padding:10px 12px;box-shadow:var(--shadow);cursor:pointer;transition:transform .2s, box-shadow .25s, border-color .2s;
+}
+.pay:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(18,24,40,.1)}
+.pay.selected{border-color:#9be1ff;box-shadow:0 0 0 4px #eefbff inset}
+.pay img{width:56px;height:56px;object-fit:contain;border-radius:10px;background:#fff}
+.pay .pay-name{font-weight:600}
+.pay .pay-right{margin-left:auto;font-weight:700;color:var(--text)}
+
+/* VOUCHER STRIP ala Shopee */
+.voucher-strip{
+  display:flex;gap:12px;overflow:auto;padding-bottom:4px;scroll-snap-type:x proximity;
+}
+.voucher{scroll-snap-align:start;min-width:240px;display:flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,#ff9f43,#ff6b6b);color:#fff;border-radius:14px;padding:12px 14px;
+  box-shadow:var(--shadow);cursor:pointer;position:relative;transition:transform .2s, box-shadow .25s, filter .25s;
+}
+.voucher:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(18,24,40,.12)}
+.voucher:after{ /* punch holes like coupon */
+  content:"";position:absolute;top:50%;left:-8px;transform:translateY(-50%);
+  width:16px;height:32px;background:radial-gradient(circle at 16px 16px, transparent 9px, rgba(0,0,0,.08) 9px);
+  filter:blur(.4px)
+}
+.voucher .v-badge{background:rgba(255,255,255,.25);padding:4px 8px;border-radius:999px;font-size:12px}
+.voucher .v-title{font-weight:700}
+.voucher .v-exp{font-size:12px;opacity:.9}
+.voucher.active{outline:3px dashed #fff; outline-offset:3px; filter:saturate(1.15)}
+
+/* FILTER CHIP */
+.filter{display:flex;gap:8px}
+.chip{
+  padding:8px 12px;border-radius:999px;border:1px solid #e5e9f8;background:var(--chip);
+  color:#47517a;cursor:pointer;font-weight:600;transition:background .2s,border-color .2s;
+}
+.chip:hover{background:#e9eeff}
+.chip-active{background:var(--chip-active);border-color:#c6d3ff}
+
+/* STICKY BAR */
+.sticky{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fff;
+  border-top:1px solid #eceffd;box-shadow:0 -10px 30px rgba(18,24,40,.08);
+  display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 16px;
+}
+.summary{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+.sum-line b{color:var(--text)}
+.price{font-size:18px;font-weight:800;color:var(--primary)}
+.btn-primary{
+  background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border:none;border-radius:12px;
+  padding:12px 16px;font-weight:700;cursor:pointer;box-shadow:0 10px 24px rgba(37,117,252,.25);
+  transition:transform .2s, box-shadow .2s
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(37,117,252,.28)}
+
+/* TOAST */
+.toast{
+  position:fixed;left:50%;bottom:88px;transform:translateX(-50%) translateY(20px);
+  background:#111827;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);
+  opacity:0;pointer-events:none;transition:opacity .3s, transform .3s;z-index:60
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ANIMASI MASUK (intersection) */
+.reveal{opacity:0;transform:translateY(12px);transition:opacity .5s, transform .5s}
+.reveal.show{opacity:1;transform:translateY(0)}
+
+.hidden{display:none}
+
+/* RESPONSIVE */
+@media (max-width:720px){
+  .input-row{grid-template-columns:1fr}
+  .voucher{min-width:200px}
+}
