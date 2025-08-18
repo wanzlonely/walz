@@ -1,134 +1,221 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Top Up Game</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Up Center Premium</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #f0f4f8, #d9e6f2);
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 100px 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease-in;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #218838;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #28a745;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            transition: border 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #28a745;
+            outline: none;
+        }
+
+        .package-grid, .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        #stickyPrice {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.5s ease;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0069d9;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.5s;
+        }
+
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <img src="logo.png" alt="Logo" />
-    <nav>
-      <a href="#">Home</a>
-      <a href="#">Game</a>
-      <a href="#">Metode Pembayaran</a>
-      <a href="#">Kontak</a>
-    </nav>
-  </header>
+<canvas id="particleCanvas"></canvas>
 
-  <!-- HERO SECTION -->
-  <section class="hero">
-    <h1>Top Up Game Cepat & Aman</h1>
-    <p>Pilih game favoritmu dan lakukan top up hanya dalam beberapa langkah!</p>
-    <a href="#games" class="btn">Mulai Sekarang</a>
-  </section>
+<!-- HERO SECTION -->
+<section class="hero">
+    <h1>Top Up Center Premium</h1>
+    <p>Dapatkan diamond & item game dengan cepat dan aman!</p>
+    <a href="#produk" class="btn">Beli Sekarang</a>
+</section>
 
-  <!-- GAME GRID -->
-  <section id="games" class="category-grid">
-    <div class="category-card">
-      <img src="freefire.png" alt="Free Fire">
-      <p>Free Fire</p>
-    </div>
-    <div class="category-card">
-      <img src="ml.png" alt="Mobile Legends">
-      <p>Mobile Legends</p>
-    </div>
-    <div class="category-card">
-      <img src="pubg.png" alt="PUBG">
-      <p>PUBG</p>
-    </div>
-    <div class="category-card">
-      <img src="genshin.png" alt="Genshin Impact">
-      <p>Genshin Impact</p>
-    </div>
-  </section>
+<div class="container">
 
-  <!-- PACKAGE TOP-UP GRID -->
-  <section class="package-grid">
-    <div class="flip-card">
-      <div class="flip-card-inner">
-        <div class="flip-card-front">
-          <p class="pkg-name">Diamond 50</p>
-          <p class="pkg-price">Rp 10.000</p>
-        </div>
-        <div class="flip-card-back">
-          <p>Beli Sekarang</p>
-        </div>
-      </div>
-    </div>
-    <div class="flip-card">
-      <div class="flip-card-inner">
-        <div class="flip-card-front">
-          <p class="pkg-name">Diamond 100</p>
-          <p class="pkg-price">Rp 18.000</p>
-        </div>
-        <div class="flip-card-back">
-          <p>Beli Sekarang</p>
-        </div>
-      </div>
-    </div>
-    <div class="flip-card">
-      <div class="flip-card-inner">
-        <div class="flip-card-front">
-          <p class="pkg-name">Diamond 500</p>
-          <p class="pkg-price">Rp 80.000</p>
-        </div>
-        <div class="flip-card-back">
-          <p>Beli Sekarang</p>
-        </div>
-      </div>
-    </div>
-  </section>
+    <!-- GAME CARDS -->
+    <h2>Pilih Game</h2>
+    <div class="game-grid" id="gameGrid"></div>
 
-  <!-- PAYMENT METHODS -->
-  <section class="payment-methods">
-    <div class="payment-method">
-      <img src="gopay.png" alt="Gopay">
-      <p>Gopay</p>
-    </div>
-    <div class="payment-method">
-      <img src="shopeepay.png" alt="ShopeePay">
-      <p>ShopeePay</p>
-    </div>
-    <div class="payment-method">
-      <img src="dana.png" alt="Dana">
-      <p>Dana</p>
-    </div>
-    <div class="payment-method">
-      <img src="bank.png" alt="Bank Transfer">
-      <p>Bank Transfer</p>
-    </div>
-  </section>
+    <!-- INPUT ID -->
+    <label for="idgame">Masukkan ID / UID</label>
+    <input type="text" id="idgame" placeholder="Masukkan ID Game">
 
-  <!-- CHECKOUT BUTTON -->
-  <section style="text-align:center; margin: 2rem 0;">
-    <button id="checkoutBtn">Checkout</button>
-  </section>
+    <!-- PACKAGE -->
+    <h2>Pilih Paket</h2>
+    <div class="package-grid" id="packageGrid"></div>
 
-  <!-- POPUP LOADER -->
-  <div class="popup" id="popupLoader">
+    <!-- VOUCHER -->
+    <label for="voucher">Voucher (opsional)</label>
+    <input type="text" id="voucher" placeholder="PROMO10">
+
+    <!-- STICKY PRICE -->
+    <div id="stickyPrice">Total: Rp 0</div>
+
+    <!-- PAYMENT METHODS -->
+    <h2>Pilih Metode Pembayaran</h2>
+    <div class="payment-methods" id="paymentGrid"></div>
+
+    <!-- CHECKOUT BUTTON -->
+    <button id="checkoutBtn">Beli Sekarang</button>
+
+</div>
+
+<!-- POPUP LOADER -->
+<div class="popup" id="popup">
     <div class="popup-content">
-      <div class="loader"></div>
-      <p>Proses Top Up...</p>
+        <div class="loader"></div>
+        <h3>Memproses Order...</h3>
     </div>
-  </div>
+</div>
 
-  <script>
-    const checkoutBtn = document.getElementById('checkoutBtn');
-    const popup = document.getElementById('popupLoader');
-
-    checkoutBtn.addEventListener('click', () => {
-      popup.classList.add('active');
-      setTimeout(() => {
-        popup.classList.remove('active');
-        alert('Top Up Berhasil!');
-      }, 2500);
-    });
-  </script>
-
+<script src="script.js"></script>
 </body>
 </html>
