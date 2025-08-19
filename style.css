@@ -1,183 +1,58 @@
-// --- Ambil parameter dari halaman 1 ---
-const params = new URLSearchParams(window.location.search);
-const gameName = params.get('game') || '';
-const gameImg = params.get('img') || '';
+/* BASE */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',system-ui,-apple-system,Arial,sans-serif}
+html{scroll-behavior:smooth}
+body{background:#0d0f13;color:#fff;line-height:1.6;overflow-x:hidden}
 
-const elName = document.getElementById('gameName');
-const elImg  = document.getElementById('gameImage');
+/* HEADER */
+.header{display:flex;align-items:center;gap:10px;padding:12px 20px;background:#000;position:sticky;top:0;z-index:10;box-shadow:0 2px 10px rgba(0,0,0,.6)}
+.logo{width:40px;height:40px;border-radius:10px;object-fit:cover}
+.header h1{font-size:20px;font-weight:700}
 
-if (elName) elName.textContent = gameName || 'Game';
-if (elImg && gameImg) { elImg.src = gameImg; elImg.alt = gameName; }
+.container{max-width:540px;margin:0 auto;padding:16px}
+.title{font-size:18px;font-weight:600;margin-bottom:12px}
 
-// --- Game yang butuh Server ID ---
-const serverGames = ['Mobile Legend', 'Honor of Kings'];
+/* HALAMAN 1: LIST GAME */
+.game-list{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.game-card{background:#1b1f27;border-radius:16px;padding:12px;text-align:center;box-shadow:0 3px 10px rgba(0,0,0,.4);transition:.28s;text-decoration:none;color:#fff}
+.game-card:hover{transform:translateY(-4px)}
+.game-card img{width:100%;height:120px;object-fit:cover;border-radius:12px;margin-bottom:8px}
+.game-card p{font-size:14px;font-weight:600}
 
-// --- Data paket diamond per game (lengkap) ---
-const DIAMONDS = {
-  'Free Fire': [
-    { name: '50 💎',   price: 'Rp5.000'   },
-    { name: '70 💎',   price: 'Rp7.000'   },
-    { name: '100 💎',  price: 'Rp10.000'  },
-    { name: '140 💎',  price: 'Rp14.000'  },
-    { name: '210 💎',  price: 'Rp20.000'  },
-    { name: '355 💎',  price: 'Rp33.000'  },
-    { name: '530 💎',  price: 'Rp50.000'  },
-    { name: '720 💎',  price: 'Rp68.000'  },
-    { name: '1080 💎', price: 'Rp95.000'  },
-    { name: '2200 💎', price: 'Rp185.000' }
-  ],
-  'Mobile Legend': [
-    { name: '86 💎',   price: 'Rp20.000'  },
-    { name: '172 💎',  price: 'Rp40.000'  },
-    { name: '257 💎',  price: 'Rp60.000'  },
-    { name: '344 💎',  price: 'Rp80.000'  },
-    { name: '429 💎',  price: 'Rp100.000' },
-    { name: '514 💎',  price: 'Rp120.000' },
-    { name: '706 💎',  price: 'Rp160.000' },
-    { name: '1000 💎', price: 'Rp230.000' },
-    { name: '1412 💎', price: 'Rp320.000' },
-    { name: '2010 💎', price: 'Rp450.000' }
-  ],
-  'Honor of Kings': [
-    { name: '100 💎',  price: 'Rp15.000'  },
-    { name: '200 💎',  price: 'Rp28.000'  },
-    { name: '300 💎',  price: 'Rp40.000'  },
-    { name: '450 💎',  price: 'Rp58.000'  },
-    { name: '600 💎',  price: 'Rp80.000'  },
-    { name: '900 💎',  price: 'Rp115.000' },
-    { name: '1200 💎', price: 'Rp150.000' },
-    { name: '1800 💎', price: 'Rp220.000' },
-    { name: '2400 💎', price: 'Rp290.000' }
-  ],
-  'Genshin Impact': [
-    { name: '60 💎',    price: 'Rp15.000'    },
-    { name: '300 💎',   price: 'Rp75.000'    },
-    { name: '980 💎',   price: 'Rp225.000'   },
-    { name: '1980 💎',  price: 'Rp450.000'   },
-    { name: '3280 💎',  price: 'Rp750.000'   },
-    { name: '6480 💎',  price: 'Rp1.500.000' }
-  ],
-  'Roblox': [
-    { name: '80 💎',   price: 'Rp15.000'  },
-    { name: '160 💎',  price: 'Rp30.000'  },
-    { name: '400 💎',  price: 'Rp75.000'  },
-    { name: '800 💎',  price: 'Rp150.000' },
-    { name: '1700 💎', price: 'Rp300.000' },
-    { name: '4500 💎', price: 'Rp750.000' }
-  ]
-};
+/* HALAMAN 2: DETAIL */
+.game-detail{text-align:center;margin-bottom:18px}
+.game-img-large{width:150px;height:150px;object-fit:cover;border-radius:18px;margin-bottom:10px;box-shadow:0 6px 16px rgba(0,0,0,.6)}
+.game-detail h2{font-size:22px;font-weight:700}
 
-// --- Metode pembayaran (gambar + nama + fee/harga) ---
-const PAYMENTS = [
-  { name: 'QRIS',      img: 'https://files.catbox.moe/crlcvj.jpg', price: '+ Rp1.000' },
-  { name: 'ShopeePay', img: 'https://files.catbox.moe/gub7ik.jpg', price: '+ Rp1.500' },
-  { name: 'Dana',      img: 'https://files.catbox.moe/vzij14.jpg', price: '+ Rp1.500' },
-  { name: 'Gopay',     img: 'https://files.catbox.moe/hjxbgp.jpg', price: '+ Rp2.000' },
-  { name: 'Ovo',       img: 'https://files.catbox.moe/uy94ct.jpg', price: '+ Rp2.000' }
-];
+/* FORM */
+.checkout-form label{display:block;margin:8px 0 6px;font-size:14px;font-weight:600}
+.checkout-form input{width:100%;padding:12px;border-radius:12px;border:1px solid #2b2f39;background:#151922;color:#fff;margin-bottom:14px;outline:none}
+.checkout-form input:focus{border-color:#4dabf7;box-shadow:0 0 0 3px rgba(77,171,247,.15)}
 
-// --- Sisipkan field Server ID jika diperlukan ---
-(function maybeInsertServerId() {
-  if (!serverGames.includes(gameName)) return;
-  const form = document.querySelector('.checkout-form');
-  if (!form) return;
+/* GRID PILIHAN */
+.diamond-grid,.payment-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:14px}
+.diamond-item,.payment-item{background:#151922;border-radius:16px;padding:12px;text-align:center;cursor:pointer;transition:.22s;box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.diamond-item:hover,.payment-item:hover{transform:translateY(-2px)}
+.diamond-item p,.payment-item p{font-size:14px;font-weight:600;margin-bottom:4px}
+.diamond-item span,.payment-item span{font-size:13px;color:#c8d0dc}
+.payment-item img{width:48px;height:48px;object-fit:contain;margin-bottom:6px}
+.diamond-item.selected,.payment-item.selected{border:2px solid #4dabf7;box-shadow:0 6px 16px rgba(77,171,247,.35)}
 
-  const label = document.createElement('label');
-  label.setAttribute('for', 'serverId');
-  label.textContent = 'Server ID';
+/* BUTTON */
+.btn-checkout{width:100%;padding:14px;border:none;border-radius:14px;background:#4dabf7;color:#fff;font-weight:700;font-size:15px;cursor:pointer;transition:.22s}
+.btn-checkout:hover{background:#339af0}
 
-  const input = document.createElement('input');
-  input.id = 'serverId';
-  input.type = 'text';
-  input.placeholder = 'Masukkan Server ID';
+/* POPUP */
+.popup{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:.28s}
+.popup.active{visibility:visible;opacity:1}
+.popup-content{background:#151922;border-radius:16px;width:92%;max-width:420px;padding:20px;box-shadow:0 10px 26px rgba(0,0,0,.6)}
+.popup-content h3{font-size:18px;font-weight:700;margin-bottom:10px}
+.popup-content p{font-size:14px;color:#d7dce6;white-space:pre-line;margin-bottom:12px}
 
-  const diamondList = document.getElementById('diamondList');
-  form.insertBefore(input, diamondList);
-  form.insertBefore(label, input);
-})();
+/* ANIMASI */
+.fade-in{opacity:0;transform:translateY(10px);animation:fadeInUp .55s forwards}
+@keyframes fadeInUp{to{opacity:1;transform:translateY(0)}}
 
-// --- Render diamond & payment ---
-let selectedDiamond = null;
-let selectedPayment = null;
-
-function renderDiamonds() {
-  const list = document.getElementById('diamondList');
-  list.innerHTML = '';
-  const items = DIAMONDS[gameName] || [];
-  items.forEach((d, i) => {
-    const card = document.createElement('div');
-    card.className = 'diamond-item fade-in';
-    card.style.animationDelay = `${i * 0.07}s`;
-    card.innerHTML = `<p>${d.name}</p><span>${d.price}</span>`;
-    card.addEventListener('click', () => {
-      document.querySelectorAll('.diamond-item').forEach(el => el.classList.remove('selected'));
-      card.classList.add('selected');
-      selectedDiamond = d;
-    });
-    list.appendChild(card);
-  });
-  if (items.length === 0) {
-    const info = document.createElement('div');
-    info.className = 'diamond-item';
-    info.innerHTML = `<p>Paket belum tersedia</p><span>Silakan pilih game dari beranda</span>`;
-    list.appendChild(info);
+@media (min-width:560px){
+  .game-card img{height:140px}
+  .game-img-large{width:160px;height:160px}
   }
-}
-
-function renderPayments() {
-  const list = document.getElementById('paymentList');
-  list.innerHTML = '';
-  PAYMENTS.forEach((p, i) => {
-    const card = document.createElement('div');
-    card.className = 'payment-item fade-in';
-    card.style.animationDelay = `${i * 0.07}s`;
-    card.innerHTML = `
-      <img src="${p.img}" alt="${p.name}" />
-      <p>${p.name}</p>
-      <span>${p.price}</span>
-    `;
-    card.addEventListener('click', () => {
-      document.querySelectorAll('.payment-item').forEach(el => el.classList.remove('selected'));
-      card.classList.add('selected');
-      selectedPayment = p;
-    });
-    list.appendChild(card);
-  });
-}
-
-renderDiamonds();
-renderPayments();
-
-// --- Checkout (popup + WhatsApp) ---
-const popup = document.getElementById('popup');
-const popupText = document.getElementById('popupText');
-
-document.getElementById('checkoutBtn')?.addEventListener('click', () => {
-  const userId = document.getElementById('userId')?.value?.trim();
-  const serverId = document.getElementById('serverId')?.value?.trim();
-
-  if (!userId || !selectedDiamond || !selectedPayment) {
-    alert('Lengkapi data: User ID, paket diamond, dan metode pembayaran.');
-    return;
-  }
-
-  let detail = `Game: ${gameName}\nUser ID: ${userId}`;
-  if (serverId) detail += `\nServer ID: ${serverId}`;
-  detail += `\nPaket: ${selectedDiamond.name} — ${selectedDiamond.price}`;
-  detail += `\nPembayaran: ${selectedPayment.name} (${selectedPayment.price})`;
-
-  popupText.textContent = detail;
-  popup.classList.add('active');
-});
-
-document.getElementById('confirmBtn')?.addEventListener('click', () => {
-  const message = encodeURIComponent(popupText.textContent || '');
-  const waNumber = '6282298902274'; // Ganti ke nomor admin
-  window.open(`https://wa.me/${waNumber}?text=${message}`, '_blank');
-  popup.classList.remove('active');
-});
-
-// Tutup popup bila klik area luar
-popup?.addEventListener('click', (e) => {
-  if (e.target === popup) popup.classList.remove('active');
-});
