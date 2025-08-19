@@ -20,8 +20,8 @@ html{scroll-behavior:smooth;}
 
 /* GAME DETAIL */
 .game-detail{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
-.game-img{width:80px;height:80px;object-fit:cover;border-radius:12px;}
-.game-detail h2{font-size:18px;font-weight:600;color:#fff;}
+.game-img-large{width:120px;height:120px;object-fit:contain;border-radius:16px;box-shadow:0 4px 10px rgba(0,0,0,0.4);}
+.game-detail h2{font-size:20px;font-weight:600;color:#fff;}
 
 /* GRID DIAMOND & PAYMENT */
 .diamond-grid,.payment-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px;}
