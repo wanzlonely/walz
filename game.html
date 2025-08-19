@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top Up - WalzShop</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <h1 class="shop-name">WalzShop</h1>
+  </header>
+
+  <main class="container">
+    <div class="game-header">
+      <img id="gameImage" alt="Game" class="game-banner">
+      <h2 id="gameTitle"></h2>
+    </div>
+
+    <form id="topupForm">
+      <div class="form-group">
+        <label for="gameId">ID Game</label>
+        <input type="text" id="gameId" required placeholder="Masukkan ID Game">
+      </div>
+      <div class="form-group" id="serverField" style="display:none;">
+        <label for="serverId">Server ID</label>
+        <input type="text" id="serverId" placeholder="Masukkan Server ID">
+      </div>
+
+      <h3>Pilih Diamond</h3>
+      <div class="diamond-grid" id="diamondList"></div>
+
+      <h3>Metode Pembayaran</h3>
+      <div class="payment-grid" id="paymentList"></div>
+
+      <div class="form-group">
+        <label for="voucher">Kode Voucher</label>
+        <input type="text" id="voucher" placeholder="Masukkan Kode Voucher">
+      </div>
+
+      <button type="submit" class="checkout-btn">Checkout</button>
+    </form>
+  </main>
+
+  <!-- Checkout Popup -->
+  <div class="popup" id="popup">
+    <div class="popup-content">
+      <h3>Detail Transaksi</h3>
+      <p id="summary"></p>
+      <button onclick="closePopup()" class="close-btn">Tutup</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
