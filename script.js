@@ -8,18 +8,21 @@ if(gameName && gameImg){
   document.getElementById('gameImage').src = gameImg;
 }
 
-// Diamond & Harga Pasar
+// Diamond & Harga
 const diamonds = [
   {name:"50 💎",price:"Rp5.000"},
   {name:"100 💎",price:"Rp10.000"},
+  {name:"150 💎",price:"Rp15.000"},
   {name:"250 💎",price:"Rp24.000"},
   {name:"500 💎",price:"Rp48.000"},
+  {name:"720 💎",price:"Rp70.000"},
   {name:"1000 💎",price:"Rp95.000"},
+  {name:"1440 💎",price:"Rp135.000"},
   {name:"2000 💎",price:"Rp190.000"},
 ];
 
 const diamondGrid = document.getElementById('diamondGrid');
-diamonds.forEach((d,i)=>{
+diamonds.forEach((d)=>{
   const div = document.createElement('div');
   div.className='diamond-item';
   div.innerHTML=`<p>${d.name}</p><span>${d.price}</span>`;
@@ -27,7 +30,7 @@ diamonds.forEach((d,i)=>{
   diamondGrid.appendChild(div);
 });
 
-// Metode Pembayaran
+// Metode Pembayaran (dengan harga admin fee Rp0)
 const payments = [
   {name:"QRIS",img:"https://files.catbox.moe/crlcvj.jpg",price:"Rp0"},
   {name:"ShopeePay",img:"https://files.catbox.moe/gub7ik.jpg",price:"Rp0"},
@@ -58,7 +61,7 @@ document.getElementById('checkoutBtn').addEventListener('click',()=>{
   if(!payment){alert('Pilih metode pembayaran'); return;}
   
   const voucher = document.getElementById('voucher').value.trim();
-  let text=`Game: ${gameName}\nID: ${playerId}\nPaket: ${diamond.querySelector('p').innerText} - ${diamond.querySelector('span').innerText}\nMetode: ${payment.querySelector('p').innerText}\nHarga: ${payment.querySelector('span').innerText}`;
+  let text=`Game: ${gameName}\nID: ${playerId}\nPaket: ${diamond.querySelector('p').innerText} - ${diamond.querySelector('span').innerText}\nMetode: ${payment.querySelector('p').innerText}\nBiaya Admin: ${payment.querySelector('span').innerText}`;
   if(voucher) text+=`\nVoucher: ${voucher}`;
   document.getElementById('popupText').innerText=text;
   document.getElementById('popup').classList.add('active');
@@ -67,6 +70,7 @@ document.getElementById('checkoutBtn').addEventListener('click',()=>{
 // Konfirmasi WhatsApp
 document.getElementById('confirmBtn').addEventListener('click',()=>{
   const msg=encodeURIComponent(document.getElementById('popupText').innerText);
-  window.open(`https://wa.me/6282298902274?text=${msg}`, '_blank');
+  const waNumber = "6282298902274"; // Ganti dengan nomor admin
+  window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
   document.getElementById('popup').classList.remove('active');
 });
