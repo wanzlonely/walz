@@ -1,118 +1,101 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WalzShop - Top Up</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WalzShop • Top Up</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <!-- HEADER -->
-  <header class="header">
-    <h1 id="gameTitle">WalzShop</h1>
+<body class="bg">
+  <header class="topbar small">
+    <a class="link back" href="index.html">← Beranda</a>
+    <div class="hdr-left">
+      <div class="shop-name">WalzShop</div>
+    </div>
   </header>
 
-  <!-- GAME INFO -->
-  <section class="game-info">
-    <img id="gameImage" src="" alt="Game Image" class="game-cover">
-    <h2 id="gameName">(Nama Game)</h2>
-  </section>
+  <main class="container">
+    <section class="card" id="gameCard">
+      <div class="selected-game">
+        <img id="gameBanner" class="selected-game-img" src="" alt="Game banner">
+        <div class="selected-game-info">
+          <div id="selectedGameName" class="selected-game-title">Nama Game</div>
+          <div id="selectedGameStudio" class="selected-game-sub muted"></div>
+        </div>
+      </div>
 
-  <!-- FORM TOP UP -->
-  <section class="form-container">
-    <label for="userId">Masukkan ID Game</label>
-    <input type="text" id="userId" placeholder="Contoh: 123456789">
+      <form id="topupForm" class="form">
+        <div class="form-row">
+          <div class="field">
+            <label for="userId">ID Game</label>
+            <input id="userId" type="text" placeholder="Masukkan ID Game">
+            <small class="error" id="errUserId"></small>
+          </div>
+          <div class="field" id="serverField" style="display:none;">
+            <label for="serverId">Server ID</label>
+            <input id="serverId" type="text" placeholder="Masukkan Server ID">
+            <small class="error" id="errServerId"></small>
+          </div>
+        </div>
 
-    <div id="serverIdContainer" style="display:none;">
-      <label for="serverId">Server ID</label>
-      <input type="text" id="serverId" placeholder="Contoh: 1234">
-    </div>
+        <div class="section-sub">
+          <h3>Pilih Paket Diamond</h3>
+          <p class="muted">Klik paket yang diinginkan — harga sudah termasuk promo kecil</p>
+        </div>
 
-    <!-- PILIH DIAMOND -->
-    <h3>Pilih Diamond</h3>
-    <div class="diamond-container" id="diamondContainer">
-      <!-- Diamond options dari script.js -->
-    </div>
+        <div class="diamond-grid" id="diamondGrid" aria-live="polite">
+          <!-- rendered by JS -->
+        </div>
 
-    <!-- PILIH PEMBAYARAN -->
-    <h3>Metode Pembayaran</h3>
-    <div class="payment-container" id="paymentContainer">
-      <!-- Payment options dari script.js -->
-    </div>
+        <div class="section-sub" style="margin-top:12px;">
+          <h3>Metode Pembayaran</h3>
+          <p class="muted">Harga akan muncul saat paket dipilih</p>
+        </div>
 
-    <!-- KODE VOUCHER -->
-    <label for="voucher">Kode Voucher (Opsional)</label>
-    <input type="text" id="voucher" placeholder="Masukkan kode promo">
+        <div class="payment-grid" id="paymentGrid">
+          <!-- rendered by JS -->
+        </div>
 
-    <!-- CHECKOUT -->
-    <button id="checkoutBtn" class="btn-checkout">Checkout</button>
-  </section>
+        <div class="form-row" style="margin-top:12px;">
+          <div class="field grow">
+            <label for="voucher">Kode Voucher (opsional)</label>
+            <input id="voucher" type="text" placeholder="PROMOHEMAT">
+          </div>
+        </div>
 
-  <!-- POPUP DETAIL TRANSAKSI -->
-  <div class="popup" id="popup">
-    <div class="popup-content">
-      <span id="closePopup" class="close">&times;</span>
-      <h2>Detail Transaksi</h2>
-      <ul id="popupDetails"></ul>
-      <a id="waCheckout" href="#" target="_blank" class="btn-wa">Checkout via WhatsApp</a>
+        <div class="actions">
+          <button id="checkoutBtn" class="btn primary" type="button" disabled>Checkout</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <!-- Modal -->
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-head">
+        <h3>Detail Transaksi</h3>
+        <button class="close" id="closeModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="summary-row"><span>Game</span><strong id="sumGame">-</strong></div>
+        <div class="summary-row"><span>ID</span><strong id="sumId">-</strong></div>
+        <div class="summary-row" id="sumServerRow" style="display:none;"><span>Server</span><strong id="sumServer">-</strong></div>
+        <div class="summary-row"><span>Paket</span><strong id="sumPack">-</strong></div>
+        <div class="summary-row"><span>Metode</span><strong id="sumMethod">-</strong></div>
+        <div class="summary-row"><span>Harga</span><strong id="sumPrice">-</strong></div>
+        <div class="summary-row" id="sumVoucherRow" style="display:none;"><span>Voucher</span><strong id="sumVoucher">-</strong></div>
+        <div class="summary-total"><span>Total Bayar</span><strong id="sumTotal">-</strong></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn ghost" id="btnEdit">Ubah</button>
+        <button class="btn primary" id="btnConfirm">Checkout via WhatsApp</button>
+      </div>
     </div>
   </div>
 
+  <footer class="footer">© 2025 WalzShop</footer>
   <script src="script.js"></script>
-  <script>
-    // AMBIL DATA GAME DARI URL
-    const params = new URLSearchParams(window.location.search);
-    const game = params.get("game");
-    const image = params.get("image");
-    const server = params.get("server");
-
-    if (game) {
-      document.getElementById("gameName").textContent = game;
-      document.getElementById("gameTitle").textContent = `WalzShop - ${game}`;
-    }
-    if (image) {
-      document.getElementById("gameImage").src = image;
-    }
-    if (server === "true") {
-      document.getElementById("serverIdContainer").style.display = "block";
-    }
-
-    // ====== RENDER DIAMOND ======
-    const diamondContainer = document.getElementById("diamondContainer");
-    const diamondPrices = {
-      5: 1000,
-      12: 2500,
-      50: 9000,
-      100: 17000,
-      250: 42000,
-      500: 83000,
-      1000: 160000
-    };
-
-    for (let d in diamondPrices) {
-      const div = document.createElement("div");
-      div.classList.add("diamond-option");
-      div.setAttribute("data-diamond", d);
-      div.innerHTML = `<span>💎 ${d}</span><p>Rp ${diamondPrices[d].toLocaleString()}</p>`;
-      diamondContainer.appendChild(div);
-    }
-
-    // ====== RENDER PAYMENT ======
-    const paymentContainer = document.getElementById("paymentContainer");
-    const payments = [
-      { name: "Gopay", img: "https://files.catbox.moe/je0irt.jpg" },
-      { name: "OVO", img: "https://files.catbox.moe/57f44a.jpg" },
-      { name: "Dana", img: "https://files.catbox.moe/f5ey4y.jpg" },
-      { name: "Pulsa", img: "" }
-    ];
-
-    payments.forEach(p => {
-      const div = document.createElement("div");
-      div.classList.add("payment-option");
-      div.setAttribute("data-payment", p.name);
-      div.innerHTML = `<img src="${p.img}" alt="${p.name}" class="pay-logo"><span>${p.name}</span>`;
-      paymentContainer.appendChild(div);
-    });
-  </script>
 </body>
 </html>
