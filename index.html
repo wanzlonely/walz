@@ -17,41 +17,65 @@
   <main class="container">
     <h2 class="title">Pilih Game</h2>
     <div class="game-grid">
-      <!-- Free Fire -->
-      <a href="game.html?game=Free%20Fire&img=https://files.catbox.moe/x5rvpg.jpg" class="game-card">
+      <a href="#" class="game-card" data-game="Free Fire" data-price="50.000">
         <img src="https://files.catbox.moe/x5rvpg.jpg" alt="Free Fire">
         <span>Free Fire</span>
       </a>
-      <!-- Mobile Legends -->
-      <a href="game.html?game=Mobile%20Legends&img=https://files.catbox.moe/wcxi20.jpg" class="game-card">
+      <a href="#" class="game-card" data-game="Mobile Legends" data-price="70.000">
         <img src="https://files.catbox.moe/wcxi20.jpg" alt="Mobile Legends">
         <span>Mobile Legends</span>
       </a>
-      <!-- Honor of Kings -->
-      <a href="game.html?game=Honor%20of%20Kings&img=https://files.catbox.moe/rh78kj.jpg" class="game-card">
+      <a href="#" class="game-card" data-game="Honor of Kings" data-price="90.000">
         <img src="https://files.catbox.moe/rh78kj.jpg" alt="Honor of Kings">
         <span>Honor of Kings</span>
       </a>
-      <!-- Genshin Impact -->
-      <a href="game.html?game=Genshin%20Impact&img=https://files.catbox.moe/b91rfb.jpg" class="game-card">
+      <a href="#" class="game-card" data-game="Genshin Impact" data-price="120.000">
         <img src="https://files.catbox.moe/b91rfb.jpg" alt="Genshin Impact">
         <span>Genshin Impact</span>
       </a>
-      <!-- Roblox -->
-      <a href="game.html?game=Roblox&img=https://files.catbox.moe/uvixa8.jpg" class="game-card">
+      <a href="#" class="game-card" data-game="Roblox" data-price="40.000">
         <img src="https://files.catbox.moe/uvixa8.jpg" alt="Roblox">
         <span>Roblox</span>
       </a>
-      <!-- Stumble Guys -->
-      <a href="game.html?game=Stumble%20Guys&img=https://files.catbox.moe/712fja.jpg" class="game-card">
+      <a href="#" class="game-card" data-game="Stumble Guys" data-price="60.000">
         <img src="https://files.catbox.moe/712fja.jpg" alt="Stumble Guys">
         <span>Stumble Guys</span>
       </a>
     </div>
   </main>
 
+  <!-- CHECKOUT SECTION -->
+  <div class="checkout-section" id="checkoutSection">
+    <div class="transaction-details" id="transactionDetails">
+      <span><strong>Game:</strong> -</span>
+      <span><strong>Harga:</strong> -</span>
+    </div>
+    <input type="text" class="checkout-input" placeholder="Masukkan ID/Nickname">
+    <button class="btn-checkout">Bayar Sekarang</button>
+  </div>
+
   <footer>
     <p>© 2025 WalzShop. Semua Hak Dilindungi.</p>
   </footer>
+
+  <script>
+    const gameCards = document.querySelectorAll('.game-card');
+    const checkout = document.getElementById('checkoutSection');
+    const details = document.getElementById('transactionDetails');
+
+    gameCards.forEach(card => {
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        const game = card.dataset.game;
+        const price = card.dataset.price;
+        details.innerHTML = `
+          <span><strong>Game:</strong> ${game}</span>
+          <span><strong>Harga:</strong> Rp ${price}</span>
+        `;
+        checkout.classList.add('active');
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      });
+    });
+  </script>
 </body>
 </html>
