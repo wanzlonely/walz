@@ -1,129 +1,79 @@
-// DATA GAME
-const games = [
-  { id: 'ff', name: 'Free Fire', bg: 'https://files.catbox.moe/oqnxag.jpeg', logo: 'https://files.catbox.moe/oqnxag.jpeg' },
-  { id: 'ml', name: 'Mobile Legends', bg: 'https://files.catbox.moe/h7whee.jpeg', logo: 'https://files.catbox.moe/h7whee.jpeg' },
-  { id: 'hok', name: 'Honor of Kings', bg: 'https://files.catbox.moe/04zakl.jpeg', logo: 'https://files.catbox.moe/04zakl.jpeg' },
-  { id: 'roblox', name: 'Roblox', bg: 'https://files.catbox.moe/ldegjz.png', logo: 'https://files.catbox.moe/ldegjz.png' }
-];
-
-// DATA PAKET
-const harga = {
-  ff: { "70 Diamonds": 9000, "140 Diamonds": 18000, "355 Diamonds": 45000, "720 Diamonds": 90000, "1450 Diamonds": 180000, "3000 Diamonds": 350000 },
-  ml: { "86 Diamonds": 23000, "172 Diamonds": 45000, "514 Diamonds": 120000, "706 Diamonds": 160000, "1000 Diamonds": 220000, "2000 Diamonds": 400000 },
-  hok: { "80 Tokens": 14000, "240 Tokens": 44000, "560 Tokens": 100000, "1200 Tokens": 210000, "2500 Tokens": 400000 },
-  roblox: { "80 Robux": 12000, "400 Robux": 60000, "800 Robux": 115000, "1700 Robux": 230000, "4000 Robux": 500000 }
-};
-
-// DATA PAYMENT
-const payments = [
-  { id: 'gopay', name: 'GoPay', img: 'https://files.catbox.moe/7f7kj6.png' },
-  { id: 'dana', name: 'Dana', img: 'https://files.catbox.moe/9ozprx.jpg' },
-  { id: 'ovo', name: 'OVO', img: 'https://files.catbox.moe/0qmbo6.jpg' }
-];
-
-// SELECTED ITEMS
 let selectedGame = null;
-let selectedPackage = null;
+let selectedNominal = null;
 let selectedPayment = null;
 
-// PARTICLE CANVAS
-const canvas = document.getElementById('particleCanvas');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+// Nominal pilihan
+const nominalOptions = [
+  { jumlah: "5 Diamonds", harga: 1000 },
+  { jumlah: "20 Diamonds", harga: 4000 },
+  { jumlah: "50 Diamonds", harga: 10000 },
+  { jumlah: "100 Diamonds", harga: 18000 },
+  { jumlah: "250 Diamonds", harga: 45000 },
+  { jumlah: "500 Diamonds", harga: 85000 },
+];
 
-// POPUP LOADER
-const popup = document.getElementById('popup');
-function showPopup() { popup.classList.add('active'); }
-function hidePopup() { popup.classList.remove('active'); }
+const nominalContainer = document.getElementById("nominalOptions");
 
-// GENERATE GAME CARDS
-const gameGrid = document.getElementById('gameGrid');
-games.forEach(game => {
-  const div = document.createElement('div');
-  div.className = 'game-card';
-  div.style.background = `url(${game.bg}) center/cover no-repeat`;
-  div.innerHTML = `<div class="overlay"></div><img src="${game.logo}"><div>${game.name}</div>`;
-  div.addEventListener('click', () => {
-    document.querySelectorAll('.game-card').forEach(g => g.classList.remove('selected'));
-    div.classList.add('selected');
-    selectedGame = game.id;
-    generatePackages(selectedGame);
-    createParticles(div.offsetLeft + div.offsetWidth / 2, div.offsetTop + div.offsetHeight / 2, '#ff9800', 20);
+// Render nominal
+nominalOptions.forEach((item) => {
+  const div = document.createElement("div");
+  div.classList.add("nominal-option");
+  div.textContent = `${item.jumlah}\nRp ${item.harga.toLocaleString()}`;
+  div.addEventListener("click", () => {
+    document.querySelectorAll(".nominal-option").forEach(el => el.classList.remove("active"));
+    div.classList.add("active");
+    selectedNominal = item;
   });
-  gameGrid.appendChild(div);
-  setTimeout(() => div.classList.add('visible'), 100);
+  nominalContainer.appendChild(div);
 });
 
-// GENERATE PACKAGES
-const packageGrid = document.getElementById('packageGrid');
-function generatePackages(gameId) {
-  packageGrid.innerHTML = '';
-  const packs = harga[gameId];
-  Object.keys(packs).forEach(key => {
-    const card = document.createElement('div');
-    card.className = 'flip-card';
-    card.innerHTML = `
-      <div class="flip-card-inner">
-        <div class="flip-card-front">
-          <div>${key}</div>
-          <div>Harga: ${packs[key]}</div>
-        </div>
-        <div class="flip-card-back">
-          <button onclick="selectPackage('${gameId}', '${key}')">Pilih Paket</button>
-        </div>
-      </div>
-    `;
-    packageGrid.appendChild(card);
+// Pilih Game
+document.querySelectorAll(".game-card").forEach(card => {
+  card.addEventListener("click", () => {
+    document.querySelectorAll(".game-card").forEach(el => el.classList.remove("active"));
+    card.classList.add("active");
+    selectedGame = card.dataset.game;
   });
-}
+});
 
-// SELECT PACKAGE
-function selectPackage(gameId, packageKey) {
-  selectedPackage = { id: gameId, package: packageKey };
-  alert(`Paket ${packageKey} untuk game ${games.find(g => g.id === gameId).name} telah dipilih!`);
-}
+// Pilih pembayaran
+document.querySelectorAll(".pay-option").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".pay-option").forEach(el => el.classList.remove("selected"));
+    btn.classList.add("selected");
+    selectedPayment = btn.dataset.method;
+  });
+});
 
-// CREATE PARTICLES
-function createParticles(x, y, color, count) {
-  for (let i = 0; i < count; i++) {
-    const particle = {
-      x: x,
-      y: y,
-      radius: Math.random() * 5 + 2,
-      color: color,
-      speed: Math.random() * 2 + 1,
-      direction: Math.random() * 2 * Math.PI,
-      alpha: 1
-    };
-    animateParticle(particle);
+// Checkout
+document.getElementById("checkoutBtn").addEventListener("click", () => {
+  const playerId = document.getElementById("playerId").value;
+  const serverId = document.getElementById("serverId").value;
+  const note = document.getElementById("note").value;
+  const voucher = document.getElementById("voucher").value;
+
+  if (!selectedGame || !playerId || !selectedNominal || !selectedPayment) {
+    alert("Lengkapi semua data terlebih dahulu!");
+    return;
   }
-}
 
-function animateParticle(particle) {
-  ctx.beginPath();
-  ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2, false);
-  ctx.fillStyle = particle.color;
-  ctx.globalAlpha = particle.alpha;
-  ctx.fill();
-  ctx.closePath();
+  let harga = selectedNominal.harga;
 
-  particle.x += Math.cos(particle.direction) * particle.speed;
-  particle.y += Math.sin(particle.direction) * particle.speed;
-  particle.alpha -= 0.02; // Efek memudar
-
-  if (particle.alpha > 0) {
-    requestAnimationFrame(() => animateParticle(particle));
+  // Voucher
+  if (voucher.toUpperCase() === "PROMOHEMAT") {
+    let potongan = Math.min(harga * 0.1, 6000);
+    harga -= potongan;
   }
-}
 
-// LOADING ANIMATION
-function showLoader() {
-  const loader = document.getElementById('loader');
-  loader.style.display = 'block';
-}
+  const message = 
+`Halo Admin, saya ingin Top Up:
+Game: ${selectedGame}
+ID: ${playerId}${serverId ? " ("+serverId+")" : ""}
+Nominal: ${selectedNominal.jumlah}
+Metode: ${selectedPayment}
+Catatan: ${note || "-"}
+Total: Rp ${harga.toLocaleString()}`;
 
-function hideLoader() {
-  const loader = document.getElementById('loader');
-  loader.style.display = 'none';
-}
+  const waUrl = `https://wa.me/6282298902274?text=${encodeURIComponent(message)}`;
+  window.open(waUrl, "_blank");
+});
