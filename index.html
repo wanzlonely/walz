@@ -8,52 +8,34 @@
 </head>
 <body>
   <header class="header">
-    <img src="https://files.catbox.moe/dpsks9.jpg" alt="Logo WalzShop">
+    <img src="https://files.catbox.moe/dpsks9.jpg" alt="Logo WalzShop" class="logo">
     <h1>WalzShop</h1>
   </header>
 
   <main class="container">
-    <h2 class="page-title">Pilih Game Favoritmu</h2>
     <div class="game-grid">
       <a href="game.html?game=Free%20Fire&img=https://files.catbox.moe/x5rvpg.jpg" class="game-card">
-        <div class="game-img-wrapper">
-          <img src="https://files.catbox.moe/x5rvpg.jpg" alt="Free Fire">
-        </div>
+        <img src="https://files.catbox.moe/x5rvpg.jpg" alt="Free Fire">
         <span>Free Fire</span>
       </a>
-
       <a href="game.html?game=Mobile%20Legends&img=https://files.catbox.moe/wcxi20.jpg" class="game-card">
-        <div class="game-img-wrapper">
-          <img src="https://files.catbox.moe/wcxi20.jpg" alt="Mobile Legends">
-        </div>
+        <img src="https://files.catbox.moe/wcxi20.jpg" alt="Mobile Legends">
         <span>Mobile Legends</span>
       </a>
-
       <a href="game.html?game=Honor%20of%20Kings&img=https://files.catbox.moe/rh78kj.jpg" class="game-card">
-        <div class="game-img-wrapper">
-          <img src="https://files.catbox.moe/rh78kj.jpg" alt="Honor of Kings">
-        </div>
+        <img src="https://files.catbox.moe/rh78kj.jpg" alt="Honor of Kings">
         <span>Honor of Kings</span>
       </a>
-
       <a href="game.html?game=Genshin%20Impact&img=https://files.catbox.moe/b91rfb.jpg" class="game-card">
-        <div class="game-img-wrapper">
-          <img src="https://files.catbox.moe/b91rfb.jpg" alt="Genshin Impact">
-        </div>
+        <img src="https://files.catbox.moe/b91rfb.jpg" alt="Genshin Impact">
         <span>Genshin Impact</span>
       </a>
-
       <a href="game.html?game=Roblox&img=https://files.catbox.moe/uvixa8.jpg" class="game-card">
-        <div class="game-img-wrapper">
-          <img src="https://files.catbox.moe/uvixa8.jpg" alt="Roblox">
-        </div>
+        <img src="https://files.catbox.moe/uvixa8.jpg" alt="Roblox">
         <span>Roblox</span>
       </a>
-
       <a href="game.html?game=Stumble%20Guys&img=https://files.catbox.moe/712fja.jpg" class="game-card">
-        <div class="game-img-wrapper">
-          <img src="https://files.catbox.moe/712fja.jpg" alt="Stumble Guys">
-        </div>
+        <img src="https://files.catbox.moe/712fja.jpg" alt="Stumble Guys">
         <span>Stumble Guys</span>
       </a>
     </div>
@@ -62,19 +44,5 @@
   <footer>
     <p>© 2025 WalzShop. Semua Hak Dilindungi.</p>
   </footer>
-
-  <script>
-    const cards = document.querySelectorAll('.game-card');
-    window.addEventListener('scroll', () => {
-      const triggerBottom = window.innerHeight * 0.85;
-      cards.forEach(card => {
-        const cardTop = card.getBoundingClientRect().top;
-        if(cardTop < triggerBottom){
-          card.style.transform = 'translateY(0) scale(1)';
-          card.style.opacity = '1';
-        }
-      });
-    });
-  </script>
 </body>
 </html>
