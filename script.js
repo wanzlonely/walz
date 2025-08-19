@@ -3,7 +3,7 @@ const params = new URLSearchParams(window.location.search);
 const game = params.get('game');
 const img = params.get('img');
 
-// Element DOM
+// DOM
 const gameName = document.getElementById('gameName');
 const gameImage = document.getElementById('gameImage');
 const diamondItems = document.querySelectorAll('.diamond-item');
@@ -40,7 +40,7 @@ paymentItems.forEach(item => {
   });
 });
 
-// Checkout (tampilkan popup)
+// Checkout → popup
 checkoutBtn.addEventListener('click', () => {
   const playerId = document.getElementById('playerId').value.trim();
   const voucher = document.getElementById('voucher').value.trim();
@@ -59,7 +59,7 @@ checkoutBtn.addEventListener('click', () => {
   popup.classList.add('active');
 });
 
-// Konfirmasi & WhatsApp
+// Konfirmasi → WhatsApp
 confirmBtn.addEventListener('click', () => {
   const playerId = document.getElementById('playerId').value.trim();
   const voucher = document.getElementById('voucher').value.trim();
