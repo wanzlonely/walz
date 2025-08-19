@@ -1,61 +1,57 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>WalzShop • Beranda</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WalzShop - Top Up Game</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg">
-  <header class="topbar">
-    <img src="https://files.catbox.moe/dpsks9.jpg" alt="WalzShop Banner" class="hdr-banner">
-    <div class="hdr-left">
-      <div class="shop-name">WalzShop</div>
-      <div class="shop-sub">Top Up • Cepat • Aman</div>
+<body>
+  <header class="navbar">
+    <div class="logo">
+      <img src="https://files.catbox.moe/dpsks9.jpg" alt="WalzShop Logo">
+      <h1>WalzShop</h1>
     </div>
   </header>
 
   <main class="container">
-    <section class="card">
-      <h1 class="page-title">Pilih Game</h1>
-      <p class="muted">Klik game untuk mulai top up</p>
-
-      <div class="games-grid small" id="gamesGrid">
-        <!-- cards -->
-        <a class="game-card" href="game.html?key=freefire&name=Free%20Fire&img=https://files.catbox.moe/x5rvpg.jpg&server=false">
-          <img src="https://files.catbox.moe/x5rvpg.jpg" alt="Free Fire">
-          <div class="game-caption">Free Fire</div>
-        </a>
-
-        <a class="game-card" href="game.html?key=mlbb&name=Mobile%20Legends&img=https://files.catbox.moe/wcxi20.jpg&server=true">
-          <img src="https://files.catbox.moe/wcxi20.jpg" alt="Mobile Legends">
-          <div class="game-caption">Mobile Legends</div>
-        </a>
-
-        <a class="game-card" href="game.html?key=hok&name=Honor%20of%20Kings&img=https://files.catbox.moe/rh78kj.jpg&server=true">
-          <img src="https://files.catbox.moe/rh78kj.jpg" alt="Honor of Kings">
-          <div class="game-caption">Honor of Kings</div>
-        </a>
-
-        <a class="game-card" href="game.html?key=genshin&name=Genshin%20Impact&img=https://files.catbox.moe/b91rfb.jpg&server=true">
-          <img src="https://files.catbox.moe/b91rfb.jpg" alt="Genshin Impact">
-          <div class="game-caption">Genshin Impact</div>
-        </a>
-
-        <a class="game-card" href="game.html?key=roblox&name=Roblox&img=https://files.catbox.moe/uvixa8.jpg&server=false">
-          <img src="https://files.catbox.moe/uvixa8.jpg" alt="Roblox">
-          <div class="game-caption">Roblox</div>
-        </a>
-
-        <a class="game-card" href="game.html?key=stumble&name=Stumble%20Guys&img=https://files.catbox.moe/712fja.jpg&server=false">
-          <img src="https://files.catbox.moe/712fja.jpg" alt="Stumble Guys">
-          <div class="game-caption">Stumble Guys</div>
-        </a>
-      </div>
-    </section>
+    <h2 class="title">Pilih Game</h2>
+    <div class="game-grid">
+      <!-- Free Fire -->
+      <a href="game.html?game=Free%20Fire&img=https://files.catbox.moe/x5rvpg.jpg" class="game-card">
+        <img src="https://files.catbox.moe/x5rvpg.jpg" alt="Free Fire">
+        <span>Free Fire</span>
+      </a>
+      <!-- Mobile Legends -->
+      <a href="game.html?game=Mobile%20Legends&img=https://files.catbox.moe/wcxi20.jpg" class="game-card">
+        <img src="https://files.catbox.moe/wcxi20.jpg" alt="Mobile Legends">
+        <span>Mobile Legends</span>
+      </a>
+      <!-- Honor of Kings -->
+      <a href="game.html?game=Honor%20of%20Kings&img=https://files.catbox.moe/rh78kj.jpg" class="game-card">
+        <img src="https://files.catbox.moe/rh78kj.jpg" alt="Honor of Kings">
+        <span>Honor of Kings</span>
+      </a>
+      <!-- Genshin Impact -->
+      <a href="game.html?game=Genshin%20Impact&img=https://files.catbox.moe/b91rfb.jpg" class="game-card">
+        <img src="https://files.catbox.moe/b91rfb.jpg" alt="Genshin Impact">
+        <span>Genshin Impact</span>
+      </a>
+      <!-- Roblox -->
+      <a href="game.html?game=Roblox&img=https://files.catbox.moe/uvixa8.jpg" class="game-card">
+        <img src="https://files.catbox.moe/uvixa8.jpg" alt="Roblox">
+        <span>Roblox</span>
+      </a>
+      <!-- Stumble Guys -->
+      <a href="game.html?game=Stumble%20Guys&img=https://files.catbox.moe/712fja.jpg" class="game-card">
+        <img src="https://files.catbox.moe/712fja.jpg" alt="Stumble Guys">
+        <span>Stumble Guys</span>
+      </a>
+    </div>
   </main>
 
-  <footer class="footer">© 2025 WalzShop</footer>
+  <footer>
+    <p>© 2025 WalzShop. Semua Hak Dilindungi.</p>
+  </footer>
 </body>
 </html>
