@@ -1,225 +1,159 @@
-/* === RESET & BASE === */
-* { box-sizing: border-box; margin:0; padding:0; }
-:root{
-  --bg1:#3b0f6f; --bg2:#06060a;
-  --card-bg: rgba(15,23,42,0.85);
-  --muted: #c7d2fe;
-  --text: #eef2ff;
-  --accent1: #7c3aed;
-  --accent2: #8b5cf6;
-  --success: #22c55e;
+/* RESET */
+* {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
-html,body{
-  height:100%;
-  font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  color:var(--text);
-  background:
-    radial-gradient(1000px 500px at 15% -10%, #6d28d9 0%, transparent 45%),
-    linear-gradient(180deg,var(--bg1),var(--bg2));
-  scroll-behavior: smooth;
+body {
+  background: linear-gradient(135deg, #1a0033, #0d0d0d);
+  color: #fff;
+  line-height: 1.6;
 }
 
-/* === HEADER === */
-.topbar{
-  display:flex;align-items:center;gap:12px;
-  padding:14px 18px;
-  border-bottom:1px solid rgba(255,255,255,0.06);
-  position:sticky;top:0;z-index:40;
-  background:rgba(10,12,22,0.8);
-  backdrop-filter: blur(8px);
-}
-.hdr-banner{height:56px;border-radius:10px;object-fit:cover}
-.hdr-left{display:flex;flex-direction:column}
-.shop-name{font-weight:700;font-size:1.1rem}
-.shop-sub{color:var(--muted);font-size:.9rem}
-
-/* === LAYOUT === */
-.container{max-width:1000px;margin:20px auto;padding:0 16px}
-.card{
-  background:linear-gradient(180deg,#0f1728aa,#070912aa);
-  border:1px solid rgba(255,255,255,0.06);
-  border-radius:14px;
-  padding:18px;
-  box-shadow:0 14px 36px rgba(0,0,0,0.6);
-}
-.page-title{font-size:1.25rem;margin-bottom:6px}
-.muted{color:var(--muted);font-size:.95rem}
-
-/* === GAMES GRID (BERANDA) === */
-.games-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
-  gap:12px;margin-top:12px
-}
-.game-card{
-  background:linear-gradient(180deg,#071022,#06101b);
-  border-radius:12px;
-  overflow:hidden;
-  display:block;
-  text-decoration:none;
-  color:var(--text);
-  transition:all .25s ease;
-  padding:8px;
-  border:1px solid rgba(255,255,255,0.04);
-}
-.game-card img{width:100%;height:96px;object-fit:cover;border-radius:8px}
-.game-caption{padding:8px;font-weight:600;text-align:center}
-.game-card:hover{
-  transform:translateY(-6px);
-  box-shadow:0 18px 36px rgba(0,0,0,0.6);
-  border-color:rgba(139,92,246,0.25)
+/* NAVBAR */
+.navbar {
+  background: rgba(0,0,0,0.8);
+  padding: 1rem;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 
-/* === SELECTED GAME (DETAIL PAGE) === */
-.selected-game{display:flex;gap:14px;align-items:center;margin-bottom:12px}
-.selected-game-img{width:120px;height:72px;border-radius:10px;object-fit:cover;border:1px solid rgba(255,255,255,0.06)}
-.selected-game-title{font-size:1.1rem;font-weight:700}
-.selected-game-sub{color:var(--muted)}
-
-/* === FORM === */
-.form-row{display:flex;gap:12px;flex-wrap:wrap}
-.field{flex:1;min-width:200px}
-label{display:block;margin-bottom:6px;color:var(--muted)}
-input{
-  width:100%;padding:10px;border-radius:10px;
-  border:1px solid rgba(255,255,255,0.06);
-  background:transparent;color:var(--text);
-  outline:none;transition:box-shadow .12s
-}
-input:focus{
-  box-shadow:0 6px 18px rgba(124,58,237,0.14);
-  border-color:rgba(139,92,246,0.4)
-}
-.error{color:#ffb4b4;font-size:0.85rem;height:18px;margin-top:6px}
-
-/* === DIAMOND GRID === */
-.section-sub{margin-top:12px;margin-bottom:8px}
-.diamond-grid{
-  display:grid;gap:10px;
-  grid-template-columns:repeat(auto-fill,minmax(140px,1fr))
-}
-.diamond-card{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:12px;border-radius:12px;
-  background:linear-gradient(180deg,#071022,#06101b);
-  border:1px solid rgba(255,255,255,0.04);
-  cursor:pointer;transition:all .25s ease;
-}
-.d-left{display:flex;gap:10px;align-items:center}
-.d-ico{
-  width:40px;height:40px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(180deg,#fff,#e6e6ff);
-  color:#071022;font-weight:800
-}
-.d-info{display:flex;flex-direction:column}
-.d-amt{font-weight:700;color:var(--text)} /* ✅ PUTIH */
-.d-price{color:var(--muted);font-size:.92rem}
-.diamond-card:hover{
-  transform:translateY(-6px);
-  box-shadow:0 14px 28px rgba(0,0,0,0.6)
-}
-.diamond-card.active{
-  outline:2px solid var(--accent2);
-  box-shadow:0 18px 44px rgba(124,58,237,0.12);
-  background:linear-gradient(180deg,#0f1426,#071022)
+/* CONTAINER */
+.container {
+  padding: 1.5rem;
 }
 
-/* === PAYMENT GRID === */
-.payment-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));margin-top:8px}
-.payment-card{
-  display:flex;gap:12px;align-items:center;padding:10px;
-  border-radius:12px;
-  background:linear-gradient(180deg,#071022,#06101b);
-  border:1px solid rgba(255,255,255,0.04);
-  cursor:pointer;transition:all .25s ease;
+/* GAME INFO */
+.game-info {
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
-.payment-card img{width:56px;height:56px;object-fit:contain;border-radius:8px;background:#fff;padding:6px}
-.pay-meta .name{font-weight:700}
-.pay-meta .price{color:var(--muted);margin-top:6px}
-.payment-card:hover{
-  transform:translateY(-6px);
-  box-shadow:0 14px 28px rgba(0,0,0,0.6)
+.game-info img {
+  max-width: 180px;
+  border-radius: 1rem;
+  margin-bottom: 0.5rem;
 }
-.payment-card.active{
-  outline:2px solid var(--accent2);
-  box-shadow:0 18px 44px rgba(124,58,237,0.12);
-  background:linear-gradient(180deg,#0f1426,#071022)
+.game-info h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #fff;
 }
 
-/* === ACTIONS === */
-.actions{display:flex;justify-content:flex-end;margin-top:14px}
-.btn{padding:10px 14px;border-radius:10px;cursor:pointer;transition:all .2s}
-.btn.primary{
-  background:linear-gradient(90deg,var(--accent1),var(--accent2));
-  color:white;font-weight:700;border:none;padding:12px 18px
+/* FORM */
+.form-group {
+  margin-bottom: 1.3rem;
 }
-.btn.primary:hover{filter:brightness(1.08)}
-.btn.ghost{
-  background:transparent;border:1px solid rgba(255,255,255,0.06);
-  color:var(--text)
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
 }
-
-/* === MODAL === */
-.modal{
-  position:fixed;inset:0;display:none;
-  align-items:center;justify-content:center;
-  background:rgba(0,0,0,0.6);z-index:80
+.form-group input {
+  width: 100%;
+  padding: 0.7rem;
+  border: none;
+  border-radius: 0.7rem;
+  background: #222;
+  color: #fff;
+  outline: none;
 }
-.modal.show{display:flex}
-.modal-dialog{
-  width:min(560px,94%);
-  background:linear-gradient(180deg,#0b1020,#06060a);
-  border-radius:12px;padding:12px;
-  border:1px solid rgba(255,255,255,0.06);
-  box-shadow:0 30px 60px rgba(0,0,0,0.8);
-  transform:translateY(12px) scale(.98);opacity:0;
-  animation:pop .22s forwards
-}
-@keyframes pop{to{transform:none;opacity:1}}
-.modal-head{display:flex;align-items:center;justify-content:space-between;padding:8px}
-.modal-body{padding:8px 6px}
-.summary-row,.summary-total{
-  display:flex;justify-content:space-between;
-  padding:8px 6px;border-bottom:1px dashed rgba(255,255,255,0.04)
-}
-.summary-total{
-  border-top:1px dashed rgba(255,255,255,0.06);
-  font-weight:700;padding-top:12px
+.form-group input:focus {
+  border: 2px solid #6c5ce7;
 }
 
-/* === FOOTER === */
-.footer{text-align:center;padding:20px;color:rgba(255,255,255,0.6)}
+/* GRID PRODUK */
+.product-grid, .payment-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(120px,1fr));
+  gap: 1rem;
+}
+.product-item, .payment-item {
+  background: #1e1e1e;
+  padding: 1rem;
+  border-radius: 0.8rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+.product-item img {
+  width: 30px;
+  margin-bottom: 0.5rem;
+}
+.product-item p, .payment-item p {
+  color: #fff; 
+  font-size: 0.9rem;
+}
+.product-item:hover, .payment-item:hover {
+  transform: translateY(-3px);
+  border-color: #6c5ce7;
+}
+.product-item.selected, .payment-item.selected {
+  border-color: #6c5ce7;
+  background: #2d2d2d;
+}
 
-/* === UTILS === */
-.grow{flex:1}
-.hidden{display:none}
+/* BUTTON */
+.btn-checkout {
+  width: 100%;
+  padding: 0.9rem;
+  background: #6c5ce7;
+  border: none;
+  border-radius: 0.8rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #fff;
+}
+.btn-checkout:hover {
+  background: #5a4bd9;
+}
 
-/* === INPUT ERROR ANIM === */
-@keyframes shake {
-  10%,90% { transform: translateX(-1px); }
-  20%,80% { transform: translateX(2px); }
-  30%,50%,70% { transform: translateX(-4px); }
-  40%,60% { transform: translateX(4px); }
+/* POPUP */
+.popup {
+  display: none;
+  position: fixed;
+  top:0; left:0; right:0; bottom:0;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
 }
-.input-error{
-  animation: shake .36s;
-  border-color:#ff6b6b !important;
-  box-shadow:0 6px 18px rgba(255,107,107,0.08);
+.popup-content {
+  background: #1e1e1e;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  width: 90%;
+  max-width: 400px;
+  color: #fff;
 }
-
-/* === LOADING OVERLAY === */
-.loading{
-  position:fixed;inset:0;
-  display:flex;align-items:center;justify-content:center;
-  background:#06060a;z-index:100;
-  transition:opacity .3s ease;
+.popup-content h3 {
+  margin-bottom: 1rem;
 }
-.loading.hidden{opacity:0;pointer-events:none}
-.spinner{
-  width:50px;height:50px;border:5px solid rgba(255,255,255,0.2);
-  border-top-color:var(--accent1);
-  border-radius:50%;
-  animation:spin 1s linear infinite
+.btn-whatsapp {
+  display: block;
+  margin-top: 1rem;
+  text-align: center;
+  background: #25d366;
+  padding: 0.7rem;
+  border-radius: 0.7rem;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
 }
-@keyframes spin{to{transform:rotate(360deg)}}
+.btn-close {
+  margin-top: 0.7rem;
+  width: 100%;
+  padding: 0.7rem;
+  background: #444;
+  border: none;
+  border-radius: 0.7rem;
+  color: #fff;
+  cursor: pointer;
+}
+.btn-close:hover {
+  background: #666;
+}
