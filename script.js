@@ -1,44 +1,23 @@
-// Final script.js - data for all games, diamond prices per game (market avg - promo), UI binding + validations
-
+// Final script.js - clean version
 const ADMIN_WA = "6282298902274";
 
-/* ===== DATA: price catalog per game (base price) =====
-   base = typical market price, promo applied in computePriceFor method (small discount)
-*/
+/* ===== DATA: price catalog per game ===== */
 const priceCatalog = {
   freefire: [
-    {amt: 12, base: 2500},
-    {amt: 50, base: 9000},
-    {amt: 86, base: 15000},
-    {amt: 170, base: 30000},
-    {amt: 257, base: 45000},
-    {amt: 514, base: 90000},
-    {amt: 1000, base: 165000}
+    {amt: 12, base: 2500}, {amt: 50, base: 9000}, {amt: 86, base: 15000},
+    {amt: 170, base: 30000}, {amt: 257, base: 45000}, {amt: 514, base: 90000}, {amt: 1000, base: 165000}
   ],
   mlbb: [
-    {amt: 12, base: 2200},
-    {amt: 50, base: 8500},
-    {amt: 86, base: 14000},
-    {amt: 170, base: 28000},
-    {amt: 257, base: 42000},
-    {amt: 514, base: 88000},
-    {amt: 1000, base: 160000}
+    {amt: 12, base: 2200}, {amt: 50, base: 8500}, {amt: 86, base: 14000},
+    {amt: 170, base: 28000}, {amt: 257, base: 42000}, {amt: 514, base: 88000}, {amt: 1000, base: 160000}
   ],
   hok: [
-    {amt: 12, base: 2300},
-    {amt: 50, base: 8700},
-    {amt: 86, base: 14500},
-    {amt: 170, base: 29000},
-    {amt: 257, base: 43500},
-    {amt: 514, base: 91000},
-    {amt: 1000, base: 162000}
+    {amt: 12, base: 2300}, {amt: 50, base: 8700}, {amt: 86, base: 14500},
+    {amt: 170, base: 29000}, {amt: 257, base: 43500}, {amt: 514, base: 91000}, {amt: 1000, base: 162000}
   ],
   genshin: [
-    {amt: 10, base: 14000},   // crystal packs use different units; example set
-    {amt: 33, base: 42000},
-    {amt: 66, base: 82000},
-    {amt: 88, base: 105000},
-    {amt: 155, base: 180000}
+    {amt: 10, base: 14000}, {amt: 33, base: 42000}, {amt: 66, base: 82000},
+    {amt: 88, base: 105000}, {amt: 155, base: 180000}
   ],
   roblox: [
     {amt: 40, base: 8500}, {amt: 80, base: 16000}, {amt: 240, base: 47000}, {amt: 800, base: 150000}
@@ -48,7 +27,7 @@ const priceCatalog = {
   ]
 };
 
-/* fee rates by payment method (for display) */
+/* fee rates per method */
 const feeRate = { qris: 0.007, shopeepay: 0.012, dana: 0.012, gopay: 0.012, ovo: 0.012 };
 
 /* payment methods meta */
@@ -62,8 +41,8 @@ const paymentsMeta = [
 
 /* voucher map */
 const vouchers = {
-  PROMOHEMAT: { rate: 0.05, max: 5000 },   // 5% up to 5k
-  TOPUPMURAH: { rate: 0.08, max: 10000 }  // 8% up to 10k
+  PROMOHEMAT: { rate: 0.05, max: 5000 },
+  TOPUPMURAH: { rate: 0.08, max: 10000 }
 };
 
 /* helpers */
@@ -73,13 +52,12 @@ const fmt = n => "Rp " + Math.round(n).toLocaleString("id-ID");
 
 /* read params */
 const params = Object.fromEntries(new URLSearchParams(location.search).entries());
-const gameKey = params.key || params.k || "freefire";
-const gameNameParam = params.name ? decodeURIComponent(params.name) : (params.name || "");
-const gameImgParam = params.img || params.image || params.jpg || "";
+const gameKey = params.key || "freefire";
+const gameNameParam = params.name ? decodeURIComponent(params.name) : "";
+const gameImgParam = params.img || "";
+const needServer = params.server === "true" || params.server === "1";
 
-const needServer = (params.server === "true" || params.server === "1" || params.s === "true");
-
-// UI elements
+/* UI elements */
 const bannerEl = $("#gameBanner");
 const gameNameEl = $("#selectedGameName");
 const gameStudioEl = $("#selectedGameStudio");
@@ -92,27 +70,25 @@ const closeModal = $("#closeModal");
 const btnConfirm = $("#btnConfirm");
 const btnEdit = $("#btnEdit");
 
-// state
+/* state */
 let state = {
   gameKey,
   gameName: gameNameParam || capitalizeKey(gameKey),
-  gameImg: gameImgParam || "",
+  gameImg: gameImgParam,
   needServer,
-  selectedPack: null,   // {amt, base}
-  priceMap: {},         // computed price per method
+  selectedPack: null,
+  priceMap: {},
   selectedMethod: null,
   voucher: null
 };
 
-/* init page */
+/* init */
 function init() {
-  // header
   bannerEl.src = state.gameImg || "https://files.catbox.moe/x5rvpg.jpg";
   gameNameEl.textContent = state.gameName;
-  gameStudioEl.textContent = ""; // optional studio
+  gameStudioEl.textContent = "";
 
-  if (state.needServer) serverField.style.display = "block";
-  else serverField.style.display = "none";
+  serverField.style.display = state.needServer ? "block" : "none";
 
   renderDiamonds();
   renderPayments();
@@ -120,28 +96,25 @@ function init() {
   validateForm();
 }
 
-/* format title fallback */
+/* capitalize key fallback */
 function capitalizeKey(k){
   return k.replace(/[-_]/g,' ').replace(/\b\w/g, c => c.toUpperCase());
 }
 
-/* compute promo price: apply tiny promo (5-8% depending) */
-function promoPrice(base) {
-  // minor promo: 5% off
-  return Math.round(base * 0.95);
-}
+/* apply small promo discount */
+function promoPrice(base){ return Math.round(base * 0.95); }
 
-/* compute price map for a base */
-function computePriceMap(base) {
+/* compute price map with fee */
+function computePriceMap(base){
   const out = {};
   Object.keys(feeRate).forEach(k => {
-    const fee = Math.ceil((base * feeRate[k]) / 100) * 100; // round to nearest 100
+    const fee = Math.ceil(base * feeRate[k] / 100) * 100; // round to 100
     out[k] = base + fee;
   });
   return out;
 }
 
-/* render diamond packs from priceCatalog */
+/* render diamond packs */
 function renderDiamonds(){
   diamondGrid.innerHTML = "";
   const list = priceCatalog[state.gameKey] || priceCatalog["freefire"];
@@ -156,7 +129,7 @@ function renderDiamonds(){
       <div class="d-left">
         <div class="d-ico">💎</div>
         <div class="d-info">
-          <div class="d-amt">${pack.amt} ${state.gameKey === 'genshin' ? 'Primogems/Crystals' : 'Diamonds'}</div>
+          <div class="d-amt">${pack.amt} ${state.gameKey === 'genshin' ? 'Primogems' : 'Diamonds'}</div>
           <div class="d-price">${fmt(discounted)}</div>
         </div>
       </div>
@@ -166,7 +139,7 @@ function renderDiamonds(){
   });
 }
 
-/* render payment cards (initially price = '-') */
+/* render payment methods */
 function renderPayments(){
   paymentGrid.innerHTML = "";
   paymentsMeta.forEach(pm => {
@@ -185,31 +158,28 @@ function renderPayments(){
   });
 }
 
-/* attach interactions after rendering */
+/* attach interactions */
 function attachInteractions(){
-  // diamond click
   $$(".diamond-card").forEach(btn => {
     btn.addEventListener("click", () => {
       $$(".diamond-card").forEach(x => x.classList.remove("active"));
       btn.classList.add("active");
+
       const amt = +btn.dataset.amt;
       const base = +btn.dataset.base;
       state.selectedPack = {amt, base};
-      // compute price map on discounted base
+
       const promoBase = promoPrice(base);
       state.priceMap = computePriceMap(promoBase);
-      // update payment price labels
-      $$(".pay-meta .price").forEach(()=>{}); // noop to ensure DOM ready
+
       updatePaymentPrices();
       validateForm();
     });
   });
 
-  // payment click
   $$(".payment-card").forEach(card => {
     card.addEventListener("click", () => {
       if (!state.selectedPack) {
-        // small feedback
         card.animate([{transform:'translateY(0)'},{transform:'translateY(-4px)'},{transform:'translateY(0)'}],{duration:220});
         return;
       }
@@ -220,7 +190,6 @@ function attachInteractions(){
     });
   });
 
-  // input validation on typing
   $("#userId").addEventListener("input", () => {
     $("#errUserId").textContent = "";
     $("#userId").classList.remove("input-error");
@@ -232,72 +201,67 @@ function attachInteractions(){
     validateForm();
   });
 
-  // checkout button
   checkoutBtn.addEventListener("click", onCheckout);
-
-  // modal controls
-  closeModal.addEventListener("click", ()=> closeModalFn());
-  btnEdit.addEventListener("click", ()=> { closeModalFn(); });
+  closeModal.addEventListener("click", closeModalFn);
+  btnEdit.addEventListener("click", closeModalFn);
   btnConfirm.addEventListener("click", onConfirm);
 }
 
-/* update payment prices in UI */
+/* update payment prices */
 function updatePaymentPrices(){
   $$("#paymentGrid .payment-card").forEach(card => {
     const method = card.dataset.method;
     const priceEl = card.querySelector(`[data-price="${method}"]`);
-    if (state.priceMap[method]) priceEl.textContent = fmt(state.priceMap[method]);
-    else priceEl.textContent = "-";
+    priceEl.textContent = state.priceMap[method] ? fmt(state.priceMap[method]) : "-";
   });
 }
 
-/* simple validation */
+/* validate form */
 function validateForm(){
   const uid = $("#userId").value.trim();
   const srv = $("#serverId") ? $("#serverId").value.trim() : "";
-  const ok = uid && (!state.needServer || srv || !state.needServer) && state.selectedPack && state.selectedMethod;
+  const ok = uid && (!state.needServer || srv) && state.selectedPack && state.selectedMethod;
   checkoutBtn.disabled = !ok;
 }
 
-/* on checkout -> show modal summary */
+/* checkout */
 function onCheckout(){
-  // validate fields
   const uid = $("#userId").value.trim();
   const srv = $("#serverId") ? $("#serverId").value.trim() : "";
   const voucherCode = $("#voucher").value.trim().toUpperCase();
 
-  if (!uid) { showFieldError("#userId","#errUserId","Kolom ID Game belum diisi"); return; }
-  if (state.needServer && !srv) { showFieldError("#serverId","#errServerId","Kolom Server ID belum diisi"); return; }
-  if (!state.selectedPack) { alert("Silakan pilih paket diamond terlebih dahulu"); return; }
-  if (!state.selectedMethod) { alert("Silakan pilih metode pembayaran"); return; }
+  if (!uid) return showFieldError("#userId","#errUserId","Kolom ID Game belum diisi");
+  if (state.needServer && !srv) return showFieldError("#serverId","#errServerId","Kolom Server ID belum diisi");
+  if (!state.selectedPack) return alert("Silakan pilih paket diamond terlebih dahulu");
+  if (!state.selectedMethod) return alert("Silakan pilih metode pembayaran");
 
-  // compute amounts
   const basePromo = promoPrice(state.selectedPack.base);
   const payPrice = state.priceMap[state.selectedMethod] || basePromo;
   const { total, info } = applyVoucher(payPrice, voucherCode);
 
-  // fill modal
   $("#sumGame").textContent = state.gameName;
   $("#sumId").textContent = uid;
-  if (state.needServer) { $("#sumServerRow").style.display = "flex"; $("#sumServer").textContent = srv; } else { $("#sumServerRow").style.display = "none"; }
-  $("#sumPack").textContent = `${state.selectedPack.amt} ${state.gameKey==='genshin'?'Crystals/Primogems':'Diamonds'}`;
+  if (state.needServer) { $("#sumServerRow").style.display = "flex"; $("#sumServer").textContent = srv; }
+  else $("#sumServerRow").style.display = "none";
+
+  $("#sumPack").textContent = `${state.selectedPack.amt} ${state.gameKey==='genshin'?'Primogems':'Diamonds'}`;
   $("#sumMethod").textContent = state.selectedMethod.toUpperCase();
   $("#sumPrice").textContent = fmt(payPrice);
-  if (info && info.discount>0) { $("#sumVoucherRow").style.display = "flex"; $("#sumVoucher").textContent = `${info.code} (−${fmt(info.discount)})`; } else { $("#sumVoucherRow").style.display = "none"; }
+
+  if (info && info.discount>0) { $("#sumVoucherRow").style.display = "flex"; $("#sumVoucher").textContent = `${info.code} (−${fmt(info.discount)})`; }
+  else $("#sumVoucherRow").style.display = "none";
+
   $("#sumTotal").textContent = fmt(total);
 
-  // store for confirm
   state.finalTotal = total;
   state.finalBase = payPrice;
   state.voucherApplied = info;
 
-  // show modal with animation
   modal.classList.add("show");
   modal.setAttribute("aria-hidden","false");
-  // dialog anim plays via CSS keyframes
 }
 
-/* show field error */
+/* field error */
 function showFieldError(inputSel, errSel, message){
   const input = $(inputSel);
   const err = $(errSel);
@@ -306,7 +270,7 @@ function showFieldError(inputSel, errSel, message){
   input.focus();
 }
 
-/* apply voucher logic */
+/* apply voucher */
 function applyVoucher(total, code){
   if (!code) return { total, info: null };
   const v = vouchers[code];
@@ -321,7 +285,7 @@ function closeModalFn(){
   modal.setAttribute("aria-hidden","true");
 }
 
-/* on confirm -> open WA */
+/* confirm -> open WA */
 function onConfirm(){
   const uid = $("#userId").value.trim();
   const srv = $("#serverId") ? $("#serverId").value.trim() : "";
@@ -333,7 +297,7 @@ function onConfirm(){
     `ID: ${uid}`,
   ];
   if (state.needServer) lines.push(`Server: ${srv || "-"}`);
-  lines.push(`Paket: ${state.selectedPack.amt} ${state.gameKey==='genshin'?'Crystals':'Diamonds'}`);
+  lines.push(`Paket: ${state.selectedPack.amt} ${state.gameKey==='genshin'?'Primogems':'Diamonds'}`);
   lines.push(`Metode: ${state.selectedMethod.toUpperCase()}`);
   lines.push(`Harga: ${fmt(state.finalBase)}`);
   if (state.voucherApplied && state.voucherApplied.discount>0) lines.push(`Voucher: ${state.voucherApplied.code} (disc ${fmt(state.voucherApplied.discount)})`);
@@ -344,5 +308,5 @@ function onConfirm(){
   window.open(waUrl, "_blank");
 }
 
-/* === init === */
+/* init */
 init();
