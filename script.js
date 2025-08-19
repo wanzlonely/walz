@@ -5,7 +5,7 @@ const gameImg = urlParams.get('img');
 document.getElementById('gameName').innerText = gameName;
 document.getElementById('gameImage').src = gameImg;
 
-// Tambahkan Server ID kalau game perlu
+// Game yang butuh Server ID
 const serverGames = ["Mobile Legend","Honor of Kings"];
 if (serverGames.includes(gameName)) {
   const form = document.querySelector('.checkout-form');
