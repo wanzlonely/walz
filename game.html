@@ -8,8 +8,8 @@
 </head>
 <body>
   <header class="header">
+    <img src="https://files.catbox.moe/wcxi20.jpg" class="logo" alt="Logo WalzShop" />
     <h1>WalzShop</h1>
-    <p>Checkout Diamond</p>
   </header>
 
   <main class="container">
@@ -20,19 +20,20 @@
 
     <form class="checkout-form" onsubmit="return false;">
       <label for="userId">User ID / Nickname</label>
-      <input id="userId" type="text" placeholder="Masukkan User ID" autocomplete="off" />
+      <input id="userId" type="text" placeholder="Masukkan User ID / Nickname" autocomplete="off" />
 
-      <!-- Server ID akan otomatis muncul jika perlu -->
-      <label>Pilih Diamond</label>
+      <!-- Server ID akan disisipkan via JS jika game perlu -->
+      <label for="diamondList">Pilih Diamond</label>
       <div id="diamondList" class="diamond-grid"></div>
 
-      <label>Pilih Metode Pembayaran</label>
+      <label for="paymentList">Pilih Metode Pembayaran</label>
       <div id="paymentList" class="payment-grid"></div>
 
       <button id="checkoutBtn" class="btn-checkout" type="button">Checkout</button>
     </form>
   </main>
 
+  <!-- Popup konfirmasi -->
   <div id="popup" class="popup">
     <div class="popup-content fade-in">
       <h3>Detail Transaksi</h3>
@@ -41,6 +42,7 @@
     </div>
   </div>
 
+  <!-- Penting: muat JS eksternal -->
   <script src="script.js" defer></script>
 </body>
-</html>
+        </html>
