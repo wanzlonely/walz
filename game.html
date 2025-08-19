@@ -7,57 +7,112 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="header small">
-    <a href="index.html" class="back-btn">← Kembali</a>
-    <h1 class="title">WalzShop</h1>
+  <!-- HEADER -->
+  <header class="header">
+    <h1 id="gameTitle">WalzShop</h1>
   </header>
 
-  <main class="game-detail">
-    <div class="game-info">
-      <img id="gameImage" src="" alt="Game">
-      <h2 id="gameName">Nama Game</h2>
+  <!-- GAME INFO -->
+  <section class="game-info">
+    <img id="gameImage" src="" alt="Game Image" class="game-cover">
+    <h2 id="gameName">(Nama Game)</h2>
+  </section>
+
+  <!-- FORM TOP UP -->
+  <section class="form-container">
+    <label for="userId">Masukkan ID Game</label>
+    <input type="text" id="userId" placeholder="Contoh: 123456789">
+
+    <div id="serverIdContainer" style="display:none;">
+      <label for="serverId">Server ID</label>
+      <input type="text" id="serverId" placeholder="Contoh: 1234">
     </div>
 
-    <form id="topupForm">
-      <div class="form-group">
-        <label for="userId">ID Game</label>
-        <input type="text" id="userId" placeholder="Masukkan ID Game">
-      </div>
+    <!-- PILIH DIAMOND -->
+    <h3>Pilih Diamond</h3>
+    <div class="diamond-container" id="diamondContainer">
+      <!-- Diamond options dari script.js -->
+    </div>
 
-      <div class="form-group" id="serverIdGroup" style="display:none;">
-        <label for="serverId">Server ID</label>
-        <input type="text" id="serverId" placeholder="Masukkan Server ID">
-      </div>
+    <!-- PILIH PEMBAYARAN -->
+    <h3>Metode Pembayaran</h3>
+    <div class="payment-container" id="paymentContainer">
+      <!-- Payment options dari script.js -->
+    </div>
 
-      <h3>Pilih Diamond</h3>
-      <div class="diamond-grid" id="diamondOptions">
-        <!-- Opsi diamond akan dimuat via JS -->
-      </div>
+    <!-- KODE VOUCHER -->
+    <label for="voucher">Kode Voucher (Opsional)</label>
+    <input type="text" id="voucher" placeholder="Masukkan kode promo">
 
-      <h3>Metode Pembayaran</h3>
-      <div class="payment-grid" id="paymentOptions">
-        <!-- Opsi pembayaran via JS -->
-      </div>
+    <!-- CHECKOUT -->
+    <button id="checkoutBtn" class="btn-checkout">Checkout</button>
+  </section>
 
-      <div class="form-group">
-        <label for="voucher">Kode Voucher (opsional)</label>
-        <input type="text" id="voucher" placeholder="Masukkan kode voucher">
-      </div>
-
-      <button type="submit" class="btn">Checkout</button>
-    </form>
-  </main>
-
-  <!-- Popup Detail Transaksi -->
-  <div class="popup" id="transactionPopup">
+  <!-- POPUP DETAIL TRANSAKSI -->
+  <div class="popup" id="popup">
     <div class="popup-content">
+      <span id="closePopup" class="close">&times;</span>
       <h2>Detail Transaksi</h2>
-      <ul id="transactionDetails"></ul>
-      <button id="checkoutWA" class="btn">Checkout via WhatsApp</button>
-      <button id="closePopup" class="btn secondary">Tutup</button>
+      <ul id="popupDetails"></ul>
+      <a id="waCheckout" href="#" target="_blank" class="btn-wa">Checkout via WhatsApp</a>
     </div>
   </div>
 
   <script src="script.js"></script>
+  <script>
+    // AMBIL DATA GAME DARI URL
+    const params = new URLSearchParams(window.location.search);
+    const game = params.get("game");
+    const image = params.get("image");
+    const server = params.get("server");
+
+    if (game) {
+      document.getElementById("gameName").textContent = game;
+      document.getElementById("gameTitle").textContent = `WalzShop - ${game}`;
+    }
+    if (image) {
+      document.getElementById("gameImage").src = image;
+    }
+    if (server === "true") {
+      document.getElementById("serverIdContainer").style.display = "block";
+    }
+
+    // ====== RENDER DIAMOND ======
+    const diamondContainer = document.getElementById("diamondContainer");
+    const diamondPrices = {
+      5: 1000,
+      12: 2500,
+      50: 9000,
+      100: 17000,
+      250: 42000,
+      500: 83000,
+      1000: 160000
+    };
+
+    for (let d in diamondPrices) {
+      const div = document.createElement("div");
+      div.classList.add("diamond-option");
+      div.setAttribute("data-diamond", d);
+      div.innerHTML = `<span>💎 ${d}</span><p>Rp ${diamondPrices[d].toLocaleString()}</p>`;
+      diamondContainer.appendChild(div);
+    }
+
+    // ====== RENDER PAYMENT ======
+    const paymentContainer = document.getElementById("paymentContainer");
+    const payments = [
+      { name: "Gopay", img: "https://files.catbox.moe/je0irt.jpg" },
+      { name: "OVO", img: "https://files.catbox.moe/57f44a.jpg" },
+      { name: "Dana", img: "https://files.catbox.moe/f5ey4y.jpg" },
+      { name: "Pulsa", img: "" }
+    ];
+
+    payments.forEach(p => {
+      const div = document.createElement("div");
+      div.classList.add("payment-option");
+      div.setAttribute("data-payment", p.name);
+      div.innerHTML = `<img src="${p.img}" alt="${p.name}" class="pay-logo"><span>${p.name}</span>`;
+      paymentContainer.appendChild(div);
+    });
+  </script>
 </body>
 </html>
