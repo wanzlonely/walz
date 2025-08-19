@@ -1,46 +1,46 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WalzShop - Checkout</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WalzShop — Checkout</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="header">
-    <img src="https://files.catbox.moe/wcxi20.jpg" class="logo" alt="Logo">
     <h1>WalzShop</h1>
+    <p>Checkout Diamond</p>
   </header>
 
-  <div class="container">
-    <div class="game-detail fade-in">
-      <img id="gameImage" src="" alt="Game" class="game-img-large">
+  <main class="container">
+    <section class="game-detail fade-in">
+      <img id="gameImage" class="game-img-large" alt="Game yang dipilih" />
       <h2 id="gameName"></h2>
-    </div>
+    </section>
 
-    <form class="checkout-form">
-      <label for="userId">User ID</label>
-      <input type="text" id="userId" placeholder="Masukkan User ID">
+    <form class="checkout-form" onsubmit="return false;">
+      <label for="userId">User ID / Nickname</label>
+      <input id="userId" type="text" placeholder="Masukkan User ID" autocomplete="off" />
 
+      <!-- Server ID akan otomatis muncul jika perlu -->
       <label>Pilih Diamond</label>
-      <div class="diamond-grid" id="diamondList"></div>
+      <div id="diamondList" class="diamond-grid"></div>
 
       <label>Pilih Metode Pembayaran</label>
-      <div class="payment-grid" id="paymentList"></div>
+      <div id="paymentList" class="payment-grid"></div>
 
-      <button type="button" id="checkoutBtn" class="btn-checkout">Checkout</button>
+      <button id="checkoutBtn" class="btn-checkout" type="button">Checkout</button>
     </form>
-  </div>
+  </main>
 
-  <!-- PopUp -->
-  <div class="popup" id="popup">
+  <div id="popup" class="popup">
     <div class="popup-content fade-in">
       <h3>Detail Transaksi</h3>
       <p id="popupText"></p>
-      <button id="confirmBtn" class="btn-checkout">Konfirmasi & WhatsApp</button>
+      <button id="confirmBtn" class="btn-checkout" type="button">Konfirmasi & WhatsApp</button>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
