@@ -1,142 +1,84 @@
-/* Reset */
-* {
-  margin: 0; padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
-
-body {
-  background: #0f172a;
-  color: #fff;
-  line-height: 1.6;
-  padding: 20px;
-}
+/* Reset & Base */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+body { background: #f9fafb; color: #111; line-height: 1.5; }
+h1,h2 { font-weight: 600; }
 
 /* Header */
-header {
-  text-align: center;
-  margin-bottom: 20px;
-}
-header h1 {
-  font-size: 2rem;
-  color: #38bdf8;
-}
-header p {
-  color: #94a3b8;
-}
+.header { padding: 1rem; text-align: center; background: white; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+.header h1 { font-size: 1.5rem; }
+
+/* Container */
+.container { max-width: 900px; margin: 1rem auto; padding: 1rem; }
 
 /* Card */
 .card {
-  background: #1e293b;
-  border-radius: 14px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+  background: white;
+  border-radius: 1.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-/* Input */
-input {
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  border-radius: 8px;
-  border: none;
-  outline: none;
-  background: #334155;
-  color: #fff;
-}
-
-/* Game Grid */
-.game-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 15px;
+/* Games Grid */
+.games-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
 }
 .game-card {
-  background: #334155;
-  border-radius: 12px;
-  overflow: hidden;
-  cursor: pointer;
-  text-align: center;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-.game-card img {
-  width: 100%;
-  height: 120px;
-  object-fit: cover;
-}
-.game-card span {
-  display: block;
-  padding: 8px;
-  font-weight: bold;
-}
-.game-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(56,189,248,0.6);
-}
-.game-card.active {
-  border: 3px solid #38bdf8;
-}
-
-/* Nominal Grid */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 10px;
-}
-.nominal-option {
-  background: #334155;
-  padding: 12px;
-  border-radius: 10px;
+  background: #f3f4f6;
+  border-radius: 1rem;
+  padding: .5rem;
   text-align: center;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all .2s ease;
 }
-.nominal-option:hover, .nominal-option.active {
-  background: #38bdf8;
-  color: #0f172a;
-  font-weight: bold;
+.game-card img { width: 100%; border-radius: .8rem; }
+.game-card:hover, .game-card.active { background: #e0f2fe; transform: translateY(-2px); }
+
+/* Form */
+.form-group { margin-bottom: 1rem; }
+label { display: block; margin-bottom: .3rem; font-size: .9rem; color: #444; }
+input {
+  width: 100%; padding: .7rem; border: 1px solid #ddd; border-radius: 1rem;
+}
+.hidden { display: none; }
+
+/* Diamond Grid */
+.diamond-grid {
+  display: grid; grid-template-columns: repeat(2,1fr);
+  gap: .8rem;
+}
+.diamond-card {
+  background: #f3f4f6; padding: 1rem;
+  border-radius: 1rem; text-align: center;
+  cursor: pointer; transition: all .2s;
+  font-weight: 600; font-size: 1.1rem;
+}
+.diamond-card span { font-size: 1.2rem; margin-right: .3rem; }
+.diamond-card:hover, .diamond-card.active {
+  background: #2563eb; color: white;
+  box-shadow: 0 4px 10px rgba(37,99,235,0.3);
 }
 
-/* Payment Grid */
+/* Payment */
 .payment-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 12px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr));
+  gap: 1rem;
 }
-.pay-option img {
-  width: 100%;
-  height: 60px;
-  object-fit: contain;
-  border-radius: 8px;
-  background: #fff;
-  padding: 5px;
-  transition: 0.3s;
+.payment-card {
+  background: #f3f4f6; border-radius: 1rem; padding: .5rem;
+  cursor: pointer; transition: all .2s; display: flex; justify-content: center; align-items: center;
 }
-.pay-option.selected img {
-  border: 3px solid #38bdf8;
+.payment-card img { max-width: 100%; height: 60px; object-fit: contain; }
+.payment-card:hover, .payment-card.active {
+  background: #dbeafe; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 /* Button */
-button {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 10px;
-  background: #38bdf8;
-  color: #0f172a;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
+.btn {
+  width: 100%; padding: 1rem; margin-top: 1rem;
+  border: none; border-radius: 2rem;
+  background: #2563eb; color: white; font-size: 1rem; font-weight: 600;
+  cursor: pointer; transition: background .2s;
 }
-button:hover {
-  background: #0ea5e9;
-}
-
-/* Footer */
-footer {
-  text-align: center;
-  margin-top: 20px;
-  color: #94a3b8;
-  font-size: 0.9rem;
-}
+.btn:hover { background: #1e40af; }
