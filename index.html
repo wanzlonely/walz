@@ -3,94 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Top Up Store</title>
+  <title>Top Up Games</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Top Up Store</h1>
-    <p>Top up game favoritmu dengan cepat, aman, dan murah</p>
+  <header class="header">
+    <h1>Top Up Games</h1>
   </header>
 
-  <main>
-    <!-- Pilih Game -->
+  <main class="container">
+    <!-- Game Selection -->
     <section class="card">
       <h2>Pilih Game</h2>
-      <div class="game-grid" id="gameGrid">
+      <div class="games-grid" id="gameList">
         <div class="game-card" data-game="Free Fire">
           <img src="https://files.catbox.moe/x5rvpg.jpg" alt="Free Fire">
-          <span>Free Fire</span>
+          <p>Free Fire</p>
         </div>
         <div class="game-card" data-game="Mobile Legends">
           <img src="https://files.catbox.moe/wcxi20.jpg" alt="Mobile Legends">
-          <span>Mobile Legends</span>
+          <p>Mobile Legends</p>
         </div>
         <div class="game-card" data-game="Honor of Kings">
           <img src="https://files.catbox.moe/rh78kj.jpg" alt="Honor of Kings">
-          <span>Honor of Kings</span>
+          <p>Honor of Kings</p>
         </div>
         <div class="game-card" data-game="Genshin Impact">
           <img src="https://files.catbox.moe/b91rfb.jpg" alt="Genshin Impact">
-          <span>Genshin Impact</span>
+          <p>Genshin Impact</p>
         </div>
         <div class="game-card" data-game="Roblox">
           <img src="https://files.catbox.moe/uvixa8.jpg" alt="Roblox">
-          <span>Roblox</span>
+          <p>Roblox</p>
+        </div>
+        <div class="game-card" data-game="Stumble Guys">
+          <img src="https://files.catbox.moe/712fja.jpg" alt="Stumble Guys">
+          <p>Stumble Guys</p>
         </div>
       </div>
     </section>
 
-    <!-- ID Player -->
+    <!-- User Input -->
     <section class="card">
-      <h2>Masukkan Data</h2>
-      <input type="text" id="playerId" placeholder="ID Player">
-      <input type="text" id="serverId" placeholder="Server (opsional)">
-      <input type="text" id="note" placeholder="Catatan (opsional)">
-    </section>
-
-    <!-- Nominal -->
-    <section class="card">
-      <h2>Pilih Nominal</h2>
-      <div id="nominalOptions" class="grid"></div>
-    </section>
-
-    <!-- Metode Pembayaran -->
-    <section class="card">
-      <h2>Metode Pembayaran</h2>
-      <div class="payment-grid" id="paymentOptions">
-        <button class="pay-option" data-method="QRIS">
-          <img src="https://files.catbox.moe/crlcvj.jpg" alt="QRIS">
-        </button>
-        <button class="pay-option" data-method="ShopeePay">
-          <img src="https://files.catbox.moe/gub7ik.jpg" alt="ShopeePay">
-        </button>
-        <button class="pay-option" data-method="Dana">
-          <img src="https://files.catbox.moe/vzij14.jpg" alt="Dana">
-        </button>
-        <button class="pay-option" data-method="GoPay">
-          <img src="https://files.catbox.moe/hjxbgp.jpg" alt="GoPay">
-        </button>
-        <button class="pay-option" data-method="OVO">
-          <img src="https://files.catbox.moe/uy94ct.jpg" alt="OVO">
-        </button>
+      <h2>Data Akun</h2>
+      <div class="form-group">
+        <label for="userId">ID Game</label>
+        <input type="text" id="userId" placeholder="Masukkan ID Game">
+      </div>
+      <div class="form-group hidden" id="serverIdGroup">
+        <label for="serverId">Server ID</label>
+        <input type="text" id="serverId" placeholder="Masukkan Server ID">
       </div>
     </section>
 
-    <!-- Voucher -->
+    <!-- Diamond Options -->
     <section class="card">
-      <h2>Kode Voucher</h2>
-      <input type="text" id="voucher" placeholder="Masukkan kode voucher">
+      <h2>Pilih Nominal</h2>
+      <div class="diamond-grid" id="diamondOptions">
+        <div class="diamond-card" data-amount="86"><span>💎</span> 86</div>
+        <div class="diamond-card" data-amount="170"><span>💎</span> 170</div>
+        <div class="diamond-card" data-amount="257"><span>💎</span> 257</div>
+        <div class="diamond-card" data-amount="344"><span>💎</span> 344</div>
+      </div>
     </section>
 
-    <!-- Checkout -->
+    <!-- Payment -->
     <section class="card">
-      <button id="checkoutBtn">Checkout via WhatsApp</button>
+      <h2>Metode Pembayaran</h2>
+      <div class="payment-grid" id="paymentOptions">
+        <div class="payment-card" data-method="qris">
+          <img src="https://files.catbox.moe/crlcvj.jpg" alt="QRIS">
+        </div>
+        <div class="payment-card" data-method="shopeepay">
+          <img src="https://files.catbox.moe/gub7ik.jpg" alt="ShopeePay">
+        </div>
+        <div class="payment-card" data-method="dana">
+          <img src="https://files.catbox.moe/f5ey4y.jpg" alt="Dana">
+        </div>
+        <div class="payment-card" data-method="gopay">
+          <img src="https://files.catbox.moe/je0irt.jpg" alt="Gopay">
+        </div>
+        <div class="payment-card" data-method="ovo">
+          <img src="https://files.catbox.moe/57f44a.jpg" alt="OVO">
+        </div>
+      </div>
     </section>
+
+    <button class="btn" id="checkoutBtn">Checkout via WhatsApp</button>
   </main>
-
-  <footer>
-    <p>© 2025 Top Up Store. All rights reserved.</p>
-  </footer>
 
   <script src="script.js"></script>
 </body>
