@@ -7,11 +7,9 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <div class="logo">
-      <img src="https://files.catbox.moe/dpsks9.jpg" alt="WalzShop Logo">
-      <h1>WalzShop</h1>
-    </div>
+  <header class="header">
+    <img src="https://files.catbox.moe/dpsks9.jpg" alt="Logo WalzShop">
+    <h1>WalzShop</h1>
   </header>
 
   <main class="container">
@@ -20,58 +18,103 @@
       <h2 id="gameName"></h2>
     </div>
 
-    <form class="checkout-form">
-      <label>Masukkan ID / Nickname</label>
-      <input type="text" placeholder="Contoh: Player123" required>
+    <div class="checkout-form">
+      <label>ID / Nickname</label>
+      <input type="text" id="playerId" placeholder="Masukkan ID / Nickname">
 
-      <label>Pilih Produk Diamond</label>
-      <select required>
-        <option value="">Pilih Paket</option>
-        <option value="50">50 Diamond</option>
-        <option value="100">100 Diamond</option>
-        <option value="500">500 Diamond</option>
-        <option value="1000">1000 Diamond</option>
-      </select>
+      <label>Pilih Paket Diamond</label>
+      <div class="diamond-grid">
+        <div class="diamond-item" data-value="50">50</div>
+        <div class="diamond-item" data-value="100">100</div>
+        <div class="diamond-item" data-value="500">500</div>
+        <div class="diamond-item" data-value="1000">1000</div>
+      </div>
 
       <label>Pilih Metode Pembayaran</label>
-      <select required>
-        <option value="">Pilih Metode</option>
-        <option value="Gopay">Gopay</option>
-        <option value="OVO">OVO</option>
-        <option value="Dana">Dana</option>
-        <option value="Bank">Transfer Bank</option>
-      </select>
+      <div class="payment-grid">
+        <div class="payment-item" data-value="QRIS"><img src="https://files.catbox.moe/crlcvj.jpg" alt="QRIS"></div>
+        <div class="payment-item" data-value="ShopeePay"><img src="https://files.catbox.moe/gub7ik.jpg" alt="ShopeePay"></div>
+        <div class="payment-item" data-value="Dana"><img src="https://files.catbox.moe/vzij14.jpg" alt="Dana"></div>
+        <div class="payment-item" data-value="Gopay"><img src="https://files.catbox.moe/hjxbgp.jpg" alt="Gopay"></div>
+        <div class="payment-item" data-value="Ovo"><img src="https://files.catbox.moe/uy94ct.jpg" alt="Ovo"></div>
+      </div>
 
       <label>Kode Voucher (Opsional)</label>
-      <input type="text" placeholder="Masukkan kode voucher">
+      <input type="text" id="voucher" placeholder="Masukkan kode voucher">
 
-      <button type="submit" class="btn-checkout">Checkout</button>
-    </form>
+      <button id="checkoutBtn" class="btn-checkout">Checkout</button>
+    </div>
   </main>
+
+  <div class="popup" id="popup">
+    <div class="popup-content">
+      <h3>Detail Transaksi</h3>
+      <p id="popupText"></p>
+      <button id="confirmBtn" class="btn-checkout">Konfirmasi & WhatsApp</button>
+    </div>
+  </div>
 
   <footer>
     <p>© 2025 WalzShop. Semua Hak Dilindungi.</p>
   </footer>
 
   <script>
+    // Ambil parameter game
     const params = new URLSearchParams(window.location.search);
     const game = params.get('game');
     const img = params.get('img');
-
     const gameName = document.getElementById('gameName');
     const gameImage = document.getElementById('gameImage');
-    const gameDetail = document.querySelector('.game-detail');
-    const form = document.querySelector('.checkout-form');
+    const diamondItems = document.querySelectorAll('.diamond-item');
+    const paymentItems = document.querySelectorAll('.payment-item');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const popup = document.getElementById('popup');
+    const popupText = document.getElementById('popupText');
+    const confirmBtn = document.getElementById('confirmBtn');
+
+    let selectedDiamond = '';
+    let selectedPayment = '';
 
     gameName.textContent = game;
     gameImage.src = img;
 
-    // Animasi slide-in
-    window.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => {
-        gameDetail.classList.add('active');
-        form.classList.add('active');
-      }, 200);
+    // Pilih diamond
+    diamondItems.forEach(item=>{
+      item.addEventListener('click',()=>{
+        diamondItems.forEach(i=>i.classList.remove('selected'));
+        item.classList.add('selected');
+        selectedDiamond=item.dataset.value;
+      });
+    });
+
+    // Pilih payment
+    paymentItems.forEach(item=>{
+      item.addEventListener('click',()=>{
+        paymentItems.forEach(i=>i.classList.remove('selected'));
+        item.classList.add('selected');
+        selectedPayment=item.dataset.value;
+      });
+    });
+
+    // Checkout
+    checkoutBtn.addEventListener('click',()=>{
+      const playerId=document.getElementById('playerId').value.trim();
+      const voucher=document.getElementById('voucher').value.trim();
+      if(!playerId||!selectedDiamond||!selectedPayment){
+        alert("Lengkapi semua kolom sebelum checkout!");
+        return;
+      }
+      popupText.innerHTML=`Game: <b>${game}</b><br>ID/Nickname: <b>${playerId}</b><br>Diamond: <b>${selectedDiamond}</b><br>Metode: <b>${selectedPayment}</b><br>Voucher: <b>${voucher||'-'}</b>`;
+      popup.classList.add('active');
+    });
+
+    // Konfirmasi & WhatsApp
+    confirmBtn.addEventListener('click',()=>{
+      const playerId=document.getElementById('playerId').value.trim();
+      const voucher=document.getElementById('voucher').value.trim();
+      const whatsappNumber='6282298902274';
+      const message=encodeURIComponent(`Halo, saya ingin melakukan top up:\nGame: ${game}\nID/Nickname: ${playerId}\nDiamond: ${selectedDiamond}\nMetode: ${selectedPayment}\nVoucher: ${voucher||'-'}`);
+      window.open(`https://wa.me/${whatsappNumber}?text=${message}`,'_blank');
     });
   </script>
 </body>
