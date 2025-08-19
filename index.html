@@ -1,221 +1,97 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top Up Center Premium</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(to right, #f0f4f8, #d9e6f2);
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
-
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-
-        .hero {
-            text-align: center;
-            padding: 100px 20px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            animation: fadeIn 1s ease-in;
-        }
-
-        .hero h1 {
-            font-size: 2.5rem;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            color: #555;
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            text-transform: uppercase;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn:hover {
-            background-color: #218838;
-        }
-
-        .container {
-            padding: 20px;
-            max-width: 800px;
-            margin: auto;
-        }
-
-        h2 {
-            color: #333;
-            border-bottom: 2px solid #28a745;
-            padding-bottom: 5px;
-            margin-bottom: 15px;
-        }
-
-        input[type="text"] {
-            width: calc(100% - 20px);
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            transition: border 0.3s ease;
-        }
-
-        input[type="text"]:focus {
-            border-color: #28a745;
-            outline: none;
-        }
-
-        .package-grid, .payment-methods {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 10px;
-        }
-
-        #stickyPrice {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            animation: slideIn 0.5s ease;
-        }
-
-        button {
-            width: 100%;
-            padding: 15px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #0069d9;
-        }
-
-        .popup {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-        }
-
-        .popup-content {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 0.5s;
-        }
-
-        .loader {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top Up Store</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <header>
+    <h1>Top Up Store</h1>
+    <p>Top up game favoritmu dengan cepat, aman, dan murah</p>
+  </header>
 
-<canvas id="particleCanvas"></canvas>
+  <main>
+    <!-- Pilih Game -->
+    <section class="card">
+      <h2>Pilih Game</h2>
+      <div class="game-grid" id="gameGrid">
+        <div class="game-card" data-game="Free Fire">
+          <img src="https://files.catbox.moe/x5rvpg.jpg" alt="Free Fire">
+          <span>Free Fire</span>
+        </div>
+        <div class="game-card" data-game="Mobile Legends">
+          <img src="https://files.catbox.moe/wcxi20.jpg" alt="Mobile Legends">
+          <span>Mobile Legends</span>
+        </div>
+        <div class="game-card" data-game="Honor of Kings">
+          <img src="https://files.catbox.moe/rh78kj.jpg" alt="Honor of Kings">
+          <span>Honor of Kings</span>
+        </div>
+        <div class="game-card" data-game="Genshin Impact">
+          <img src="https://files.catbox.moe/b91rfb.jpg" alt="Genshin Impact">
+          <span>Genshin Impact</span>
+        </div>
+        <div class="game-card" data-game="Roblox">
+          <img src="https://files.catbox.moe/uvixa8.jpg" alt="Roblox">
+          <span>Roblox</span>
+        </div>
+      </div>
+    </section>
 
-<!-- HERO SECTION -->
-<section class="hero">
-    <h1>Top Up Center Premium</h1>
-    <p>Dapatkan diamond & item game dengan cepat dan aman!</p>
-    <a href="#produk" class="btn">Beli Sekarang</a>
-</section>
+    <!-- ID Player -->
+    <section class="card">
+      <h2>Masukkan Data</h2>
+      <input type="text" id="playerId" placeholder="ID Player">
+      <input type="text" id="serverId" placeholder="Server (opsional)">
+      <input type="text" id="note" placeholder="Catatan (opsional)">
+    </section>
 
-<div class="container">
+    <!-- Nominal -->
+    <section class="card">
+      <h2>Pilih Nominal</h2>
+      <div id="nominalOptions" class="grid"></div>
+    </section>
 
-    <!-- GAME CARDS -->
-    <h2>Pilih Game</h2>
-    <div class="game-grid" id="gameGrid"></div>
+    <!-- Metode Pembayaran -->
+    <section class="card">
+      <h2>Metode Pembayaran</h2>
+      <div class="payment-grid" id="paymentOptions">
+        <button class="pay-option" data-method="QRIS">
+          <img src="https://files.catbox.moe/crlcvj.jpg" alt="QRIS">
+        </button>
+        <button class="pay-option" data-method="ShopeePay">
+          <img src="https://files.catbox.moe/gub7ik.jpg" alt="ShopeePay">
+        </button>
+        <button class="pay-option" data-method="Dana">
+          <img src="https://files.catbox.moe/vzij14.jpg" alt="Dana">
+        </button>
+        <button class="pay-option" data-method="GoPay">
+          <img src="https://files.catbox.moe/hjxbgp.jpg" alt="GoPay">
+        </button>
+        <button class="pay-option" data-method="OVO">
+          <img src="https://files.catbox.moe/uy94ct.jpg" alt="OVO">
+        </button>
+      </div>
+    </section>
 
-    <!-- INPUT ID -->
-    <label for="idgame">Masukkan ID / UID</label>
-    <input type="text" id="idgame" placeholder="Masukkan ID Game">
+    <!-- Voucher -->
+    <section class="card">
+      <h2>Kode Voucher</h2>
+      <input type="text" id="voucher" placeholder="Masukkan kode voucher">
+    </section>
 
-    <!-- PACKAGE -->
-    <h2>Pilih Paket</h2>
-    <div class="package-grid" id="packageGrid"></div>
+    <!-- Checkout -->
+    <section class="card">
+      <button id="checkoutBtn">Checkout via WhatsApp</button>
+    </section>
+  </main>
 
-    <!-- VOUCHER -->
-    <label for="voucher">Voucher (opsional)</label>
-    <input type="text" id="voucher" placeholder="PROMO10">
+  <footer>
+    <p>© 2025 Top Up Store. All rights reserved.</p>
+  </footer>
 
-    <!-- STICKY PRICE -->
-    <div id="stickyPrice">Total: Rp 0</div>
-
-    <!-- PAYMENT METHODS -->
-    <h2>Pilih Metode Pembayaran</h2>
-    <div class="payment-methods" id="paymentGrid"></div>
-
-    <!-- CHECKOUT BUTTON -->
-    <button id="checkoutBtn">Beli Sekarang</button>
-
-</div>
-
-<!-- POPUP LOADER -->
-<div class="popup" id="popup">
-    <div class="popup-content">
-        <div class="loader"></div>
-        <h3>Memproses Order...</h3>
-    </div>
-</div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
