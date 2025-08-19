@@ -1,312 +1,153 @@
-// Final script.js - clean version
-const ADMIN_WA = "6282298902274";
-
-/* ===== DATA: price catalog per game ===== */
-const priceCatalog = {
-  freefire: [
-    {amt: 12, base: 2500}, {amt: 50, base: 9000}, {amt: 86, base: 15000},
-    {amt: 170, base: 30000}, {amt: 257, base: 45000}, {amt: 514, base: 90000}, {amt: 1000, base: 165000}
-  ],
-  mlbb: [
-    {amt: 12, base: 2200}, {amt: 50, base: 8500}, {amt: 86, base: 14000},
-    {amt: 170, base: 28000}, {amt: 257, base: 42000}, {amt: 514, base: 88000}, {amt: 1000, base: 160000}
-  ],
-  hok: [
-    {amt: 12, base: 2300}, {amt: 50, base: 8700}, {amt: 86, base: 14500},
-    {amt: 170, base: 29000}, {amt: 257, base: 43500}, {amt: 514, base: 91000}, {amt: 1000, base: 162000}
-  ],
-  genshin: [
-    {amt: 10, base: 14000}, {amt: 33, base: 42000}, {amt: 66, base: 82000},
-    {amt: 88, base: 105000}, {amt: 155, base: 180000}
-  ],
-  roblox: [
-    {amt: 40, base: 8500}, {amt: 80, base: 16000}, {amt: 240, base: 47000}, {amt: 800, base: 150000}
-  ],
-  stumble: [
-    {amt: 50, base: 9000}, {amt: 120, base: 21000}, {amt: 300, base: 48000}
-  ]
+// DATA GAME + DIAMOND + HARGA
+const games = {
+  "freefire": {
+    name: "Free Fire",
+    image: "https://files.catbox.moe/x5rvpg.jpg",
+    diamonds: [
+      {id: 1, jumlah: "5 Diamond", harga: 1000},
+      {id: 2, jumlah: "50 Diamond", harga: 8000},
+      {id: 3, jumlah: "100 Diamond", harga: 15000},
+      {id: 4, jumlah: "500 Diamond", harga: 70000},
+      {id: 5, jumlah: "1000 Diamond", harga: 135000}
+    ]
+  },
+  "mobilelegends": {
+    name: "Mobile Legends",
+    image: "https://files.catbox.moe/wcxi20.jpg",
+    hasServer: true,
+    diamonds: [
+      {id: 1, jumlah: "86 Diamond", harga: 20000},
+      {id: 2, jumlah: "172 Diamond", harga: 38000},
+      {id: 3, jumlah: "257 Diamond", harga: 56000},
+      {id: 4, jumlah: "514 Diamond", harga: 111000}
+    ]
+  },
+  "honorofkings": {
+    name: "Honor of Kings",
+    image: "https://files.catbox.moe/rh78kj.jpg",
+    diamonds: [
+      {id: 1, jumlah: "50 Token", harga: 12000},
+      {id: 2, jumlah: "100 Token", harga: 23000},
+      {id: 3, jumlah: "500 Token", harga: 110000}
+    ]
+  },
+  "genshinimpact": {
+    name: "Genshin Impact",
+    image: "https://files.catbox.moe/b91rfb.jpg",
+    hasServer: true,
+    diamonds: [
+      {id: 1, jumlah: "60 Genesis Crystal", harga: 12000},
+      {id: 2, jumlah: "300+30 Genesis Crystal", harga: 59000},
+      {id: 3, jumlah: "980+110 Genesis Crystal", harga: 179000}
+    ]
+  },
+  "roblox": {
+    name: "Roblox",
+    image: "https://files.catbox.moe/uvixa8.jpg",
+    diamonds: [
+      {id: 1, jumlah: "80 Robux", harga: 12000},
+      {id: 2, jumlah: "400 Robux", harga: 59000},
+      {id: 3, jumlah: "1000 Robux", harga: 149000}
+    ]
+  },
+  "stumbleguys": {
+    name: "Stumble Guys",
+    image: "https://files.catbox.moe/712fja.jpg",
+    diamonds: [
+      {id: 1, jumlah: "250 Token", harga: 15000},
+      {id: 2, jumlah: "800 Token", harga: 45000},
+      {id: 3, jumlah: "1600 Token", harga: 89000}
+    ]
+  }
 };
 
-/* fee rates per method */
-const feeRate = { qris: 0.007, shopeepay: 0.012, dana: 0.012, gopay: 0.012, ovo: 0.012 };
-
-/* payment methods meta */
-const paymentsMeta = [
-  {id: "qris", name: "QRIS", img: "https://files.catbox.moe/crlcvj.jpg"},
-  {id: "shopeepay", name: "ShopeePay", img: "https://files.catbox.moe/gub7ik.jpg"},
-  {id: "dana", name: "DANA", img: "https://files.catbox.moe/f5ey4y.jpg"},
-  {id: "gopay", name: "GoPay", img: "https://files.catbox.moe/je0irt.jpg"},
-  {id: "ovo", name: "OVO", img: "https://files.catbox.moe/57f44a.jpg"}
+// PEMBAYARAN
+const payments = [
+  {id: "qris", name: "QRIS", image: "https://files.catbox.moe/crlcvj.jpg"},
+  {id: "dana", name: "Dana", image: "https://files.catbox.moe/f5ey4y.jpg"},
+  {id: "gopay", name: "GoPay", image: "https://files.catbox.moe/je0irt.jpg"},
+  {id: "ovo", name: "OVO", image: "https://files.catbox.moe/57f44a.jpg"},
+  {id: "shopeepay", name: "ShopeePay", image: "https://files.catbox.moe/gub7ik.jpg"}
 ];
 
-/* voucher map */
-const vouchers = {
-  PROMOHEMAT: { rate: 0.05, max: 5000 },
-  TOPUPMURAH: { rate: 0.08, max: 10000 }
-};
+// GET GAME SELECTED
+const params = new URLSearchParams(window.location.search);
+const gameKey = params.get("game");
+const game = games[gameKey];
 
-/* helpers */
-const $ = s => document.querySelector(s);
-const $$ = s => Array.from(document.querySelectorAll(s));
-const fmt = n => "Rp " + Math.round(n).toLocaleString("id-ID");
+if(game){
+  document.getElementById("selectedGameImage").src = game.image;
+  document.getElementById("selectedGameName").textContent = game.name;
+  if(game.hasServer){
+    document.getElementById("serverIdGroup").style.display = "block";
+  }
 
-/* read params */
-const params = Object.fromEntries(new URLSearchParams(location.search).entries());
-const gameKey = params.key || "freefire";
-const gameNameParam = params.name ? decodeURIComponent(params.name) : "";
-const gameImgParam = params.img || "";
-const needServer = params.server === "true" || params.server === "1";
-
-/* UI elements */
-const bannerEl = $("#gameBanner");
-const gameNameEl = $("#selectedGameName");
-const gameStudioEl = $("#selectedGameStudio");
-const serverField = $("#serverField");
-const diamondGrid = $("#diamondGrid");
-const paymentGrid = $("#paymentGrid");
-const checkoutBtn = $("#checkoutBtn");
-const modal = $("#modal");
-const closeModal = $("#closeModal");
-const btnConfirm = $("#btnConfirm");
-const btnEdit = $("#btnEdit");
-
-/* state */
-let state = {
-  gameKey,
-  gameName: gameNameParam || capitalizeKey(gameKey),
-  gameImg: gameImgParam,
-  needServer,
-  selectedPack: null,
-  priceMap: {},
-  selectedMethod: null,
-  voucher: null
-};
-
-/* init */
-function init() {
-  bannerEl.src = state.gameImg || "https://files.catbox.moe/x5rvpg.jpg";
-  gameNameEl.textContent = state.gameName;
-  gameStudioEl.textContent = "";
-
-  serverField.style.display = state.needServer ? "block" : "none";
-
-  renderDiamonds();
-  renderPayments();
-  attachInteractions();
-  validateForm();
-}
-
-/* capitalize key fallback */
-function capitalizeKey(k){
-  return k.replace(/[-_]/g,' ').replace(/\b\w/g, c => c.toUpperCase());
-}
-
-/* apply small promo discount */
-function promoPrice(base){ return Math.round(base * 0.95); }
-
-/* compute price map with fee */
-function computePriceMap(base){
-  const out = {};
-  Object.keys(feeRate).forEach(k => {
-    const fee = Math.ceil(base * feeRate[k] / 100) * 100; // round to 100
-    out[k] = base + fee;
-  });
-  return out;
-}
-
-/* render diamond packs */
-function renderDiamonds(){
-  diamondGrid.innerHTML = "";
-  const list = priceCatalog[state.gameKey] || priceCatalog["freefire"];
-  list.forEach(pack => {
-    const discounted = promoPrice(pack.base);
-    const el = document.createElement("button");
-    el.className = "diamond-card";
-    el.type = "button";
-    el.dataset.amt = pack.amt;
-    el.dataset.base = pack.base;
-    el.innerHTML = `
-      <div class="d-left">
-        <div class="d-ico">💎</div>
-        <div class="d-info">
-          <div class="d-amt">${pack.amt} ${state.gameKey === 'genshin' ? 'Primogems' : 'Diamonds'}</div>
-          <div class="d-price">${fmt(discounted)}</div>
-        </div>
-      </div>
-      <div class="d-action muted">Pilih</div>
-    `;
-    diamondGrid.appendChild(el);
-  });
-}
-
-/* render payment methods */
-function renderPayments(){
-  paymentGrid.innerHTML = "";
-  paymentsMeta.forEach(pm => {
-    const btn = document.createElement("button");
-    btn.className = "payment-card";
-    btn.type = "button";
-    btn.dataset.method = pm.id;
-    btn.innerHTML = `
-      <img src="${pm.img}" alt="${pm.name}">
-      <div class="pay-meta">
-        <div class="name">${pm.name}</div>
-        <div class="price muted" data-price="${pm.id}">-</div>
-      </div>
-    `;
-    paymentGrid.appendChild(btn);
-  });
-}
-
-/* attach interactions */
-function attachInteractions(){
-  $$(".diamond-card").forEach(btn => {
-    btn.addEventListener("click", () => {
-      $$(".diamond-card").forEach(x => x.classList.remove("active"));
-      btn.classList.add("active");
-
-      const amt = +btn.dataset.amt;
-      const base = +btn.dataset.base;
-      state.selectedPack = {amt, base};
-
-      const promoBase = promoPrice(base);
-      state.priceMap = computePriceMap(promoBase);
-
-      updatePaymentPrices();
-      validateForm();
+  // LOAD DIAMONDS
+  const diamondList = document.getElementById("diamondList");
+  game.diamonds.forEach(d => {
+    const div = document.createElement("div");
+    div.className = "product-item";
+    div.dataset.id = d.id;
+    div.dataset.jumlah = d.jumlah;
+    div.dataset.harga = d.harga;
+    div.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/512/2762/2762885.png" alt="Diamond"><p>${d.jumlah}</p><p>Rp${d.harga.toLocaleString()}</p>`;
+    div.addEventListener("click", ()=>{
+      document.querySelectorAll(".product-item").forEach(i=>i.classList.remove("selected"));
+      div.classList.add("selected");
     });
+    diamondList.appendChild(div);
   });
 
-  $$(".payment-card").forEach(card => {
-    card.addEventListener("click", () => {
-      if (!state.selectedPack) {
-        card.animate([{transform:'translateY(0)'},{transform:'translateY(-4px)'},{transform:'translateY(0)'}],{duration:220});
-        return;
-      }
-      $$(".payment-card").forEach(x => x.classList.remove("active"));
-      card.classList.add("active");
-      state.selectedMethod = card.dataset.method;
-      validateForm();
+  // LOAD PAYMENT
+  const paymentList = document.getElementById("paymentList");
+  payments.forEach(p=>{
+    const div = document.createElement("div");
+    div.className = "payment-item";
+    div.dataset.id = p.id;
+    div.dataset.name = p.name;
+    div.innerHTML = `<img src="${p.image}" alt="${p.name}" width="50"><p>${p.name}</p>`;
+    div.addEventListener("click", ()=>{
+      document.querySelectorAll(".payment-item").forEach(i=>i.classList.remove("selected"));
+      div.classList.add("selected");
     });
-  });
-
-  $("#userId").addEventListener("input", () => {
-    $("#errUserId").textContent = "";
-    $("#userId").classList.remove("input-error");
-    validateForm();
-  });
-  $("#serverId")?.addEventListener("input", () => {
-    $("#errServerId").textContent = "";
-    $("#serverId").classList.remove("input-error");
-    validateForm();
-  });
-
-  checkoutBtn.addEventListener("click", onCheckout);
-  closeModal.addEventListener("click", closeModalFn);
-  btnEdit.addEventListener("click", closeModalFn);
-  btnConfirm.addEventListener("click", onConfirm);
-}
-
-/* update payment prices */
-function updatePaymentPrices(){
-  $$("#paymentGrid .payment-card").forEach(card => {
-    const method = card.dataset.method;
-    const priceEl = card.querySelector(`[data-price="${method}"]`);
-    priceEl.textContent = state.priceMap[method] ? fmt(state.priceMap[method]) : "-";
+    paymentList.appendChild(div);
   });
 }
 
-/* validate form */
-function validateForm(){
-  const uid = $("#userId").value.trim();
-  const srv = $("#serverId") ? $("#serverId").value.trim() : "";
-  const ok = uid && (!state.needServer || srv) && state.selectedPack && state.selectedMethod;
-  checkoutBtn.disabled = !ok;
-}
+// HANDLE FORM
+document.getElementById("topupForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  const id = document.getElementById("gameId").value.trim();
+  const serverId = document.getElementById("serverId").value.trim();
+  const diamond = document.querySelector(".product-item.selected");
+  const payment = document.querySelector(".payment-item.selected");
+  const voucher = document.getElementById("voucher").value.trim();
 
-/* checkout */
-function onCheckout(){
-  const uid = $("#userId").value.trim();
-  const srv = $("#serverId") ? $("#serverId").value.trim() : "";
-  const voucherCode = $("#voucher").value.trim().toUpperCase();
+  if(!id){alert("Kolom ID Game belum diisi!"); return;}
+  if(game.hasServer && !serverId){alert("Kolom Server ID belum diisi!"); return;}
+  if(!diamond){alert("Pilih jumlah diamond terlebih dahulu!"); return;}
+  if(!payment){alert("Pilih metode pembayaran terlebih dahulu!"); return;}
 
-  if (!uid) return showFieldError("#userId","#errUserId","Kolom ID Game belum diisi");
-  if (state.needServer && !srv) return showFieldError("#serverId","#errServerId","Kolom Server ID belum diisi");
-  if (!state.selectedPack) return alert("Silakan pilih paket diamond terlebih dahulu");
-  if (!state.selectedMethod) return alert("Silakan pilih metode pembayaran");
+  const jumlah = diamond.dataset.jumlah;
+  const harga = parseInt(diamond.dataset.harga);
+  const bayar = harga; // bisa tambah diskon voucher di sini
 
-  const basePromo = promoPrice(state.selectedPack.base);
-  const payPrice = state.priceMap[state.selectedMethod] || basePromo;
-  const { total, info } = applyVoucher(payPrice, voucherCode);
+  const detail = `
+    <p><strong>Game:</strong> ${game.name}</p>
+    <p><strong>ID:</strong> ${id}${game.hasServer ? " ("+serverId+")" : ""}</p>
+    <p><strong>Produk:</strong> ${jumlah}</p>
+    <p><strong>Metode:</strong> ${payment.dataset.name}</p>
+    <p><strong>Total Bayar:</strong> Rp${bayar.toLocaleString()}</p>
+  `;
 
-  $("#sumGame").textContent = state.gameName;
-  $("#sumId").textContent = uid;
-  if (state.needServer) { $("#sumServerRow").style.display = "flex"; $("#sumServer").textContent = srv; }
-  else $("#sumServerRow").style.display = "none";
+  document.getElementById("transactionDetails").innerHTML = detail;
+  document.getElementById("transactionPopup").style.display = "flex";
 
-  $("#sumPack").textContent = `${state.selectedPack.amt} ${state.gameKey==='genshin'?'Primogems':'Diamonds'}`;
-  $("#sumMethod").textContent = state.selectedMethod.toUpperCase();
-  $("#sumPrice").textContent = fmt(payPrice);
+  const waText = `Halo, saya ingin top up:\n\nGame: ${game.name}\nID: ${id}${game.hasServer ? " ("+serverId+")" : ""}\nProduk: ${jumlah}\nMetode: ${payment.dataset.name}\nTotal Bayar: Rp${bayar.toLocaleString()}`;
+  document.getElementById("waCheckout").href = `https://wa.me/6282298902274?text=${encodeURIComponent(waText)}`;
+});
 
-  if (info && info.discount>0) { $("#sumVoucherRow").style.display = "flex"; $("#sumVoucher").textContent = `${info.code} (−${fmt(info.discount)})`; }
-  else $("#sumVoucherRow").style.display = "none";
-
-  $("#sumTotal").textContent = fmt(total);
-
-  state.finalTotal = total;
-  state.finalBase = payPrice;
-  state.voucherApplied = info;
-
-  modal.classList.add("show");
-  modal.setAttribute("aria-hidden","false");
-}
-
-/* field error */
-function showFieldError(inputSel, errSel, message){
-  const input = $(inputSel);
-  const err = $(errSel);
-  err.textContent = message;
-  input.classList.add("input-error");
-  input.focus();
-}
-
-/* apply voucher */
-function applyVoucher(total, code){
-  if (!code) return { total, info: null };
-  const v = vouchers[code];
-  if (!v) return { total, info: { code, discount: 0 } };
-  const disc = Math.min(Math.round(total * v.rate), v.max);
-  return { total: Math.max(total - disc, 0), info: { code, discount: disc } };
-}
-
-/* close modal */
-function closeModalFn(){
-  modal.classList.remove("show");
-  modal.setAttribute("aria-hidden","true");
-}
-
-/* confirm -> open WA */
-function onConfirm(){
-  const uid = $("#userId").value.trim();
-  const srv = $("#serverId") ? $("#serverId").value.trim() : "";
-  const voucherCode = $("#voucher").value.trim().toUpperCase();
-
-  const lines = [
-    "Halo Admin, saya ingin Top Up:",
-    `Game: ${state.gameName}`,
-    `ID: ${uid}`,
-  ];
-  if (state.needServer) lines.push(`Server: ${srv || "-"}`);
-  lines.push(`Paket: ${state.selectedPack.amt} ${state.gameKey==='genshin'?'Primogems':'Diamonds'}`);
-  lines.push(`Metode: ${state.selectedMethod.toUpperCase()}`);
-  lines.push(`Harga: ${fmt(state.finalBase)}`);
-  if (state.voucherApplied && state.voucherApplied.discount>0) lines.push(`Voucher: ${state.voucherApplied.code} (disc ${fmt(state.voucherApplied.discount)})`);
-  else if (voucherCode) lines.push(`Voucher: ${voucherCode} (tidak berlaku)`);
-  lines.push(`Total Bayar: ${fmt(state.finalTotal)}`);
-
-  const waUrl = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(lines.join("\n"))}`;
-  window.open(waUrl, "_blank");
-}
-
-/* init */
-init();
+// CLOSE POPUP
+document.getElementById("closePopup").addEventListener("click", ()=>{
+  document.getElementById("transactionPopup").style.display = "none";
+});
