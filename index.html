@@ -3,88 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🔥 TopUp Store</title>
+  <title>WalzShop - Top Up Game</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- HERO -->
-  <header class="hero">
-    <h1>🔥 TopUp Store</h1>
-    <p>Top up game cepat, aman, dan terpercaya.</p>
-    <a href="#produk" class="btn">Lihat Produk</a>
+  <header class="header">
+    <h1>WalzShop</h1>
+    <p>Top Up Game Murah & Cepat</p>
   </header>
 
-  <!-- PRODUK -->
-  <section id="produk">
-    <h2>💎 Daftar Produk</h2>
-    <div class="produk-grid">
-      <div class="produk-card">
-        <h3>Diamond 50</h3>
-        <p>Rp 10.000</p>
-      </div>
-      <div class="produk-card">
-        <h3>Diamond 100</h3>
-        <p>Rp 18.000</p>
-      </div>
-      <div class="produk-card">
-        <h3>Diamond 500</h3>
-        <p>Rp 80.000</p>
-      </div>
+  <main class="container">
+    <h2>Pilih Game Favorit</h2>
+    <div class="game-grid">
+      <a href="game.html?game=Free Fire&img=https://files.catbox.moe/x5rvpg.jpg" class="game-card fade-in">
+        <img src="https://files.catbox.moe/x5rvpg.jpg" alt="Free Fire">
+        <p>Free Fire</p>
+      </a>
+      <a href="game.html?game=Mobile Legend&img=https://files.catbox.moe/wcxi20.jpg" class="game-card fade-in">
+        <img src="https://files.catbox.moe/wcxi20.jpg" alt="Mobile Legend">
+        <p>Mobile Legend</p>
+      </a>
+      <a href="game.html?game=Honor of Kings&img=https://files.catbox.moe/rh78kj.jpg" class="game-card fade-in">
+        <img src="https://files.catbox.moe/rh78kj.jpg" alt="Honor of Kings">
+        <p>Honor of Kings</p>
+      </a>
+      <a href="game.html?game=Genshin Impact&img=https://files.catbox.moe/b91rfb.jpg" class="game-card fade-in">
+        <img src="https://files.catbox.moe/b91rfb.jpg" alt="Genshin Impact">
+        <p>Genshin Impact</p>
+      </a>
+      <a href="game.html?game=Roblox&img=https://files.catbox.moe/uvixa8.jpg" class="game-card fade-in">
+        <img src="https://files.catbox.moe/uvixa8.jpg" alt="Roblox">
+        <p>Roblox</p>
+      </a>
     </div>
-  </section>
-
-  <!-- FORM ORDER -->
-  <section id="order">
-    <h2>🛒 Formulir Order</h2>
-    <div class="card">
-      <form id="topupForm">
-        <label for="gameId">ID Game / Nomor HP</label>
-        <input type="text" id="gameId" placeholder="Masukkan ID" required>
-
-        <label for="produk">Pilih Produk</label>
-        <select id="produk" required>
-          <option value="">-- Pilih --</option>
-          <option value="Diamond 50">Diamond 50</option>
-          <option value="Diamond 100">Diamond 100</option>
-          <option value="Diamond 500">Diamond 500</option>
-        </select>
-
-        <label for="payment">Metode Pembayaran</label>
-        <select id="payment" required>
-          <option value="">-- Pilih --</option>
-          <option value="Dana">Dana</option>
-          <option value="OVO">OVO</option>
-          <option value="Gopay">Gopay</option>
-        </select>
-
-        <button type="submit">Pesan Sekarang</button>
-      </form>
-    </div>
-  </section>
-
-  <!-- POPUP LOADING -->
-  <div class="popup" id="popup">
-    <div class="popup-content">
-      <div class="loader" id="loader"></div>
-      <h3 id="statusText">Memproses pesanan...</h3>
-    </div>
-  </div>
-
-  <!-- RIWAYAT ORDER -->
-  <section id="riwayat">
-    <h2>📜 Riwayat Order</h2>
-    <div class="riwayat-list" id="riwayatList">
-      <p>Belum ada riwayat order.</p>
-    </div>
-    <button class="btn-clear" onclick="clearRiwayat()">Hapus Riwayat</button>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <p>© 2025 TopUp Store | Dibuat dengan ❤️ di GitHub Pages</p>
-  </footer>
-
-  <script src="script.js"></script>
+  </main>
 </body>
-  </html>
+</html>
