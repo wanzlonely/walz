@@ -14,6 +14,7 @@ const popupText = document.getElementById('popupText');
 const confirmBtn = document.getElementById('confirmBtn');
 
 let selectedDiamond = '';
+let selectedPrice = '';
 let selectedPayment = '';
 
 // Set nama & gambar game
@@ -26,6 +27,7 @@ diamondItems.forEach(item => {
     diamondItems.forEach(i => i.classList.remove('selected'));
     item.classList.add('selected');
     selectedDiamond = item.dataset.value;
+    selectedPrice = item.dataset.price;
   });
 });
 
@@ -43,15 +45,14 @@ checkoutBtn.addEventListener('click', () => {
   const playerId = document.getElementById('playerId').value.trim();
   const voucher = document.getElementById('voucher').value.trim();
 
-  if (!playerId || !selectedDiamond || !selectedPayment) {
-    alert("Lengkapi semua kolom sebelum checkout!");
-    return;
-  }
+  if (!playerId) { alert("Masukkan ID / Nickname!"); return; }
+  if (!selectedDiamond) { alert("Pilih paket diamond!"); return; }
+  if (!selectedPayment) { alert("Pilih metode pembayaran!"); return; }
 
   popupText.innerHTML = `
     Game: <b>${game}</b><br>
     ID/Nickname: <b>${playerId}</b><br>
-    Diamond: <b>${selectedDiamond}</b><br>
+    Diamond: <b>${selectedDiamond}</b> - <b>${selectedPrice}</b><br>
     Metode: <b>${selectedPayment}</b><br>
     Voucher: <b>${voucher || '-'}</b>
   `;
@@ -64,7 +65,7 @@ confirmBtn.addEventListener('click', () => {
   const voucher = document.getElementById('voucher').value.trim();
   const whatsappNumber = '6282298902274';
   const message = encodeURIComponent(
-    `Halo, saya ingin melakukan top up:\nGame: ${game}\nID/Nickname: ${playerId}\nDiamond: ${selectedDiamond}\nMetode: ${selectedPayment}\nVoucher: ${voucher || '-'}`
+    `Halo, saya ingin melakukan top up:\nGame: ${game}\nID/Nickname: ${playerId}\nDiamond: ${selectedDiamond} - ${selectedPrice}\nMetode: ${selectedPayment}\nVoucher: ${voucher || '-'}`
   );
   window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
 });
