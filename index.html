@@ -1,171 +1,46 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Top Up Game Store</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WalzShop - Top Up Game</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">Top Up Store</div>
+  <header class="header">
+    <img src="https://files.catbox.moe/dpsks9.jpg" alt="WalzShop Banner" class="banner">
+    <h1 class="shop-name">WalzShop</h1>
   </header>
 
   <main class="container">
-    <!-- STEP 1: GAME LIST -->
-    <section id="step-games" class="card show">
-      <div class="section-head">
-        <h2>Pilih Game</h2>
-        <p class="sub">Pilih game favoritmu untuk mulai top up</p>
-      </div>
-      <div class="games-grid" id="gameGrid">
-        <button class="game-card" data-game="Free Fire" data-key="freefire">
-          <img src="https://files.catbox.moe/x5rvpg.jpg" alt="Free Fire">
-          <span>Free Fire</span>
-        </button>
-        <button class="game-card" data-game="Mobile Legends" data-key="mobilelegends">
-          <img src="https://files.catbox.moe/wcxi20.jpg" alt="Mobile Legends">
-          <span>Mobile Legends</span>
-        </button>
-        <button class="game-card" data-game="Honor of Kings" data-key="honorofkings">
-          <img src="https://files.catbox.moe/rh78kj.jpg" alt="Honor of Kings">
-          <span>Honor of Kings</span>
-        </button>
-        <button class="game-card" data-game="Genshin Impact" data-key="genshin">
-          <img src="https://files.catbox.moe/b91rfb.jpg" alt="Genshin Impact">
-          <span>Genshin Impact</span>
-        </button>
-        <button class="game-card" data-game="Roblox" data-key="roblox">
-          <img src="https://files.catbox.moe/uvixa8.jpg" alt="Roblox">
-          <span>Roblox</span>
-        </button>
-        <button class="game-card" data-game="Stumble Guys" data-key="stumble">
-          <img src="https://files.catbox.moe/712fja.jpg" alt="Stumble Guys">
-          <span>Stumble Guys</span>
-        </button>
-      </div>
-    </section>
-
-    <!-- STEP 2: DETAILS + PRODUCTS + PAYMENT -->
-    <section id="step-details" class="card">
-      <div class="section-head">
-        <div class="breadcrumbs">
-          <button class="link back" id="backToGames">← Pilih Game</button>
-          <span class="crumb">›</span>
-          <span id="selectedGameLabel">Detail</span>
-        </div>
-        <h2 id="detailsTitle">Detail & Produk</h2>
-      </div>
-
-      <!-- Account -->
-      <div class="form-row">
-        <div class="field">
-          <label for="userId">ID Game</label>
-          <input id="userId" type="text" placeholder="Contoh: 123456789"/>
-        </div>
-        <div class="field" id="serverWrap" style="display:none;">
-          <label for="serverId">Server ID</label>
-          <input id="serverId" type="text" placeholder="Contoh: 1234 (jika ada)"/>
-        </div>
-      </div>
-
-      <!-- Diamonds -->
-      <div class="section-sub">
-        <h3>Pilih Diamond</h3>
-        <p class="sub">Paket diamond lengkap dengan tampilan kotak & ikon 💎</p>
-      </div>
-      <div class="diamond-grid" id="diamondGrid">
-        <!-- populated by JS -->
-      </div>
-
-      <!-- Voucher -->
-      <div class="section-sub">
-        <h3>Voucher</h3>
-      </div>
-      <div class="form-row">
-        <div class="field grow">
-          <label for="voucher">Kode Voucher</label>
-          <input id="voucher" type="text" placeholder="Masukkan kode voucher (opsional)"/>
-        </div>
-      </div>
-
-      <!-- Payment -->
-      <div class="section-sub">
-        <h3>Metode Pembayaran</h3>
-        <p class="sub">Harga di bawah menyesuaikan diamond terpilih</p>
-      </div>
-      <div class="payment-grid" id="paymentGrid">
-        <button class="payment-card" data-method="qris">
-          <img src="https://files.catbox.moe/crlcvj.jpg" alt="QRIS">
-          <div class="pay-meta">
-            <span class="name">QRIS</span>
-            <span class="price" data-price="qris">-</span>
-          </div>
-        </button>
-        <button class="payment-card" data-method="shopeepay">
-          <img src="https://files.catbox.moe/gub7ik.jpg" alt="ShopeePay">
-          <div class="pay-meta">
-            <span class="name">ShopeePay</span>
-            <span class="price" data-price="shopeepay">-</span>
-          </div>
-        </button>
-        <button class="payment-card" data-method="dana">
-          <img src="https://files.catbox.moe/f5ey4y.jpg" alt="Dana">
-          <div class="pay-meta">
-            <span class="name">Dana</span>
-            <span class="price" data-price="dana">-</span>
-          </div>
-        </button>
-        <button class="payment-card" data-method="gopay">
-          <img src="https://files.catbox.moe/je0irt.jpg" alt="GoPay">
-          <div class="pay-meta">
-            <span class="name">GoPay</span>
-            <span class="price" data-price="gopay">-</span>
-          </div>
-        </button>
-        <button class="payment-card" data-method="ovo">
-          <img src="https://files.catbox.moe/57f44a.jpg" alt="OVO">
-          <div class="pay-meta">
-            <span class="name">OVO</span>
-            <span class="price" data-price="ovo">-</span>
-          </div>
-        </button>
-      </div>
-
-      <div class="actions">
-        <button id="checkoutBtn" class="btn primary" disabled>Checkout</button>
-      </div>
-    </section>
-  </main>
-
-  <!-- MODAL: ORDER SUMMARY -->
-  <div id="modal" class="modal">
-    <div class="modal-dialog">
-      <div class="modal-head">
-        <h3>Detail Transaksi</h3>
-        <button class="close" id="closeModal">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="summary-row"><span>Game</span><strong id="sumGame">-</strong></div>
-        <div class="summary-row"><span>ID Game</span><strong id="sumUser">-</strong></div>
-        <div class="summary-row" id="sumServerRow" style="display:none;"><span>Server ID</span><strong id="sumServer">-</strong></div>
-        <div class="summary-row"><span>Paket</span><strong id="sumDiamond">-</strong></div>
-        <div class="summary-row"><span>Metode</span><strong id="sumMethod">-</strong></div>
-        <div class="summary-row"><span>Harga</span><strong id="sumPrice">-</strong></div>
-        <div class="summary-row" id="sumVoucherRow" style="display:none;"><span>Voucher</span><strong id="sumVoucher">-</strong></div>
-        <div class="summary-total"><span>Total Bayar</span><strong id="sumTotal">-</strong></div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn ghost" id="editOrder">Ubah</button>
-        <button class="btn primary" id="confirmOrder">Konfirmasi & WhatsApp</button>
-      </div>
+    <h2 class="section-title">Pilih Game</h2>
+    <div class="game-grid">
+      <a href="game.html?game=freefire" class="game-card">
+        <img src="https://files.catbox.moe/x5rvpg.jpg" alt="Free Fire">
+        <span>Free Fire</span>
+      </a>
+      <a href="game.html?game=ml" class="game-card">
+        <img src="https://files.catbox.moe/wcxi20.jpg" alt="Mobile Legends">
+        <span>Mobile Legends</span>
+      </a>
+      <a href="game.html?game=hok" class="game-card">
+        <img src="https://files.catbox.moe/rh78kj.jpg" alt="Honor of Kings">
+        <span>Honor of Kings</span>
+      </a>
+      <a href="game.html?game=genshin" class="game-card">
+        <img src="https://files.catbox.moe/b91rfb.jpg" alt="Genshin Impact">
+        <span>Genshin Impact</span>
+      </a>
+      <a href="game.html?game=roblox" class="game-card">
+        <img src="https://files.catbox.moe/uvixa8.jpg" alt="Roblox">
+        <span>Roblox</span>
+      </a>
+      <a href="game.html?game=stumble" class="game-card">
+        <img src="https://files.catbox.moe/712fja.jpg" alt="Stumble Guys">
+        <span>Stumble Guys</span>
+      </a>
     </div>
-  </div>
-
-  <footer class="footer">© 2025 Top Up Store</footer>
-
-  <script src="script.js"></script>
+  </main>
 </body>
 </html>
