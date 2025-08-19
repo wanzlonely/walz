@@ -1,53 +1,76 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WalzShop - Detail Game</title>
-  <link rel="stylesheet" href="style.css?v=3">
-</head>
-<body>
-<header class="header">
-  <img src="https://files.catbox.moe/dpsks9.jpg" alt="Logo WalzShop" class="logo">
-  <h1>WalzShop</h1>
-</header>
+// Ambil parameter URL game
+const urlParams = new URLSearchParams(window.location.search);
+const gameName = urlParams.get('game');
+const gameImg = urlParams.get('img');
 
-<main class="container">
-  <button id="backBtn" class="btn-back">← Kembali</button>
+if(gameName && gameImg){
+  document.getElementById('gameName').innerText = gameName;
+  document.getElementById('gameImage').src = gameImg;
+}
 
-  <div class="game-detail">
-    <img id="gameImage" src="" alt="Game Image" class="game-img">
-    <h2 id="gameName"></h2>
-  </div>
+// Diamond & Harga
+const diamonds = [
+  {name:"50 💎",price:"Rp5.000"},
+  {name:"100 💎",price:"Rp10.000"},
+  {name:"150 💎",price:"Rp15.000"},
+  {name:"250 💎",price:"Rp24.000"},
+  {name:"500 💎",price:"Rp48.000"},
+  {name:"720 💎",price:"Rp70.000"},
+  {name:"1000 💎",price:"Rp95.000"},
+  {name:"1440 💎",price:"Rp135.000"},
+  {name:"2000 💎",price:"Rp190.000"},
+];
 
-  <div class="checkout-form">
-    <label>ID / Nickname</label>
-    <input type="text" id="playerId" placeholder="Masukkan ID / Nickname">
+const diamondGrid = document.getElementById('diamondGrid');
+diamonds.forEach((d)=>{
+  const div = document.createElement('div');
+  div.className='diamond-item';
+  div.innerHTML=`<p>${d.name}</p><span>${d.price}</span>`;
+  div.addEventListener('click',()=>{document.querySelectorAll('.diamond-item').forEach(e=>e.classList.remove('selected')); div.classList.add('selected');});
+  diamondGrid.appendChild(div);
+});
 
-    <label>Paket Diamond</label>
-    <div class="diamond-grid" id="diamondGrid"></div>
+// Metode Pembayaran (dengan harga admin fee Rp0)
+const payments = [
+  {name:"QRIS",img:"https://files.catbox.moe/crlcvj.jpg",price:"Rp0"},
+  {name:"ShopeePay",img:"https://files.catbox.moe/gub7ik.jpg",price:"Rp0"},
+  {name:"Dana",img:"https://files.catbox.moe/vzij14.jpg",price:"Rp0"},
+  {name:"Gopay",img:"https://files.catbox.moe/hjxbgp.jpg",price:"Rp0"},
+  {name:"Ovo",img:"https://files.catbox.moe/uy94ct.jpg",price:"Rp0"},
+];
 
-    <label>Metode Pembayaran</label>
-    <div class="payment-grid" id="paymentGrid"></div>
+const paymentGrid = document.getElementById('paymentGrid');
+payments.forEach(p=>{
+  const div = document.createElement('div');
+  div.className='payment-item';
+  div.innerHTML=`<img src="${p.img}" alt="${p.name}"><p>${p.name}</p><span>${p.price}</span>`;
+  div.addEventListener('click',()=>{document.querySelectorAll('.payment-item').forEach(e=>e.classList.remove('selected')); div.classList.add('selected');});
+  paymentGrid.appendChild(div);
+});
 
-    <label>Kode Voucher (Opsional)</label>
-    <input type="text" id="voucher" placeholder="Masukkan kode voucher">
+// Tombol Kembali
+document.getElementById('backBtn').addEventListener('click',()=>{window.location.href='index.html';});
 
-    <button id="checkoutBtn" class="btn-checkout">Checkout</button>
-  </div>
-</main>
+// Checkout
+document.getElementById('checkoutBtn').addEventListener('click',()=>{
+  const playerId = document.getElementById('playerId').value.trim();
+  const diamond = document.querySelector('.diamond-item.selected');
+  const payment = document.querySelector('.payment-item.selected');
+  if(!playerId){alert('Masukkan ID / Nickname'); return;}
+  if(!diamond){alert('Pilih paket diamond'); return;}
+  if(!payment){alert('Pilih metode pembayaran'); return;}
+  
+  const voucher = document.getElementById('voucher').value.trim();
+  let text=`Game: ${gameName}\nID: ${playerId}\nPaket: ${diamond.querySelector('p').innerText} - ${diamond.querySelector('span').innerText}\nMetode: ${payment.querySelector('p').innerText}\nBiaya Admin: ${payment.querySelector('span').innerText}`;
+  if(voucher) text+=`\nVoucher: ${voucher}`;
+  document.getElementById('popupText').innerText=text;
+  document.getElementById('popup').classList.add('active');
+});
 
-<div class="popup" id="popup">
-  <div class="popup-content">
-    <h3>Detail Transaksi</h3>
-    <p id="popupText"></p>
-    <button id="confirmBtn" class="btn-checkout">Konfirmasi & WhatsApp</button>
-  </div>
-</div>
-
-<footer>
-  <p>© 2025 WalzShop. Semua Hak Dilindungi.</p>
-</footer>
-<script src="script.js?v=3"></script>
-</body>
-</html>
+// Konfirmasi WhatsApp
+document.getElementById('confirmBtn').addEventListener('click',()=>{
+  const msg=encodeURIComponent(document.getElementById('popupText').innerText);
+  const waNumber = "6282298902274"; // Ganti dengan nomor admin
+  window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
+  document.getElementById('popup').classList.remove('active');
+});
