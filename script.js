@@ -1,90 +1,72 @@
-// Ambil parameter game dari URL
-const params = new URLSearchParams(window.location.search);
-const game = params.get('game') || 'Game';
-const img = params.get('img') || '';
+// Ambil parameter URL game
+const urlParams = new URLSearchParams(window.location.search);
+const gameName = urlParams.get('game');
+const gameImg = urlParams.get('img');
 
-const gameName = document.getElementById('gameName');
-const gameImage = document.getElementById('gameImage');
-const diamondGrid = document.getElementById('diamondGrid');
-const paymentGrid = document.getElementById('paymentGrid');
-const checkoutBtn = document.getElementById('checkoutBtn');
-const popup = document.getElementById('popup');
-const popupText = document.getElementById('popupText');
-const confirmBtn = document.getElementById('confirmBtn');
-const backBtn = document.getElementById('backBtn');
+if(gameName && gameImg){
+  document.getElementById('gameName').innerText = gameName;
+  document.getElementById('gameImage').src = gameImg;
+}
 
-let selectedDiamond = null;
-let selectedPayment = null;
-
-gameName.textContent = game;
-gameImage.src = img;
-
-// Paket Diamond berurutan
+// Diamond & Harga Pasar
 const diamonds = [
-  {value:50, price:"Rp5.000", market:"Rp6.000", emoji:"💎"},
-  {value:100, price:"Rp10.000", market:"Rp12.000", emoji:"💎"},
-  {value:250, price:"Rp22.000", market:"Rp25.000", emoji:"💎"},
-  {value:500, price:"Rp45.000", market:"Rp50.000", emoji:"💎"},
-  {value:1000, price:"Rp85.000", market:"Rp90.000", emoji:"💎"},
-  {value:2000, price:"Rp160.000", market:"Rp180.000", emoji:"💎"}
+  {name:"50 💎",price:"Rp5.000"},
+  {name:"100 💎",price:"Rp10.000"},
+  {name:"250 💎",price:"Rp24.000"},
+  {name:"500 💎",price:"Rp48.000"},
+  {name:"1000 💎",price:"Rp95.000"},
+  {name:"2000 💎",price:"Rp190.000"},
 ];
 
-diamonds.forEach(d=>{
+const diamondGrid = document.getElementById('diamondGrid');
+diamonds.forEach((d,i)=>{
   const div = document.createElement('div');
-  div.classList.add('diamond-item');
-  div.dataset.value=d.value;
-  div.dataset.price=d.price;
-  div.innerHTML=`<div style="font-size:24px">${d.emoji}</div><span>${d.value} - ${d.price} (Pasar: ${d.market})</span>`;
-  div.addEventListener('click',()=>{
-    document.querySelectorAll('.diamond-item').forEach(i=>i.classList.remove('selected'));
-    div.classList.add('selected');
-    selectedDiamond=d;
-  });
+  div.className='diamond-item';
+  div.innerHTML=`<p>${d.name}</p><span>${d.price}</span>`;
+  div.addEventListener('click',()=>{document.querySelectorAll('.diamond-item').forEach(e=>e.classList.remove('selected')); div.classList.add('selected');});
   diamondGrid.appendChild(div);
 });
 
-// Metode pembayaran berurutan
+// Metode Pembayaran
 const payments = [
-  {name:"QRIS", img:"https://files.catbox.moe/crlcvj.jpg", fee:"-"},
-  {name:"ShopeePay", img:"https://files.catbox.moe/gub7ik.jpg", fee:"Rp0"},
-  {name:"Dana", img:"https://files.catbox.moe/vzij14.jpg", fee:"Rp0"},
-  {name:"Gopay", img:"https://files.catbox.moe/hjxbgp.jpg", fee:"Rp0"},
-  {name:"Ovo", img:"https://files.catbox.moe/uy94ct.jpg", fee:"Rp0"}
+  {name:"QRIS",img:"https://files.catbox.moe/crlcvj.jpg",price:"Rp0"},
+  {name:"ShopeePay",img:"https://files.catbox.moe/gub7ik.jpg",price:"Rp0"},
+  {name:"Dana",img:"https://files.catbox.moe/vzij14.jpg",price:"Rp0"},
+  {name:"Gopay",img:"https://files.catbox.moe/hjxbgp.jpg",price:"Rp0"},
+  {name:"Ovo",img:"https://files.catbox.moe/uy94ct.jpg",price:"Rp0"},
 ];
 
+const paymentGrid = document.getElementById('paymentGrid');
 payments.forEach(p=>{
   const div = document.createElement('div');
-  div.classList.add('payment-item');
-  div.dataset.value=p.name;
-  div.innerHTML=`<img src="${p.img}" alt="${p.name}"><span>${p.name} (${p.fee})</span>`;
-  div.addEventListener('click',()=>{
-    document.querySelectorAll('.payment-item').forEach(i=>i.classList.remove('selected'));
-    div.classList.add('selected');
-    selectedPayment=p.name;
-  });
+  div.className='payment-item';
+  div.innerHTML=`<img src="${p.img}" alt="${p.name}"><p>${p.name}</p><span>${p.price}</span>`;
+  div.addEventListener('click',()=>{document.querySelectorAll('.payment-item').forEach(e=>e.classList.remove('selected')); div.classList.add('selected');});
   paymentGrid.appendChild(div);
 });
 
-// Tombol kembali
-backBtn.addEventListener('click',()=>window.location.href='index.html');
+// Tombol Kembali
+document.getElementById('backBtn').addEventListener('click',()=>{window.location.href='index.html';});
 
-// Checkout → popup
-checkoutBtn.addEventListener('click',()=>{
-  const playerId=document.getElementById('playerId').value.trim();
-  const voucher=document.getElementById('voucher').value.trim();
-  if(!playerId){alert("Masukkan ID / Nickname!"); return;}
-  if(!selectedDiamond){alert("Pilih paket diamond!"); return;}
-  if(!selectedPayment){alert("Pilih metode pembayaran!"); return;}
-
-  popupText.innerHTML=`Game: <b>${game}</b><br>ID/Nickname: <b>${playerId}</b><br>Diamond: <b>${selectedDiamond.value}</b> - <b>${selectedDiamond.price}</b> (Pasar: ${selectedDiamond.market})<br>Metode: <b>${selectedPayment}</b><br>Voucher: <b>${voucher||'-'}</b>`;
-  popup.classList.add('active');
+// Checkout
+document.getElementById('checkoutBtn').addEventListener('click',()=>{
+  const playerId = document.getElementById('playerId').value.trim();
+  const diamond = document.querySelector('.diamond-item.selected');
+  const payment = document.querySelector('.payment-item.selected');
+  if(!playerId){alert('Masukkan ID / Nickname'); return;}
+  if(!diamond){alert('Pilih paket diamond'); return;}
+  if(!payment){alert('Pilih metode pembayaran'); return;}
+  
+  const voucher = document.getElementById('voucher').value.trim();
+  let text=`Game: ${gameName}\nID: ${playerId}\nPaket: ${diamond.querySelector('p').innerText} - ${diamond.querySelector('span').innerText}\nMetode: ${payment.querySelector('p').innerText}\nHarga: ${payment.querySelector('span').innerText}`;
+  if(voucher) text+=`\nVoucher: ${voucher}`;
+  document.getElementById('popupText').innerText=text;
+  document.getElementById('popup').classList.add('active');
 });
 
-// Konfirmasi → WhatsApp
-confirmBtn.addEventListener('click',()=>{
-  const playerId=document.getElementById('playerId').value.trim();
-  const voucher=document.getElementById('voucher').value.trim();
-  const whatsappNumber='6282298902274';
-  const message=encodeURIComponent(`Halo, saya ingin melakukan top up:\nGame: ${game}\nID/Nickname: ${playerId}\nDiamond: ${selectedDiamond.value} - ${selectedDiamond.price} (Pasar: ${selectedDiamond.market})\nMetode: ${selectedPayment}\nVoucher: ${voucher||'-'}`);
-  window.open(`https://wa.me/${whatsappNumber}?text=${message}`,'_blank');
+// Konfirmasi WhatsApp
+document.getElementById('confirmBtn').addEventListener('click',()=>{
+  const msg=encodeURIComponent(document.getElementById('popupText').innerText);
+  window.open(`https://wa.me/6282298902274?text=${msg}`, '_blank');
+  document.getElementById('popup').classList.remove('active');
 });
