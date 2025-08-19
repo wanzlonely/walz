@@ -1,68 +1,78 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detail Top Up</title>
+  <title>WalzShop - Detail Game</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="detail-page">
-  <header class="navbar">
-    <h1 id="storeName">WalzShop</h1>
+<body>
+  <header>
+    <div class="logo">
+      <img src="https://files.catbox.moe/dpsks9.jpg" alt="WalzShop Logo">
+      <h1>WalzShop</h1>
+    </div>
   </header>
 
   <main class="container">
-    <!-- Info Game -->
-    <section class="game-info">
-      <img id="selectedGameImage" src="" alt="Game" class="game-banner">
-      <h2 id="selectedGameName"></h2>
-    </section>
+    <div class="game-detail">
+      <img id="gameImage" src="" alt="Game Image">
+      <h2 id="gameName"></h2>
+    </div>
 
-    <!-- Form Input -->
-    <form id="topupForm">
-      <div class="form-group">
-        <label for="gameId">Masukkan ID Game</label>
-        <input type="text" id="gameId" placeholder="Contoh: 123456789" required>
-      </div>
+    <form class="checkout-form">
+      <label>Masukkan ID / Nickname</label>
+      <input type="text" placeholder="Contoh: Player123" required>
 
-      <div class="form-group" id="serverIdGroup" style="display:none;">
-        <label for="serverId">Server ID</label>
-        <input type="text" id="serverId" placeholder="Contoh: 1234">
-      </div>
+      <label>Pilih Produk Diamond</label>
+      <select required>
+        <option value="">Pilih Paket</option>
+        <option value="50">50 Diamond</option>
+        <option value="100">100 Diamond</option>
+        <option value="500">500 Diamond</option>
+        <option value="1000">1000 Diamond</option>
+      </select>
 
-      <!-- Produk Diamond -->
-      <div class="form-group">
-        <label>Pilih Diamond</label>
-        <div class="product-grid" id="diamondList"></div>
-      </div>
+      <label>Pilih Metode Pembayaran</label>
+      <select required>
+        <option value="">Pilih Metode</option>
+        <option value="Gopay">Gopay</option>
+        <option value="OVO">OVO</option>
+        <option value="Dana">Dana</option>
+        <option value="Bank">Transfer Bank</option>
+      </select>
 
-      <!-- Metode Pembayaran -->
-      <div class="form-group">
-        <label>Metode Pembayaran</label>
-        <div class="payment-grid" id="paymentList"></div>
-      </div>
-
-      <!-- Kode Voucher -->
-      <div class="form-group">
-        <label for="voucher">Kode Voucher (Opsional)</label>
-        <input type="text" id="voucher" placeholder="Masukkan kode promo">
-      </div>
+      <label>Kode Voucher (Opsional)</label>
+      <input type="text" placeholder="Masukkan kode voucher">
 
       <button type="submit" class="btn-checkout">Checkout</button>
     </form>
   </main>
 
-  <!-- Pop-up Detail Transaksi -->
-  <div id="transactionPopup" class="popup">
-    <div class="popup-content">
-      <h3>Detail Transaksi</h3>
-      <div id="transactionDetails"></div>
-      <a id="waCheckout" href="#" target="_blank" class="btn-whatsapp">Checkout via WhatsApp</a>
-      <button id="closePopup" class="btn-close">Tutup</button>
-    </div>
-  </div>
+  <footer>
+    <p>© 2025 WalzShop. Semua Hak Dilindungi.</p>
+  </footer>
 
-  <script src="script.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const game = params.get('game');
+    const img = params.get('img');
+
+    const gameName = document.getElementById('gameName');
+    const gameImage = document.getElementById('gameImage');
+    const gameDetail = document.querySelector('.game-detail');
+    const form = document.querySelector('.checkout-form');
+
+    gameName.textContent = game;
+    gameImage.src = img;
+
+    // Animasi slide-in
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        gameDetail.classList.add('active');
+        form.classList.add('active');
+      }, 200);
+    });
+  </script>
 </body>
 </html>
