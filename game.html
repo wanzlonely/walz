@@ -1,96 +1,63 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>WalzShop • Top Up</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WalzShop - Top Up</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg">
-  <header class="topbar small">
-    <a class="link back" href="index.html">← Beranda</a>
-    <div class="hdr-left">
-      <div class="shop-name">WalzShop</div>
-    </div>
+<body>
+  <header class="header small">
+    <a href="index.html" class="back-btn">← Kembali</a>
+    <h1 class="title">WalzShop</h1>
   </header>
 
-  <main class="container">
-    <section class="card">
-      <!-- selected game banner + name -->
-      <div class="selected-game">
-        <img id="gameBanner" src="" alt="Game banner" class="selected-game-img">
-        <div class="selected-game-info">
-          <div id="gameName" class="selected-game-title">Game</div>
-          <div id="gameStudio" class="selected-game-sub muted"></div>
-        </div>
+  <main class="game-detail">
+    <div class="game-info">
+      <img id="gameImage" src="" alt="Game">
+      <h2 id="gameName">Nama Game</h2>
+    </div>
+
+    <form id="topupForm">
+      <div class="form-group">
+        <label for="userId">ID Game</label>
+        <input type="text" id="userId" placeholder="Masukkan ID Game">
       </div>
 
-      <!-- inputs -->
-      <div class="form-row">
-        <div class="field">
-          <label for="inputId">ID Game</label>
-          <input id="inputId" type="text" placeholder="Masukkan ID game">
-        </div>
-        <div class="field" id="serverField" style="display:none;">
-          <label for="inputServer">Server ID</label>
-          <input id="inputServer" type="text" placeholder="Masukkan server ID (jika ada)">
-        </div>
+      <div class="form-group" id="serverIdGroup" style="display:none;">
+        <label for="serverId">Server ID</label>
+        <input type="text" id="serverId" placeholder="Masukkan Server ID">
       </div>
 
-      <!-- diamond grid -->
-      <div class="section-sub">
-        <h3>Pilih Paket Diamond</h3>
-        <p class="muted">Klik paket untuk memilih — ada ikon diamond & harga</p>
-      </div>
-      <div id="diamondGrid" class="diamond-grid"></div>
-
-      <!-- voucher -->
-      <div class="form-row" style="margin-top:12px;">
-        <div class="field grow">
-          <label for="voucher">Kode Voucher</label>
-          <input id="voucher" type="text" placeholder="Masukkan kode voucher (opsional)">
-        </div>
+      <h3>Pilih Diamond</h3>
+      <div class="diamond-grid" id="diamondOptions">
+        <!-- Opsi diamond akan dimuat via JS -->
       </div>
 
-      <!-- payments -->
-      <div class="section-sub" style="margin-top:14px;">
-        <h3>Pilih Metode Pembayaran</h3>
-        <p class="muted">Harga menyesuaikan paket yang dipilih</p>
+      <h3>Metode Pembayaran</h3>
+      <div class="payment-grid" id="paymentOptions">
+        <!-- Opsi pembayaran via JS -->
       </div>
-      <div id="paymentGrid" class="payment-grid"></div>
 
-      <div class="actions">
-        <button id="btnCheckout" class="btn primary" disabled>Checkout</button>
+      <div class="form-group">
+        <label for="voucher">Kode Voucher (opsional)</label>
+        <input type="text" id="voucher" placeholder="Masukkan kode voucher">
       </div>
-    </section>
+
+      <button type="submit" class="btn">Checkout</button>
+    </form>
   </main>
 
-  <!-- modal -->
-  <div id="modal" class="modal" aria-hidden>
-    <div class="modal-dialog">
-      <div class="modal-head">
-        <h3>Detail Transaksi</h3>
-        <button id="closeModal" class="close">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="summary-row"><span>Game</span><strong id="sumGame">-</strong></div>
-        <div class="summary-row"><span>ID</span><strong id="sumId">-</strong></div>
-        <div class="summary-row" id="sumServerRow" style="display:none;"><span>Server</span><strong id="sumServer">-</strong></div>
-        <div class="summary-row"><span>Paket</span><strong id="sumPack">-</strong></div>
-        <div class="summary-row"><span>Metode</span><strong id="sumMethod">-</strong></div>
-        <div class="summary-row"><span>Harga</span><strong id="sumPrice">-</strong></div>
-        <div class="summary-row" id="sumVoucherRow" style="display:none;"><span>Voucher</span><strong id="sumVoucher">-</strong></div>
-        <div class="summary-total"><span>Total Bayar</span><strong id="sumTotal">-</strong></div>
-      </div>
-      <div class="modal-actions">
-        <button id="btnEdit" class="btn ghost">Ubah</button>
-        <button id="btnConfirm" class="btn primary">Checkout via WhatsApp</button>
-      </div>
+  <!-- Popup Detail Transaksi -->
+  <div class="popup" id="transactionPopup">
+    <div class="popup-content">
+      <h2>Detail Transaksi</h2>
+      <ul id="transactionDetails"></ul>
+      <button id="checkoutWA" class="btn">Checkout via WhatsApp</button>
+      <button id="closePopup" class="btn secondary">Tutup</button>
     </div>
   </div>
 
-  <footer class="footer">© 2025 WalzShop</footer>
   <script src="script.js"></script>
 </body>
 </html>
