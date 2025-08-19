@@ -1,95 +1,348 @@
-// --- DATA HARGA DIAMOND ---
-const hargaDiamond = {
-  "5": 1500,
-  "12": 3500,
-  "50": 12000,
-  "100": 23000,
-  "250": 57000,
-  "500": 110000,
-  "1000": 215000
+// Final script.js - data for all games, diamond prices per game (market avg - promo), UI binding + validations
+
+const ADMIN_WA = "6282298902274";
+
+/* ===== DATA: price catalog per game (base price) =====
+   base = typical market price, promo applied in computePriceFor method (small discount)
+*/
+const priceCatalog = {
+  freefire: [
+    {amt: 12, base: 2500},
+    {amt: 50, base: 9000},
+    {amt: 86, base: 15000},
+    {amt: 170, base: 30000},
+    {amt: 257, base: 45000},
+    {amt: 514, base: 90000},
+    {amt: 1000, base: 165000}
+  ],
+  mlbb: [
+    {amt: 12, base: 2200},
+    {amt: 50, base: 8500},
+    {amt: 86, base: 14000},
+    {amt: 170, base: 28000},
+    {amt: 257, base: 42000},
+    {amt: 514, base: 88000},
+    {amt: 1000, base: 160000}
+  ],
+  hok: [
+    {amt: 12, base: 2300},
+    {amt: 50, base: 8700},
+    {amt: 86, base: 14500},
+    {amt: 170, base: 29000},
+    {amt: 257, base: 43500},
+    {amt: 514, base: 91000},
+    {amt: 1000, base: 162000}
+  ],
+  genshin: [
+    {amt: 10, base: 14000},   // crystal packs use different units; example set
+    {amt: 33, base: 42000},
+    {amt: 66, base: 82000},
+    {amt: 88, base: 105000},
+    {amt: 155, base: 180000}
+  ],
+  roblox: [
+    {amt: 40, base: 8500}, {amt: 80, base: 16000}, {amt: 240, base: 47000}, {amt: 800, base: 150000}
+  ],
+  stumble: [
+    {amt: 50, base: 9000}, {amt: 120, base: 21000}, {amt: 300, base: 48000}
+  ]
 };
 
-// --- SELEKSI DIAMOND ---
-const diamondOptions = document.querySelectorAll(".diamond-option");
-let selectedDiamond = null;
-let selectedPayment = null;
+/* fee rates by payment method (for display) */
+const feeRate = { qris: 0.007, shopeepay: 0.012, dana: 0.012, gopay: 0.012, ovo: 0.012 };
 
-diamondOptions.forEach(option => {
-  option.addEventListener("click", () => {
-    diamondOptions.forEach(o => o.classList.remove("selected"));
-    option.classList.add("selected");
-    selectedDiamond = option.dataset.value;
-    updatePrice();
-  });
-});
+/* payment methods meta */
+const paymentsMeta = [
+  {id: "qris", name: "QRIS", img: "https://files.catbox.moe/crlcvj.jpg"},
+  {id: "shopeepay", name: "ShopeePay", img: "https://files.catbox.moe/gub7ik.jpg"},
+  {id: "dana", name: "DANA", img: "https://files.catbox.moe/f5ey4y.jpg"},
+  {id: "gopay", name: "GoPay", img: "https://files.catbox.moe/je0irt.jpg"},
+  {id: "ovo", name: "OVO", img: "https://files.catbox.moe/57f44a.jpg"}
+];
 
-// --- SELEKSI METODE PEMBAYARAN ---
-const paymentOptions = document.querySelectorAll(".payment-option");
-paymentOptions.forEach(option => {
-  option.addEventListener("click", () => {
-    paymentOptions.forEach(o => o.classList.remove("selected"));
-    option.classList.add("selected");
-    selectedPayment = option.dataset.method;
-  });
-});
+/* voucher map */
+const vouchers = {
+  PROMOHEMAT: { rate: 0.05, max: 5000 },   // 5% up to 5k
+  TOPUPMURAH: { rate: 0.08, max: 10000 }  // 8% up to 10k
+};
 
-// --- UPDATE HARGA ---
-function updatePrice() {
-  const priceEl = document.getElementById("priceDisplay");
-  if (selectedDiamond && hargaDiamond[selectedDiamond]) {
-    const harga = hargaDiamond[selectedDiamond];
-    priceEl.textContent = `Rp ${harga.toLocaleString("id-ID")}`;
-  } else {
-    priceEl.textContent = "Rp 0";
-  }
+/* helpers */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const fmt = n => "Rp " + Math.round(n).toLocaleString("id-ID");
+
+/* read params */
+const params = Object.fromEntries(new URLSearchParams(location.search).entries());
+const gameKey = params.key || params.k || "freefire";
+const gameNameParam = params.name ? decodeURIComponent(params.name) : (params.name || "");
+const gameImgParam = params.img || params.image || params.jpg || "";
+
+const needServer = (params.server === "true" || params.server === "1" || params.s === "true");
+
+// UI elements
+const bannerEl = $("#gameBanner");
+const gameNameEl = $("#selectedGameName");
+const gameStudioEl = $("#selectedGameStudio");
+const serverField = $("#serverField");
+const diamondGrid = $("#diamondGrid");
+const paymentGrid = $("#paymentGrid");
+const checkoutBtn = $("#checkoutBtn");
+const modal = $("#modal");
+const closeModal = $("#closeModal");
+const btnConfirm = $("#btnConfirm");
+const btnEdit = $("#btnEdit");
+
+// state
+let state = {
+  gameKey,
+  gameName: gameNameParam || capitalizeKey(gameKey),
+  gameImg: gameImgParam || "",
+  needServer,
+  selectedPack: null,   // {amt, base}
+  priceMap: {},         // computed price per method
+  selectedMethod: null,
+  voucher: null
+};
+
+/* init page */
+function init() {
+  // header
+  bannerEl.src = state.gameImg || "https://files.catbox.moe/x5rvpg.jpg";
+  gameNameEl.textContent = state.gameName;
+  gameStudioEl.textContent = ""; // optional studio
+
+  if (state.needServer) serverField.style.display = "block";
+  else serverField.style.display = "none";
+
+  renderDiamonds();
+  renderPayments();
+  attachInteractions();
+  validateForm();
 }
 
-// --- VALIDASI & CHECKOUT ---
-document.getElementById("checkoutBtn")?.addEventListener("click", () => {
-  const userId = document.getElementById("userId")?.value.trim();
-  const serverId = document.getElementById("serverId")?.value.trim();
-  const voucher = document.getElementById("voucherCode")?.value.trim();
+/* format title fallback */
+function capitalizeKey(k){
+  return k.replace(/[-_]/g,' ').replace(/\b\w/g, c => c.toUpperCase());
+}
 
-  if (!userId) return alert("Kolom ID Game belum diisi!");
-  if (document.getElementById("serverId") && !serverId) return alert("Kolom Server ID belum diisi!");
-  if (!selectedDiamond) return alert("Silakan pilih jumlah Diamond!");
-  if (!selectedPayment) return alert("Silakan pilih metode pembayaran!");
+/* compute promo price: apply tiny promo (5-8% depending) */
+function promoPrice(base) {
+  // minor promo: 5% off
+  return Math.round(base * 0.95);
+}
 
-  // Data transaksi
-  const harga = hargaDiamond[selectedDiamond];
-  const detail = {
-    "Game ID": userId + (serverId ? " (" + serverId + ")" : ""),
-    "Diamond": selectedDiamond,
-    "Harga": `Rp ${harga.toLocaleString("id-ID")}`,
-    "Metode Pembayaran": selectedPayment,
-    "Voucher": voucher ? voucher : "Tidak ada"
-  };
+/* compute price map for a base */
+function computePriceMap(base) {
+  const out = {};
+  Object.keys(feeRate).forEach(k => {
+    const fee = Math.ceil((base * feeRate[k]) / 100) * 100; // round to nearest 100
+    out[k] = base + fee;
+  });
+  return out;
+}
 
-  // Isi ke popup
-  const listEl = document.getElementById("popupDetails");
-  listEl.innerHTML = "";
-  for (const key in detail) {
-    const li = document.createElement("li");
-    li.textContent = `${key}: ${detail[key]}`;
-    listEl.appendChild(li);
-  }
+/* render diamond packs from priceCatalog */
+function renderDiamonds(){
+  diamondGrid.innerHTML = "";
+  const list = priceCatalog[state.gameKey] || priceCatalog["freefire"];
+  list.forEach(pack => {
+    const discounted = promoPrice(pack.base);
+    const el = document.createElement("button");
+    el.className = "diamond-card";
+    el.type = "button";
+    el.dataset.amt = pack.amt;
+    el.dataset.base = pack.base;
+    el.innerHTML = `
+      <div class="d-left">
+        <div class="d-ico">💎</div>
+        <div class="d-info">
+          <div class="d-amt">${pack.amt} ${state.gameKey === 'genshin' ? 'Primogems/Crystals' : 'Diamonds'}</div>
+          <div class="d-price">${fmt(discounted)}</div>
+        </div>
+      </div>
+      <div class="d-action muted">Pilih</div>
+    `;
+    diamondGrid.appendChild(el);
+  });
+}
 
-  // Tampilkan popup
-  document.getElementById("popup").style.display = "flex";
-});
+/* render payment cards (initially price = '-') */
+function renderPayments(){
+  paymentGrid.innerHTML = "";
+  paymentsMeta.forEach(pm => {
+    const btn = document.createElement("button");
+    btn.className = "payment-card";
+    btn.type = "button";
+    btn.dataset.method = pm.id;
+    btn.innerHTML = `
+      <img src="${pm.img}" alt="${pm.name}">
+      <div class="pay-meta">
+        <div class="name">${pm.name}</div>
+        <div class="price muted" data-price="${pm.id}">-</div>
+      </div>
+    `;
+    paymentGrid.appendChild(btn);
+  });
+}
 
-// --- CLOSE POPUP ---
-document.getElementById("closePopup")?.addEventListener("click", () => {
-  document.getElementById("popup").style.display = "none";
-});
+/* attach interactions after rendering */
+function attachInteractions(){
+  // diamond click
+  $$(".diamond-card").forEach(btn => {
+    btn.addEventListener("click", () => {
+      $$(".diamond-card").forEach(x => x.classList.remove("active"));
+      btn.classList.add("active");
+      const amt = +btn.dataset.amt;
+      const base = +btn.dataset.base;
+      state.selectedPack = {amt, base};
+      // compute price map on discounted base
+      const promoBase = promoPrice(base);
+      state.priceMap = computePriceMap(promoBase);
+      // update payment price labels
+      $$(".pay-meta .price").forEach(()=>{}); // noop to ensure DOM ready
+      updatePaymentPrices();
+      validateForm();
+    });
+  });
 
-// --- CHECKOUT VIA WHATSAPP ---
-document.getElementById("waCheckout")?.addEventListener("click", () => {
-  const details = [...document.querySelectorAll("#popupDetails li")]
-    .map(li => li.textContent)
-    .join("%0A");
+  // payment click
+  $$(".payment-card").forEach(card => {
+    card.addEventListener("click", () => {
+      if (!state.selectedPack) {
+        // small feedback
+        card.animate([{transform:'translateY(0)'},{transform:'translateY(-4px)'},{transform:'translateY(0)'}],{duration:220});
+        return;
+      }
+      $$(".payment-card").forEach(x => x.classList.remove("active"));
+      card.classList.add("active");
+      state.selectedMethod = card.dataset.method;
+      validateForm();
+    });
+  });
 
-  const nomor = "6282298902274"; // Nomor WhatsApp
-  const url = `https://wa.me/${nomor}?text=Halo%20Admin,%20saya%20ingin%20order:%0A${details}`;
-  window.open(url, "_blank");
-});
+  // input validation on typing
+  $("#userId").addEventListener("input", () => {
+    $("#errUserId").textContent = "";
+    $("#userId").classList.remove("input-error");
+    validateForm();
+  });
+  $("#serverId")?.addEventListener("input", () => {
+    $("#errServerId").textContent = "";
+    $("#serverId").classList.remove("input-error");
+    validateForm();
+  });
+
+  // checkout button
+  checkoutBtn.addEventListener("click", onCheckout);
+
+  // modal controls
+  closeModal.addEventListener("click", ()=> closeModalFn());
+  btnEdit.addEventListener("click", ()=> { closeModalFn(); });
+  btnConfirm.addEventListener("click", onConfirm);
+}
+
+/* update payment prices in UI */
+function updatePaymentPrices(){
+  $$("#paymentGrid .payment-card").forEach(card => {
+    const method = card.dataset.method;
+    const priceEl = card.querySelector(`[data-price="${method}"]`);
+    if (state.priceMap[method]) priceEl.textContent = fmt(state.priceMap[method]);
+    else priceEl.textContent = "-";
+  });
+}
+
+/* simple validation */
+function validateForm(){
+  const uid = $("#userId").value.trim();
+  const srv = $("#serverId") ? $("#serverId").value.trim() : "";
+  const ok = uid && (!state.needServer || srv || !state.needServer) && state.selectedPack && state.selectedMethod;
+  checkoutBtn.disabled = !ok;
+}
+
+/* on checkout -> show modal summary */
+function onCheckout(){
+  // validate fields
+  const uid = $("#userId").value.trim();
+  const srv = $("#serverId") ? $("#serverId").value.trim() : "";
+  const voucherCode = $("#voucher").value.trim().toUpperCase();
+
+  if (!uid) { showFieldError("#userId","#errUserId","Kolom ID Game belum diisi"); return; }
+  if (state.needServer && !srv) { showFieldError("#serverId","#errServerId","Kolom Server ID belum diisi"); return; }
+  if (!state.selectedPack) { alert("Silakan pilih paket diamond terlebih dahulu"); return; }
+  if (!state.selectedMethod) { alert("Silakan pilih metode pembayaran"); return; }
+
+  // compute amounts
+  const basePromo = promoPrice(state.selectedPack.base);
+  const payPrice = state.priceMap[state.selectedMethod] || basePromo;
+  const { total, info } = applyVoucher(payPrice, voucherCode);
+
+  // fill modal
+  $("#sumGame").textContent = state.gameName;
+  $("#sumId").textContent = uid;
+  if (state.needServer) { $("#sumServerRow").style.display = "flex"; $("#sumServer").textContent = srv; } else { $("#sumServerRow").style.display = "none"; }
+  $("#sumPack").textContent = `${state.selectedPack.amt} ${state.gameKey==='genshin'?'Crystals/Primogems':'Diamonds'}`;
+  $("#sumMethod").textContent = state.selectedMethod.toUpperCase();
+  $("#sumPrice").textContent = fmt(payPrice);
+  if (info && info.discount>0) { $("#sumVoucherRow").style.display = "flex"; $("#sumVoucher").textContent = `${info.code} (−${fmt(info.discount)})`; } else { $("#sumVoucherRow").style.display = "none"; }
+  $("#sumTotal").textContent = fmt(total);
+
+  // store for confirm
+  state.finalTotal = total;
+  state.finalBase = payPrice;
+  state.voucherApplied = info;
+
+  // show modal with animation
+  modal.classList.add("show");
+  modal.setAttribute("aria-hidden","false");
+  // dialog anim plays via CSS keyframes
+}
+
+/* show field error */
+function showFieldError(inputSel, errSel, message){
+  const input = $(inputSel);
+  const err = $(errSel);
+  err.textContent = message;
+  input.classList.add("input-error");
+  input.focus();
+}
+
+/* apply voucher logic */
+function applyVoucher(total, code){
+  if (!code) return { total, info: null };
+  const v = vouchers[code];
+  if (!v) return { total, info: { code, discount: 0 } };
+  const disc = Math.min(Math.round(total * v.rate), v.max);
+  return { total: Math.max(total - disc, 0), info: { code, discount: disc } };
+}
+
+/* close modal */
+function closeModalFn(){
+  modal.classList.remove("show");
+  modal.setAttribute("aria-hidden","true");
+}
+
+/* on confirm -> open WA */
+function onConfirm(){
+  const uid = $("#userId").value.trim();
+  const srv = $("#serverId") ? $("#serverId").value.trim() : "";
+  const voucherCode = $("#voucher").value.trim().toUpperCase();
+
+  const lines = [
+    "Halo Admin, saya ingin Top Up:",
+    `Game: ${state.gameName}`,
+    `ID: ${uid}`,
+  ];
+  if (state.needServer) lines.push(`Server: ${srv || "-"}`);
+  lines.push(`Paket: ${state.selectedPack.amt} ${state.gameKey==='genshin'?'Crystals':'Diamonds'}`);
+  lines.push(`Metode: ${state.selectedMethod.toUpperCase()}`);
+  lines.push(`Harga: ${fmt(state.finalBase)}`);
+  if (state.voucherApplied && state.voucherApplied.discount>0) lines.push(`Voucher: ${state.voucherApplied.code} (disc ${fmt(state.voucherApplied.discount)})`);
+  else if (voucherCode) lines.push(`Voucher: ${voucherCode} (tidak berlaku)`);
+  lines.push(`Total Bayar: ${fmt(state.finalTotal)}`);
+
+  const waUrl = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(lines.join("\n"))}`;
+  window.open(waUrl, "_blank");
+}
+
+/* === init === */
+init();
