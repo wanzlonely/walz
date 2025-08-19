@@ -3,7 +3,6 @@ const params = new URLSearchParams(window.location.search);
 const game = params.get('game') || 'Game';
 const img = params.get('img') || '';
 
-// DOM
 const gameName = document.getElementById('gameName');
 const gameImage = document.getElementById('gameImage');
 const diamondGrid = document.getElementById('diamondGrid');
@@ -17,88 +16,75 @@ const backBtn = document.getElementById('backBtn');
 let selectedDiamond = null;
 let selectedPayment = null;
 
-// Set nama & gambar game
 gameName.textContent = game;
 gameImage.src = img;
 
-// Paket Diamond lengkap
+// Paket Diamond berurutan
 const diamonds = [
-  {value:50, price:"Rp5.000", market:"Rp6.000"},
-  {value:100, price:"Rp10.000", market:"Rp12.000"},
-  {value:250, price:"Rp22.000", market:"Rp25.000"},
-  {value:500, price:"Rp45.000", market:"Rp50.000"},
-  {value:1000, price:"Rp85.000", market:"Rp90.000"},
-  {value:2000, price:"Rp160.000", market:"Rp180.000"}
+  {value:50, price:"Rp5.000", market:"Rp6.000", emoji:"💎"},
+  {value:100, price:"Rp10.000", market:"Rp12.000", emoji:"💎"},
+  {value:250, price:"Rp22.000", market:"Rp25.000", emoji:"💎"},
+  {value:500, price:"Rp45.000", market:"Rp50.000", emoji:"💎"},
+  {value:1000, price:"Rp85.000", market:"Rp90.000", emoji:"💎"},
+  {value:2000, price:"Rp160.000", market:"Rp180.000", emoji:"💎"}
 ];
 
-diamonds.forEach(d => {
+diamonds.forEach(d=>{
   const div = document.createElement('div');
   div.classList.add('diamond-item');
-  div.dataset.value = d.value;
-  div.dataset.price = d.price;
-  div.innerHTML = `${d.value} 💎<span class="price">${d.price} (Pasar: ${d.market})</span>`;
-  div.addEventListener('click', () => {
+  div.dataset.value=d.value;
+  div.dataset.price=d.price;
+  div.innerHTML=`<div style="font-size:24px">${d.emoji}</div><span>${d.value} - ${d.price} (Pasar: ${d.market})</span>`;
+  div.addEventListener('click',()=>{
     document.querySelectorAll('.diamond-item').forEach(i=>i.classList.remove('selected'));
     div.classList.add('selected');
-    selectedDiamond = d;
+    selectedDiamond=d;
   });
   diamondGrid.appendChild(div);
 });
 
-// Metode pembayaran lengkap
+// Metode pembayaran berurutan
 const payments = [
-  {name:"QRIS", img:"https://files.catbox.moe/crlcvj.jpg"},
-  {name:"ShopeePay", img:"https://files.catbox.moe/gub7ik.jpg"},
-  {name:"Dana", img:"https://files.catbox.moe/vzij14.jpg"},
-  {name:"Gopay", img:"https://files.catbox.moe/hjxbgp.jpg"},
-  {name:"Ovo", img:"https://files.catbox.moe/uy94ct.jpg"}
+  {name:"QRIS", img:"https://files.catbox.moe/crlcvj.jpg", fee:"-"},
+  {name:"ShopeePay", img:"https://files.catbox.moe/gub7ik.jpg", fee:"Rp0"},
+  {name:"Dana", img:"https://files.catbox.moe/vzij14.jpg", fee:"Rp0"},
+  {name:"Gopay", img:"https://files.catbox.moe/hjxbgp.jpg", fee:"Rp0"},
+  {name:"Ovo", img:"https://files.catbox.moe/uy94ct.jpg", fee:"Rp0"}
 ];
 
-payments.forEach(p => {
+payments.forEach(p=>{
   const div = document.createElement('div');
   div.classList.add('payment-item');
-  div.dataset.value = p.name;
-  div.innerHTML = `<img src="${p.img}" alt="${p.name}"><span>${p.name}</span>`;
-  div.addEventListener('click', () => {
+  div.dataset.value=p.name;
+  div.innerHTML=`<img src="${p.img}" alt="${p.name}"><span>${p.name} (${p.fee})</span>`;
+  div.addEventListener('click',()=>{
     document.querySelectorAll('.payment-item').forEach(i=>i.classList.remove('selected'));
     div.classList.add('selected');
-    selectedPayment = p.name;
+    selectedPayment=p.name;
   });
   paymentGrid.appendChild(div);
 });
 
 // Tombol kembali
-backBtn.addEventListener('click', () => {
-  window.location.href = 'index.html';
-});
+backBtn.addEventListener('click',()=>window.location.href='index.html');
 
 // Checkout → popup
-checkoutBtn.addEventListener('click', () => {
-  const playerId = document.getElementById('playerId').value.trim();
-  const voucher = document.getElementById('voucher').value.trim();
+checkoutBtn.addEventListener('click',()=>{
+  const playerId=document.getElementById('playerId').value.trim();
+  const voucher=document.getElementById('voucher').value.trim();
+  if(!playerId){alert("Masukkan ID / Nickname!"); return;}
+  if(!selectedDiamond){alert("Pilih paket diamond!"); return;}
+  if(!selectedPayment){alert("Pilih metode pembayaran!"); return;}
 
-  if(!playerId){ alert("Masukkan ID / Nickname!"); return; }
-  if(!selectedDiamond){ alert("Pilih paket diamond!"); return; }
-  if(!selectedPayment){ alert("Pilih metode pembayaran!"); return; }
-
-  popupText.innerHTML = `
-    Game: <b>${game}</b><br>
-    ID/Nickname: <b>${playerId}</b><br>
-    Diamond: <b>${selectedDiamond.value}</b> - <b>${selectedDiamond.price}</b> (Pasar: ${selectedDiamond.market})<br>
-    Metode: <b>${selectedPayment}</b><br>
-    Voucher: <b>${voucher || '-'}</b>
-  `;
-
+  popupText.innerHTML=`Game: <b>${game}</b><br>ID/Nickname: <b>${playerId}</b><br>Diamond: <b>${selectedDiamond.value}</b> - <b>${selectedDiamond.price}</b> (Pasar: ${selectedDiamond.market})<br>Metode: <b>${selectedPayment}</b><br>Voucher: <b>${voucher||'-'}</b>`;
   popup.classList.add('active');
 });
 
 // Konfirmasi → WhatsApp
-confirmBtn.addEventListener('click', () => {
-  const playerId = document.getElementById('playerId').value.trim();
-  const voucher = document.getElementById('voucher').value.trim();
-  const whatsappNumber = '6282298902274';
-  const message = encodeURIComponent(
-    `Halo, saya ingin melakukan top up:\nGame: ${game}\nID/Nickname: ${playerId}\nDiamond: ${selectedDiamond.value} - ${selectedDiamond.price} (Pasar: ${selectedDiamond.market})\nMetode: ${selectedPayment}\nVoucher: ${voucher || '-'}`
-  );
-  window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+confirmBtn.addEventListener('click',()=>{
+  const playerId=document.getElementById('playerId').value.trim();
+  const voucher=document.getElementById('voucher').value.trim();
+  const whatsappNumber='6282298902274';
+  const message=encodeURIComponent(`Halo, saya ingin melakukan top up:\nGame: ${game}\nID/Nickname: ${playerId}\nDiamond: ${selectedDiamond.value} - ${selectedDiamond.price} (Pasar: ${selectedDiamond.market})\nMetode: ${selectedPayment}\nVoucher: ${voucher||'-'}`);
+  window.open(`https://wa.me/${whatsappNumber}?text=${message}`,'_blank');
 });
