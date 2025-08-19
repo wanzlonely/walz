@@ -8,15 +8,15 @@
 </head>
 <body>
   <header class="header">
-    <img src="https://files.catbox.moe/dpsks9.jpg" alt="Logo WalzShop">
+    <img src="https://files.catbox.moe/dpsks9.jpg" alt="Logo WalzShop" class="logo">
     <h1>WalzShop</h1>
   </header>
 
   <main class="container">
-    <button id="backBtn" class="btn-checkout" style="margin-bottom: 20px; background:#555;">← Kembali</button>
+    <button id="backBtn" class="btn-back">← Kembali</button>
 
     <div class="game-detail">
-      <img id="gameImage" src="" alt="Game Image">
+      <img id="gameImage" src="" alt="Game Image" class="game-img">
       <h2 id="gameName"></h2>
     </div>
 
@@ -24,15 +24,11 @@
       <label>ID / Nickname</label>
       <input type="text" id="playerId" placeholder="Masukkan ID / Nickname">
 
-      <label>Pilih Paket Diamond</label>
-      <div class="diamond-grid" id="diamondGrid">
-        <!-- Diamond akan diisi via script.js -->
-      </div>
+      <label>Paket Diamond</label>
+      <div class="diamond-grid" id="diamondGrid"></div>
 
-      <label>Pilih Metode Pembayaran</label>
-      <div class="payment-grid" id="paymentGrid">
-        <!-- Payment akan diisi via script.js -->
-      </div>
+      <label>Metode Pembayaran</label>
+      <div class="payment-grid" id="paymentGrid"></div>
 
       <label>Kode Voucher (Opsional)</label>
       <input type="text" id="voucher" placeholder="Masukkan kode voucher">
