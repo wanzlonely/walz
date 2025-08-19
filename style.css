@@ -1,149 +1,162 @@
-/* Base */
-*{box-sizing:border-box}
-:root{
-  --bg1:#2e1065;     /* ungu tua */
-  --bg2:#0b1020;     /* kehitaman */
-  --card:#111827cc;  /* slate-900 / transparan */
-  --soft:#1f2937;    /* slate-800 */
-  --accent:#7c3aed;  /* violet-600 */
-  --accent-2:#8b5cf6;
-  --text:#e5e7eb;    /* zinc-200 */
-  --muted:#a5b4fc;   /* indigo-300 */
-  --white:#ffffff;
-  --success:#22c55e;
-}
-html,body{height:100%}
-body{
-  margin:0;
-  font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  color:var(--text);
-  background: radial-gradient(1200px 600px at 20% -10%, #5b21b6 0%, transparent 50%),
-              radial-gradient(1000px 800px at 100% 0%, #1e1b4b 0%, transparent 60%),
-              linear-gradient(180deg,var(--bg1),var(--bg2));
+* {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
-/* Topbar */
-.topbar{
-  position:sticky;top:0;z-index:10;
-  backdrop-filter: blur(8px);
-  background: #0b1020b3;
-  border-bottom:1px solid #ffffff1a;
-  padding:14px 20px;
+body {
+  background: linear-gradient(180deg, #3a0ca3, #000);
+  color: #fff;
+  line-height: 1.6;
 }
-.brand{font-weight:600;letter-spacing:.2px}
 
-/* Layout */
-.container{max-width:1000px;margin:24px auto;padding:0 16px}
-.card{
-  background:linear-gradient(180deg,#0f172acc,#0b1020cc);
-  border:1px solid #ffffff1a;
-  border-radius:16px;
-  padding:18px;
-  box-shadow:0 8px 24px #0000004d;
-  display:none;opacity:0;transform:translateY(6px);
-  transition:opacity .25s ease, transform .25s ease;
+.header {
+  text-align: center;
+  padding: 15px;
 }
-.card.show{display:block;opacity:1;transform:none}
-.section-head{margin-bottom:12px}
-.sub{color:#c7d2fe;font-size:.9rem;opacity:.9}
 
-/* Breadcrumbs */
-.breadcrumbs{display:flex;align-items:center;gap:8px;margin-bottom:4px}
-.link{background:none;border:0;color:var(--muted);cursor:pointer}
-.link.back{padding:6px 8px;border-radius:10px;transition:.2s}
-.link.back:hover{background:#ffffff14}
+.banner {
+  width: 100%;
+  max-width: 600px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
 
-/* Games Grid */
-.games-grid{
-  display:grid;gap:14px;
-  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+.shop-name {
+  font-size: 28px;
+  font-weight: 700;
 }
-.game-card{
-  border:1px solid #ffffff1a;
-  background:#0b1020;
-  border-radius:14px;overflow:hidden;
-  box-shadow:0 6px 16px #00000066;
-  transition:transform .2s, box-shadow .2s, border-color .2s;
-  cursor:pointer;text-align:left;padding:0;
-}
-.game-card img{width:100%;height:120px;object-fit:cover;display:block}
-.game-card span{display:block;padding:10px 12px;font-weight:600}
-.game-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px #00000080;border-color:#a78bfa66}
-.game-card.active{outline:2px solid var(--accent-2)}
 
-/* Form */
-.form-row{display:flex;gap:12px;flex-wrap:wrap}
-.field{flex:1;min-width:220px}
-label{display:block;margin:8px 2px 6px 2px;color:#c7d2fe;font-size:.85rem}
-input{
-  width:100%;padding:12px 14px;border-radius:12px;
-  background:#0b1020;border:1px solid #ffffff24;color:var(--text);
-  outline:none;transition:border-color .2s, box-shadow .2s;
+.container {
+  width: 90%;
+  max-width: 900px;
+  margin: 20px auto;
 }
-input:focus{border-color:#a78bfa;box-shadow:0 0 0 4px #7c3aed33}
 
-/* Diamonds */
-.section-sub{margin-top:14px;margin-bottom:8px}
-.diamond-grid{
-  display:grid;gap:12px;
-  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+.section-title {
+  font-size: 20px;
+  margin-bottom: 15px;
+  font-weight: 600;
 }
-.diamond-card{
-  background:#0b1020;border:1px solid #ffffff24;border-radius:14px;
-  padding:12px 14px;display:flex;align-items:center;gap:10px;justify-content:space-between;
-  cursor:pointer;transition:.2s;box-shadow:0 6px 16px #0000004d;
-}
-.diamond-card .left{display:flex;align-items:center;gap:10px}
-.diamond-card .icon{font-size:1.1rem}
-.diamond-card .amount{font-weight:600}
-.diamond-card .price{color:#c7d2fe;font-size:.9rem}
-.diamond-card:hover{transform:translateY(-2px);border-color:#a78bfa80}
-.diamond-card.active{outline:2px solid var(--accent-2);background:#0f1426}
 
-/* Payment */
-.payment-grid{
-  display:grid;gap:12px;
-  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 15px;
 }
-.payment-card{
-  background:#0b1020;border:1px solid #ffffff24;border-radius:14px;
-  padding:10px;display:flex;gap:10px;align-items:center;justify-content:flex-start;
-  box-shadow:0 6px 16px #0000004d;transition:.2s;cursor:pointer;
+
+.game-card {
+  background: #1a1a2e;
+  border-radius: 12px;
+  text-align: center;
+  padding: 10px;
+  transition: 0.3s;
+  color: #fff;
+  text-decoration: none;
 }
-.payment-card img{width:60px;height:60px;object-fit:contain;border-radius:10px;background:#fff}
-.pay-meta{display:flex;flex-direction:column;line-height:1.2}
-.pay-meta .name{font-weight:600}
-.pay-meta .price{color:#c7d2fe;margin-top:4px}
-.payment-card:hover{transform:translateY(-2px);border-color:#a78bfa80}
-.payment-card.active{outline:2px solid var(--accent-2);background:#0f1426}
 
-/* Buttons */
-.actions{margin-top:16px;display:flex;justify-content:flex-end}
-.btn{
-  padding:12px 16px;border-radius:12px;border:1px solid #ffffff26;
-  background:#151a2b;color:var(--text);cursor:pointer;font-weight:600;transition:.2s;
+.game-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
 }
-.btn:hover{filter:brightness(1.1)}
-.btn.primary{background:linear-gradient(90deg,#6d28d9,#9333ea);border-color:#7c3aed}
-.btn.primary:disabled{opacity:.5;cursor:not-allowed}
 
-/* Modal */
-.modal{position:fixed;inset:0;background:#00000080;display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
-.modal.show{display:flex}
-.modal-dialog{
-  width:min(560px,100%);background:#0b1020;border:1px solid #ffffff24;border-radius:16px;
-  box-shadow:0 30px 60px #000000aa;overflow:hidden;animation:pop .2s ease;
+.game-card:hover {
+  transform: translateY(-5px);
+  background: #2a2a4e;
 }
-@keyframes pop{from{transform:translateY(8px);opacity:.7}to{transform:none;opacity:1}}
-.modal-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #ffffff1a}
-.modal-body{padding:14px 16px}
-.modal-actions{display:flex;gap:10px;justify-content:flex-end;padding:14px 16px;border-top:1px solid #ffffff1a}
-.close{background:transparent;border:0;color:var(--text);cursor:pointer;font-size:18px}
-.summary-row,.summary-total{display:flex;align-items:center;justify-content:space-between;margin:10px 0}
-.summary-total{padding-top:8px;border-top:1px dashed #ffffff26;font-size:1.05rem}
 
-/* Footer */
-.footer{opacity:.7;text-align:center;padding:24px}
+.game-card span {
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+}
 
-/* Utilities */
-.grow{flex:1}
+.game-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.game-banner {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+}
+
+h3 {
+  margin: 15px 0 10px;
+  font-size: 18px;
+}
+
+.diamond-grid, .payment-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.option {
+  background: #1a1a2e;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.option img {
+  width: 30px;
+  margin-bottom: 5px;
+}
+
+.option.selected {
+  background: #3a0ca3;
+  border: 2px solid #fff;
+}
+
+.checkout-btn, .close-btn {
+  background: #3a0ca3;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: 0.3s;
+}
+
+.checkout-btn:hover, .close-btn:hover {
+  background: #5f0fca;
+}
+
+.popup {
+  position: fixed;
+  top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-content {
+  background: #1a1a2e;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 400px;
+  text-align: center;
+}
