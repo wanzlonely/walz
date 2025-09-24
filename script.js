@@ -737,11 +737,11 @@ Silakan scan kode QR di atas untuk melakukan pembayaran. Setelah berhasil, klik 
         paymentContent = `
             <h4>Transfer ke ${payment.name}</h4>
             <div class="payment-info">
-                <img src="${payment.img}" alt="${payment.name}" class="payment-image">
                 <div class="payment-details">
+                    <img src="${payment.img}" alt="${payment.name}" class="payment-image">
                     <div class="payment-caption">A.N. ${payment.holder}</div>
-                    <div class="payment-number">${payment.number}</div>
                 </div>
+                <div class="payment-number">${payment.number}</div>
             </div>
             <button class="btn copy-button" onclick="copyToClipboard('${payment.number}')">Salin Nomor</button>
         `;
