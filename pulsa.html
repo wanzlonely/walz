@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Up Pulsa - Walzshop</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="notification-container"></div>
+    <header>
+        <div class="container">
+            <div class="logo"><a href="index.html">WALZSHOP</a></div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Game</a></li>
+                    <li><a href="pulsa.html">Pulsa</a></li>
+                    <li><a href="panel.html">Panel</a></li>
+                </ul>
+            </nav>
+            <button id="theme-toggle" class="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="main-form-section">
+                <div class="order-form">
+                    <div class="step-section">
+                        <h2>Langkah 1: Masukkan Nomor HP & Operator</h2>
+                        <div class="input-group">
+                            <i class="fas fa-mobile-alt input-icon"></i>
+                            <input type="number" id="whatsapp-number" placeholder="Nomor Handphone">
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-sim-card input-icon"></i>
+                            <select id="operator-select">
+                                <option value="" disabled selected>Pilih Operator</option>
+                                </select>
+                        </div>
+                    </div>
+
+                    <div class="step-section">
+                        <h2>Langkah 2: Pilih Nominal Pulsa</h2>
+                        <div class="options-grid" id="product-list">
+                            </div>
+                    </div>
+
+                    <div class="step-section">
+                        <h2>Langkah 3: Pilih Pembayaran</h2>
+                        <div class="options-grid" id="payment-list">
+                            </div>
+                    </div>
+                </div>
+
+                <div class="summary-card" id="summary-card" style="display: none;">
+                    <h3>Ringkasan Pesanan</h3>
+                    <div class="summary-detail-item">
+                        <span class="label">Produk</span>
+                        <span class="value" id="summary-product-details"></span>
+                    </div>
+                    <div class="summary-total">
+                        <span>Harga</span>
+                        <span id="summary-price"></span>
+                    </div>
+                    <button class="btn btn-fullwidth" id="confirm-button">Konfirmasi Pesanan</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <p>&copy; 2024 Walzshop. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
