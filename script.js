@@ -327,10 +327,8 @@ function selectOption(element) {
 
     if (document.getElementById('topup-form')) {
         updateSummary();
-    } else if (document.getElementById('topup-pulsa-form')) {
+    } else if (document.getElementById('pulsa-form')) {
         updatePulsaSummary();
-    } else if (document.getElementById('panel-form')) {
-        // Logika untuk halaman panel
     }
 }
 
@@ -372,7 +370,7 @@ function copyToClipboard(text) {
 
 // Logika Halaman Index
 function renderGameCards(gamesToRender) {
-    const gameListContainer = document.getElementById('game-list');
+    const gameListContainer = document.querySelector('.game-grid-custom');
     if (!gameListContainer) return;
 
     gameListContainer.innerHTML = '';
@@ -380,34 +378,35 @@ function renderGameCards(gamesToRender) {
         gameListContainer.innerHTML = '<p class="no-results-message" style="text-align:center; color:var(--text-light);">Game tidak ditemukan.</p>';
         return;
     }
-    
+
     gamesToRender.forEach(game => {
         const gameCard = document.createElement('div');
         gameCard.classList.add("game-card-custom");
+        gameCard.onclick = () => window.location.href = game.url;
         gameCard.innerHTML = `
-            <a href="${game.url}">
-                <img src="${game.img}" alt="${game.name}" class="game-card-img">
-                <div class="game-card-content-custom">
-                    <h3>${game.name}</h3>
-                    <p>${game.publisher}</p>
-                </div>
-            </a>
+            <img src="${game.img}" alt="${game.name}" class="game-card-img">
+            <div class="game-card-content-custom">
+                <h3>${game.name}</h3>
+                <p>${game.publisher}</p>
+            </div>
         `;
         gameListContainer.appendChild(gameCard);
     });
 }
 
 function liveSearchGames() {
-    const searchInput = document.getElementById('game-search');
+    const searchInput = document.querySelector('.search-box input');
+    if (!searchInput) return;
     const searchTerm = searchInput.value.toLowerCase();
-    
+
     const filteredGames = GAMES.filter(game => {
         return game.name.toLowerCase().includes(searchTerm) ||
                game.publisher.toLowerCase().includes(searchTerm);
     });
-    
+
     renderGameCards(filteredGames);
 }
+
 
 // Logika Halaman Game
 function renderProducts(gameKey) {
@@ -431,13 +430,13 @@ function renderProducts(gameKey) {
             }
 
             const currentPrice = isVoucherApplied ? Math.max(0, product.price - voucherDiscount) : product.price;
+            const originalPriceHTML = isVoucherApplied ? `<div class="original-price">${formatRupiah(product.price)}</div>` : '';
 
             productDiv.innerHTML = `
                 ${badgeHtml}
-                <i class="fas fa-gem icon"></i>
                 <div class="label">${product.label}</div>
                 <div class="price-group">
-                    ${isVoucherApplied ? `<div class="original-price">${formatRupiah(product.price)}</div>` : ''}
+                    ${originalPriceHTML}
                     <div class="price">${formatRupiah(currentPrice)}</div>
                 </div>
             `;
@@ -501,9 +500,8 @@ function setupGamePage() {
     const serverIdContainer = document.getElementById("server-id-container");
     const promoCodeInput = document.getElementById('promo-code');
 
-    if (!game || !productListContainer || !paymentListContainer) {
-        window.location.href = 'index.html';
-        return;
+    if (!game || !productListContainer || !paymentListContainer || !gameInfoHeader) {
+        return; // Halaman tidak cocok, hentikan eksekusi
     }
 
     gameInfoHeader.innerHTML = `
@@ -560,39 +558,46 @@ function setupGamePage() {
     }
     document.getElementById('whatsapp-number').addEventListener('input', updateSummary);
 
-    document.getElementById('use-voucher-btn').addEventListener('click', () => {
-        const promoCode = promoCodeInput.value.toUpperCase();
-        const voucherDiscount = 100;
-        if (promoCode === "WALZPROMO") {
-            isVoucherApplied = true;
-            renderProducts(gameKey);
-            updateSummary();
-            showNotification(`Voucher Berhasil digunakan! Potongan: ${formatRupiah(voucherDiscount)}`, true);
-        } else {
-            isVoucherApplied = false;
-            renderProducts(gameKey);
-            updateSummary();
-            showNotification('Voucher Tidak valid', false);
-        }
-    });
+    const useVoucherBtn = document.getElementById('use-voucher-btn');
+    if (useVoucherBtn) {
+        useVoucherBtn.addEventListener('click', () => {
+            const promoCode = promoCodeInput.value.toUpperCase();
+            const voucherDiscount = 100;
+            if (promoCode === "WALZPROMO") {
+                isVoucherApplied = true;
+                renderProducts(gameKey);
+                updateSummary();
+                showNotification(`Voucher Berhasil digunakan! Potongan: ${formatRupiah(voucherDiscount)}`, true);
+            } else {
+                isVoucherApplied = false;
+                renderProducts(gameKey);
+                updateSummary();
+                showNotification('Voucher Tidak valid', false);
+            }
+        });
+    }
 
-    document.getElementById('confirm-button').addEventListener('click', () => {
-        const selectedProductCard = document.querySelector('#product-list .option-card.selected');
-        const selectedPaymentCard = document.querySelector('#payment-list .option-card.selected');
 
-        const productId = selectedProductCard ? selectedProductCard.dataset.id : '';
-        const paymentId = selectedPaymentCard ? selectedPaymentCard.dataset.id : '';
-        const userId = document.getElementById('user-id').value;
-        const serverId = game.needsServerId ? document.getElementById('server-id').value : '';
-        const whatsappNumber = document.getElementById('whatsapp-number').value;
+    const confirmButton = document.getElementById('confirm-button');
+    if (confirmButton) {
+        confirmButton.addEventListener('click', () => {
+            const selectedProductCard = document.querySelector('#product-list .option-card.selected');
+            const selectedPaymentCard = document.querySelector('#payment-list .option-card.selected');
 
-        if (productId && paymentId && userId && whatsappNumber) {
-            const url = `cart.html?game_key=${gameKey}&product_id=${productId}&payment_id=${paymentId}&user_id=${userId}&server_id=${serverId}&whatsapp_number=${whatsappNumber}&voucher_applied=${isVoucherApplied}`;
-            window.location.href = url;
-        } else {
-            showNotification('Mohon lengkapi semua data pesanan terlebih dahulu.', false);
-        }
-    });
+            const productId = selectedProductCard ? selectedProductCard.dataset.id : '';
+            const paymentId = selectedPaymentCard ? selectedPaymentCard.dataset.id : '';
+            const userId = document.getElementById('user-id').value;
+            const serverId = game.needsServerId ? document.getElementById('server-id').value : '';
+            const whatsappNumber = document.getElementById('whatsapp-number').value;
+
+            if (productId && paymentId && userId && whatsappNumber) {
+                const url = `cart.html?game_key=${gameKey}&product_id=${productId}&payment_id=${paymentId}&user_id=${userId}&server_id=${serverId}&whatsapp_number=${whatsappNumber}&voucher_applied=${isVoucherApplied}`;
+                window.location.href = url;
+            } else {
+                showNotification('Mohon lengkapi semua data pesanan terlebih dahulu.', false);
+            }
+        });
+    }
 }
 
 // Logika Halaman Cart
@@ -609,17 +614,16 @@ function setupCartPage() {
     const game = GAMES.find(g => g.key === gameKey);
     const product = PRODUCTS[gameKey] ? PRODUCTS[gameKey].find(p => p.id === productId) : null;
     const payment = PAYMENTS.find(p => p.id === paymentId);
+    
+    const cartSummaryCard = document.querySelector('.cart-summary-card');
+    const checkoutButton = document.getElementById('checkout-button');
 
-    const cartSummaryCard = document.getElementById('cart-summary-card');
-    const paymentInfoSection = document.getElementById('payment-info-section');
-    const payButton = document.getElementById('pay-button');
-
-    if (game && product && payment && cartSummaryCard) {
+    if (game && product && payment && cartSummaryCard && checkoutButton) {
         const voucherDiscount = 100;
         const finalPrice = voucherApplied ? Math.max(0, product.price - voucherDiscount) : product.price;
 
-        cartSummaryCard.innerHTML = `
-            <h3>Rincian Pesanan</h3>
+        const summaryHtml = `
+            <h3>Ringkasan Pesanan</h3>
             <div class="summary-detail-item">
                 <span class="label"><i class="fas fa-gamepad"></i> Game</span>
                 <span class="value">${game.name}</span>
@@ -633,62 +637,41 @@ function setupCartPage() {
                 <span class="value">${userId}${serverId ? ` (${serverId})` : ''}</span>
             </div>
             <div class="summary-detail-item">
-                <span class="label"><i class="fas fa-wallet"></i> Metode Pembayaran</span>
+                <span class="label"><i class="fas fa-wallet"></i> Pembayaran</span>
                 <span class="value">
-                    <img src="${payment.img}" alt="${payment.name}" class="payment-image">
+                    <img src="${payment.img}" alt="${payment.name}" style="height:20px;">
                     ${payment.name}
                 </span>
             </div>
             <div class="summary-detail-item">
-                <span class="label"><i class="fab fa-whatsapp"></i> Nomor WhatsApp</span>
+                <span class="label"><i class="fab fa-whatsapp"></i> No. WhatsApp</span>
                 <span class="value">${whatsappNumber}</span>
             </div>
             <div class="summary-total">
-                <span class="label">Total Pembayaran</span>
-                <span class="value">${formatRupiah(finalPrice)}</span>
+                <span>Total Harga:</span>
+                <span>${formatRupiah(finalPrice)}</span>
             </div>
         `;
+        document.getElementById('cart-items').innerHTML = summaryHtml;
+        document.getElementById('empty-cart-message').style.display = 'none';
 
-        let paymentContent = '';
-        if (payment.qr) {
-            paymentContent = `
-                <h4>Scan untuk Bayar</h4>
-                <img src="${payment.qr}" alt="QR Code" class="qr-code-image">
-                <div class="qr-caption">⚠️Perhatian: Transfer harus sesuai Dengan Harga Yang Tertera Di Atas⚠️
-Silakan scan kode QR di atas untuk melakukan pembayaran. Setelah berhasil, klik **Bayar Sekarang**.</div>
-            `;
-        } else if (payment.number) {
-            paymentContent = `
-                <h4>Transfer ke ${payment.name}</h4>
-                <img src="${payment.img}" alt="${payment.name}" class="payment-image">
-                <div class="payment-caption">A.N. ${payment.holder}</div>
-                <div class="payment-number">${payment.number}</div>
-                <button class="copy-button" onclick="copyToClipboard('${payment.number}')">Salin Nomor</button>
-            `;
-        }
-
-        paymentInfoSection.innerHTML = paymentContent;
-
-        payButton.addEventListener('click', () => {
+        checkoutButton.disabled = false;
+        checkoutButton.addEventListener('click', () => {
             const adminWhatsapp = '6282298902274';
             const message = `Halo Admin, saya ingin konfirmasi pesanan saya.\n\n*Detail Pesanan:*\nGame: ${game.name}\nProduk: ${product.label}\nPlayer ID: ${userId}${serverId ? ` (${serverId})` : ''}\nMetode Pembayaran: ${payment.name}\nTotal: ${formatRupiah(finalPrice)}\n\nNomor WA saya: ${whatsappNumber}\n\nMohon bantuannya untuk diproses, terima kasih.`;
             const encodedMessage = encodeURIComponent(message);
             window.location.href = `https://wa.me/${adminWhatsapp}?text=${encodedMessage}`;
         });
     } else {
-        cartSummaryCard.innerHTML = `
-            <h3>Terjadi Kesalahan</h3>
-            <p style="text-align: center; color: var(--text-color-light);">Data pesanan tidak ditemukan. Silakan kembali ke halaman utama.</p>
-        `;
-        if (payButton) payButton.style.display = 'none';
-        if (paymentInfoSection) paymentInfoSection.style.display = 'none';
+        document.getElementById('empty-cart-message').style.display = 'flex';
+        if (checkoutButton) checkoutButton.style.display = 'none';
     }
 }
 
 // Logika Halaman Pulsa
 function renderPulsaProducts() {
     const operatorSelect = document.getElementById('operator-select');
-    const pulsaListContainer = document.getElementById("pulsa-list");
+    const pulsaListContainer = document.getElementById("product-list");
     if (!operatorSelect || !pulsaListContainer) return;
 
     pulsaListContainer.innerHTML = '';
@@ -714,7 +697,7 @@ function renderPulsaProducts() {
 }
 
 function updatePulsaSummary() {
-    const selectedProductCard = document.querySelector('#pulsa-list .option-card.selected');
+    const selectedProductCard = document.querySelector('#product-list .option-card.selected');
     const selectedPaymentCard = document.querySelector('#payment-list .option-card.selected');
     const summaryCard = document.getElementById('summary-card');
     const confirmButton = document.getElementById('confirm-button');
@@ -747,7 +730,7 @@ function updatePulsaSummary() {
 
 function setupPulsaPage() {
     const paymentListContainer = document.getElementById("payment-list");
-    const phoneNumberInput = document.getElementById('phone-number');
+    const phoneNumberInput = document.getElementById('whatsapp-number');
     const confirmButton = document.getElementById('confirm-button');
     const operatorSelect = document.getElementById('operator-select');
 
@@ -766,7 +749,7 @@ function setupPulsaPage() {
     });
 
     renderPulsaProducts();
-    
+
     PAYMENTS.forEach(payment => {
         const paymentDiv = document.createElement("div");
         paymentDiv.classList.add("option-card", "payment");
@@ -780,16 +763,16 @@ function setupPulsaPage() {
     });
 
     phoneNumberInput.addEventListener('input', updatePulsaSummary);
-    document.getElementById('pulsa-list').addEventListener('click', updatePulsaSummary);
+    document.getElementById('product-list').addEventListener('click', updatePulsaSummary);
     document.getElementById('payment-list').addEventListener('click', updatePulsaSummary);
 
     confirmButton.addEventListener('click', () => {
-        const selectedProductCard = document.querySelector('#pulsa-list .option-card.selected');
+        const selectedProductCard = document.querySelector('#product-list .option-card.selected');
         const selectedPaymentCard = document.querySelector('#payment-list .option-card.selected');
         const productLabel = selectedProductCard.dataset.label;
         const paymentName = selectedPaymentCard.dataset.id;
         const phoneNumber = phoneNumberInput.value;
-        
+
         const operatorSelect = document.getElementById('operator-select');
         const selectedOperator = operatorSelect.value;
         const product = PRODUCTS["pulsa"][selectedOperator].find(p => p.id === selectedProductCard.dataset.id);
@@ -797,70 +780,42 @@ function setupPulsaPage() {
         const adminWhatsapp = '6282298902274';
         const message = `Halo Admin, saya ingin konfirmasi pesanan pulsa.\n\n*Detail Pesanan:*\nNomor HP: ${phoneNumber}\nProduk: ${productLabel}\nMetode Pembayaran: ${paymentName}\nTotal: ${formatRupiah(product.price)}\n\nMohon bantuannya untuk diproses, terima kasih.`;
         const encodedMessage = encodeURIComponent(message);
-        
+
         window.location.href = `https://wa.me/${adminWhatsapp}?text=${encodedMessage}`;
     });
 }
 
 // Logika Halaman Panel
 function setupPanelPage() {
-    const productNameInput = document.getElementById('user-name');
-    const whatsappInput = document.getElementById('user-whatsapp');
-    const panelProductList = document.getElementById('panel-product-list');
-    const orderButton = document.getElementById('panel-order-button');
-    let selectedProduct = null;
-
-    if (!panelProductList || !orderButton) return;
-
+    const panelProductList = document.querySelector('.game-grid-custom');
+    if (!panelProductList) return;
+    
     PRODUCTS["panel"].forEach(product => {
         const productDiv = document.createElement('div');
-        productDiv.classList.add('option-card');
+        productDiv.classList.add('game-card-custom');
         productDiv.setAttribute('data-name', product.name);
         productDiv.setAttribute('data-price', product.price);
+        
         productDiv.innerHTML = `
-            <div class="label">${product.name}</div>
-            <div class="price">${formatRupiah(product.price)}</div>
-            <p class="description">${product.desc}</p>
+            <img src="https://files.catbox.moe/20k2y5.png" alt="Panel">
+            <div class="game-card-content-custom">
+                <h3>${product.name}</h3>
+                <p>${product.desc}</p>
+            </div>
         `;
+
         productDiv.addEventListener('click', () => {
-            document.querySelectorAll('#panel-product-list .option-card').forEach(c => c.classList.remove('selected'));
-            productDiv.classList.add('selected');
-            selectedProduct = product;
-            updatePanelButtonStatus();
+            const adminWhatsapp = '6282298902274';
+            const message = `Halo Admin, saya ingin memesan layanan Panel Pterodactyl.\n\n*Detail Pesanan:*\nPaket: ${product.name}\nHarga: ${formatRupiah(product.price)}\n\nMohon bantuannya untuk diproses, terima kasih.`;
+            const encodedMessage = encodeURIComponent(message);
+
+            window.location.href = `https://wa.me/${adminWhatsapp}?text=${encodedMessage}`;
         });
+        
         panelProductList.appendChild(productDiv);
     });
-
-    [productNameInput, whatsappInput].forEach(input => {
-        input.addEventListener('input', updatePanelButtonStatus);
-    });
-
-    function updatePanelButtonStatus() {
-        if (productNameInput.value && whatsappInput.value && selectedProduct) {
-            orderButton.disabled = false;
-        } else {
-            orderButton.disabled = true;
-        }
-    }
-    
-    orderButton.addEventListener('click', () => {
-        const name = productNameInput.value;
-        const whatsapp = whatsappInput.value;
-        
-        if (!name || !whatsapp || !selectedProduct) {
-            showNotification('Mohon lengkapi semua data.', false);
-            return;
-        }
-
-        const adminWhatsapp = '6282298902274';
-        const message = `Halo Admin, saya ingin memesan layanan Panel Pterodactyl.\n\n*Detail Pesanan:*\nNama: ${name}\nNomor WhatsApp: ${whatsapp}\nPaket: ${selectedProduct.name}\nHarga: ${formatRupiah(selectedProduct.price)}\n\nMohon bantuannya untuk diproses, terima kasih.`;
-        const encodedMessage = encodeURIComponent(message);
-        
-        window.location.href = `https://wa.me/${adminWhatsapp}?text=${encodedMessage}`;
-    });
-
-    updatePanelButtonStatus();
 }
+
 
 // Theme Toggle Logic
 function setupThemeToggle() {
@@ -887,31 +842,34 @@ function setupThemeToggle() {
         }
     }
 
-    themeToggleBtn.addEventListener('click', () => {
-        const newTheme = body.classList.contains('light-mode') ? 'dark-mode' : 'light-mode';
-        body.classList.remove('dark-mode', 'light-mode');
-        body.classList.add(newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateThemeIcon(newTheme);
-    });
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            const newTheme = body.classList.contains('light-mode') ? 'dark-mode' : 'light-mode';
+            body.classList.remove('dark-mode', 'light-mode');
+            body.classList.add(newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+    }
 }
 
 // DOMContentLoaded Event Listener Utama
 document.addEventListener("DOMContentLoaded", () => {
     setupThemeToggle();
-    if (document.querySelector('.game-grid-custom')) {
+    const path = window.location.pathname.split('/').pop();
+    if (path === 'index.html' || path === '') {
         renderGameCards(GAMES);
-        const searchInput = document.getElementById('game-search');
+        const searchInput = document.querySelector('.search-box input');
         if (searchInput) {
             searchInput.addEventListener('input', liveSearchGames);
         }
-    } else if (document.getElementById('topup-form')) {
+    } else if (path === 'game.html') {
         setupGamePage();
-    } else if (document.getElementById('cart-summary-card')) {
+    } else if (path === 'cart.html') {
         setupCartPage();
-    } else if (document.getElementById('topup-pulsa-form')) {
+    } else if (path === 'pulsa.html') {
         setupPulsaPage();
-    } else if (document.getElementById('panel-order-button')) {
+    } else if (path === 'panel.html') {
         setupPanelPage();
     }
 });
