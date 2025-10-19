@@ -1,0 +1,204 @@
+/* ==================================== */
+/* 1. VARIABEL & RESET DASAR            */
+/* ==================================== */
+:root {
+    --primary-color: #1a73e8; /* Biru Google */
+    --secondary-color: #6c757d;
+    --background-light: #ffffff;
+    --light-grey: #f1f3f4;
+    --success-color: #28a745; 
+    --card-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    --whatsapp-color: #25D366; /* Warna WhatsApp */
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--light-grey);
+    color: #343a40;
+}
+
+/* ==================================== */
+/* 2. NAVBAR & HERO SECTION             */
+/* ==================================== */
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary-color) !important;
+    font-size: 1.6rem;
+}
+
+.hero-section {
+    background-color: var(--background-light);
+    padding: 70px 0 50px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.form-control-minimal {
+    border-radius: 10px 0 0 10px;
+    padding: 18px 20px;
+    border: 1px solid #dee2e6;
+    box-shadow: none;
+}
+
+.btn-primary {
+    border-radius: 0 10px 10px 0;
+    padding: 18px 30px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #155bb5;
+    border-color: #155bb5;
+}
+
+/* ==================================== */
+/* 3. TAB NAVIGASI & DAFTAR HARGA       */
+/* ==================================== */
+.nav-link {
+    font-weight: 600;
+    color: var(--secondary-color);
+    padding: 12px 25px;
+    transition: all 0.3s;
+}
+
+.nav-link.active {
+    border-bottom: 3px solid var(--primary-color) !important;
+    background-color: var(--background-light) !important;
+}
+
+.pricing-table {
+    background-color: var(--background-light);
+    border-radius: 0 10px 10px 10px;
+    box-shadow: var(--card-shadow);
+    min-height: 450px;
+    padding: 30px !important;
+}
+
+.price-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.price-item {
+    /* DEFAULT: Desktop 3 kolom */
+    flex: 1 1 calc(33.333% - 15px);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    background-color: #fcfcfc;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+
+.price-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.product-name {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--primary-color);
+}
+
+.price-amount {
+    font-weight: 700;
+    color: var(--success-color);
+    font-size: 1.2rem;
+    margin-top: auto;
+}
+
+.product-description {
+    font-size: 0.85rem;
+    color: var(--secondary-color);
+}
+
+/* Feature Card */
+.feature-card {
+    background-color: var(--background-light);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s;
+    border: 1px solid #f1f3f4;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+/* ==================================== */
+/* 4. FLOATING ACTION BUTTON (FAB)      */
+/* ==================================== */
+.fab-chat {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 1050; 
+    background-color: var(--whatsapp-color);
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
+    transition: background-color 0.3s, transform 0.3s;
+    text-decoration: none;
+}
+
+.fab-chat:hover {
+    background-color: #128C7E;
+    transform: scale(1.05);
+    color: white;
+}
+
+/* ==================================== */
+/* 5. MEDIA QUERIES (Responsif)         */
+/* ==================================== */
+
+/* Tablet & Landscape Mobile (992px) */
+@media (max-width: 992px) {
+    .price-item {
+        flex: 1 1 calc(50% - 15px); /* Tablet: 2 kolom */
+    }
+}
+
+/* Mobile Portrait (576px) */
+@media (max-width: 576px) {
+    .price-item {
+        flex: 1 1 100%; /* Mobile: 1 kolom penuh */
+    }
+
+    .fab-chat {
+        bottom: 15px;
+        right: 15px;
+        width: 50px;
+        height: 50px;
+    }
+    .fab-chat .fa-2x {
+        font-size: 1.5rem !important;
+    }
+    
+    .input-group-lg > .form-control {
+        border-radius: 10px !important;
+        margin-bottom: 10px;
+    }
+    
+    .input-group-lg > .btn {
+        border-radius: 10px !important;
+        width: 100%;
+        padding: 15px;
+    }
+
+    .nav-link {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+    
+    .pricing-table {
+        padding: 15px !important;
+    }
+}
