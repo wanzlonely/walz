@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WALZSHOP - Top Up Cepat dan Terpercaya</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>WALZSHOP - Top Up Game Murah & Aman</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -17,29 +18,25 @@
                 <h1 class="website-name">WALZSHOP</h1>
             </a>
             <div class="header-right">
-                <div class="search-box">
-                    <input type="search" id="game-search" placeholder="Cari Game..." aria-label="Cari Game">
-                    <i class="fas fa-search search-icon"></i>
-                </div>
                 <button id="theme-toggle" class="theme-toggle-btn" aria-label="Ganti Tema Gelap/Terang">
                     <i class="fas fa-sun"></i>
                 </button>
             </div>
         </header>
 
-        <main class="game-selection-main">
-            <section class="section-card guidance-card">
-                <h2>Selamat Datang di WALZSHOP!</h2>
-                <p>Pilih game favoritmu di bawah ini untuk memulai top up. Kami menawarkan layanan top up yang **aman, cepat, dan terpercaya**.</p>
+        <main>
+            <section class="hero-section">
+                <h2>Top Up Game Instan, Murah, dan Legal!</h2>
+                <p>Pilih game favorit Anda dan dapatkan diamond/credit dengan harga terbaik.</p>
             </section>
-            
-            <section class="section-card game-list-section">
-                <div class="section-header">
-                    <h3 class="section-title">Semua Game yang Tersedia</h3>
+
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="game-search" placeholder="Cari Game (Mobile Legends, Free Fire, dll...)">
+            </div>
+
+            <div id="game-list" class="game-grid-custom">
                 </div>
-                <div id="game-list" class="game-grid-custom" role="list">
-                    </div>
-            </section>
         </main>
     </div>
 
@@ -60,6 +57,7 @@
         </nav>
     </footer>
 
+    <div class="notification-container"></div>
     <script src="script.js"></script>
 </body>
 </html>
