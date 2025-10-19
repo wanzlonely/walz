@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WALZSHOP - Top Up Pulsa & Data</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>WALZSHOP - Top Up Pulsa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -29,7 +28,7 @@
         </a>
 
         <main>
-            <h2>Layanan Top Up Pulsa</h2>
+            <h2>Layanan Top Up Pulsa & Data</h2>
             <form id="topup-pulsa-form" onsubmit="return false;">
                 
                 <section class="section-card">
@@ -64,7 +63,8 @@
                     </div>
                     <fieldset id="pulsa-list" class="options-grid">
                         <legend class="visually-hidden">Pilihan Nominal Pulsa</legend>
-                        </fieldset>
+                        <div class="placeholder-message">Pilih operator terlebih dahulu di langkah 1.</div>
+                    </fieldset>
                 </section>
 
                 <section class="section-card">
@@ -77,9 +77,12 @@
                         </fieldset>
                 </section>
                 
-                <div id="summary-card" class="summary-card" style="display: none;" aria-live="polite">
+                <div id="summary-card" class="summary-card" style="display: none;">
                     <div id="summary-product-details" class="summary-product"></div>
-                    <div id="summary-price" class="summary-price"></div>
+                    <div class="summary-total-group">
+                        <span class="label">Total Bayar:</span>
+                        <span id="summary-price" class="summary-price"></span>
+                    </div>
                     <button id="confirm-button" class="confirm-button" type="submit" disabled>Pesan Sekarang</button>
                 </div>
             </form>
