@@ -1,94 +1,71 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WALZSHOP - Top Up Pulsa</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pulsa & Data - WALZSHOP</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+
 <body>
+  <header class="header">
+    <a href="index.html" class="logo-link">
+      <img src="https://files.catbox.moe/hrtpys.jpg" alt="Logo" class="logo-icon">
+      <h1 class="website-name">WALZSHOP</h1>
+    </a>
+  </header>
 
-    <div class="main-container">
-        <header class="header">
-            <a href="index.html" class="logo-link">
-                <img src="https://files.catbox.moe/hrtpys.jpg" alt="WALZSHOP Icon" class="logo-icon">
-                <h1 class="website-name">WALZSHOP</h1>
-            </a>
-            <div class="header-right">
-                <button id="theme-toggle" class="theme-toggle-btn">
-                    <i class="fas fa-sun"></i>
-                </button>
-            </div>
-        </header>
+  <main class="main-container">
+    <section class="guidance-card">
+      <h3>Pulsa & Paket Data</h3>
+      <p>Isi ulang pulsa dan paket data semua operator dengan harga murah dan instan.</p>
+    </section>
 
-        <a href="index.html" class="back-button-top">
-            <i class="fas fa-arrow-left"></i> Kembali ke Beranda
-        </a>
+    <h2 class="section-title"><i class="fa-solid fa-mobile-screen"></i> Pilih Operator</h2>
 
-        <main id="topup-pulsa-form">
-            <section class="section-card">
-                <div class="section-header">
-                    <span class="section-number">1</span>
-                    <h3>Masukkan Nomor HP</h3>
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-mobile-alt input-icon"></i>
-                    <input type="number" id="phone-number" placeholder="Contoh: 0812xxxxxx">
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-phone-square-alt input-icon"></i>
-                    <select id="operator-select">
-                        <option value="" disabled selected>Pilih Operator...</option>
-                    </select>
-                </div>
-            </section>
-
-            <section class="section-card">
-                <div class="section-header">
-                    <span class="section-number">2</span>
-                    <h3>Pilih Nominal Pulsa</h3>
-                </div>
-                <div id="pulsa-list" class="options-grid">
-                </div>
-            </section>
-
-            <section class="section-card">
-                <div class="section-header">
-                    <span class="section-number">3</span>
-                    <h3>Pilih Metode Pembayaran</h3>
-                </div>
-                <div id="payment-list" class="options-grid">
-                </div>
-            </section>
-        </main>
-
-        <div id="summary-card" class="summary-card" style="display: none;">
-            <div id="summary-product-details" class="summary-product"></div>
-            <div id="summary-price" class="summary-price"></div>
-            <button id="confirm-button" class="confirm-button" disabled>Pesan Sekarang</button>
+    <div class="game-grid-custom">
+      <div class="game-card-custom">
+        <img src="https://files.catbox.moe/eyzohx.jpg" alt="Telkomsel" class="game-card-img">
+        <div class="game-card-content-custom">
+          <h3>Telkomsel</h3>
+          <p>Pulsa & Kuota</p>
         </div>
+      </div>
+
+      <div class="game-card-custom">
+        <img src="https://files.catbox.moe/1teulv.jpg" alt="XL" class="game-card-img">
+        <div class="game-card-content-custom">
+          <h3>XL / Axis</h3>
+          <p>Top Up Instan</p>
+        </div>
+      </div>
+
+      <div class="game-card-custom">
+        <img src="https://files.catbox.moe/1t7ivv.jpg" alt="Tri" class="game-card-img">
+        <div class="game-card-content-custom">
+          <h3>Tri</h3>
+          <p>Paket Data</p>
+        </div>
+      </div>
+
+      <div class="game-card-custom">
+        <img src="https://files.catbox.moe/5t4jpm.jpg" alt="Indosat" class="game-card-img">
+        <div class="game-card-content-custom">
+          <h3>Indosat</h3>
+          <p>Pulsa Murah</p>
+        </div>
+      </div>
     </div>
+  </main>
 
-    <footer class="main-footer">
-        <div class="footer-links-group">
-            <a href="index.html">
-                <i class="fas fa-gem"></i>
-                <span>Top Up</span>
-            </a>
-            <a href="pulsa.html">
-                <i class="fas fa-mobile-alt"></i>
-                <span>Pulsa</span>
-            </a>
-            <a href="panel.html">
-                <i class="fas fa-server"></i>
-                <span>Panel</span>
-            </a>
-        </div>
-    </footer>
-
-    <div class="notification-container"></div>
-    <script src="script.js"></script>
+  <footer class="main-footer">
+    <div class="footer-links-group">
+      <a href="index.html"><i class="fas fa-gem"></i><span>Top Up</span></a>
+      <a href="pulsa.html"><i class="fas fa-mobile-alt"></i><span>Pulsa</span></a>
+      <a href="panel.html"><i class="fas fa-server"></i><span>Panel</span></a>
+      <a href="cart.html"><i class="fas fa-shopping-cart"></i><span>Keranjang</span></a>
+    </div>
+  </footer>
 </body>
 </html>
