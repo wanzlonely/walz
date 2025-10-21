@@ -23,8 +23,8 @@
     --bg-gradient: linear-gradient(135deg, #f0f4f8 0%, #d9e2ea 100%);
     --container-bg-color: rgba(255, 255, 255, 0.85);
     /* New: Layout Variables */
-    --desktop-max-width: 1200px;
-    --column-gap: 1.5rem; /* DIKECILKAN */
+    --desktop-max-width: 1100px; /* Sedikit dikecilkan agar terlihat padat */
+    --column-gap: 2rem;
 }
 
 /* --- Dark Theme Variables --- */
@@ -40,7 +40,7 @@
     --selected-border: #00e69b;
     --box-shadow-dark: 0 5px 15px rgba(0, 0, 0, 0.5);
     --box-shadow-light: 0 2px 8px rgba(0, 0, 0, 0.3);
-    --bg-gradient: linear-gradient(135deg, #1e1e1e 0%, #0a0a0a 10a0a 100%);
+    --bg-gradient: linear-gradient(135deg, #1e1e1e 0%, #0a0a0a 100%);
     --container-bg-color: rgba(30, 30, 30, 0.9);
 }
 
@@ -64,8 +64,8 @@ body {
 }
 
 .main-container {
-    padding: 1.25rem; /* DIKECILKAN */
-    max-width: 800px; 
+    padding: 1.5rem; /* DIKEMBALIKAN KE AWAL */
+    max-width: 800px; /* Default untuk mobile/tablet */
     margin: 0 auto;
     background-color: var(--container-bg-color);
     backdrop-filter: blur(10px) saturate(180%);
@@ -93,11 +93,11 @@ a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.8rem 1.25rem; /* DIKECILKAN */
+    padding: 1rem 1.5rem; /* DIKEMBALIKAN KE AWAL */
     background-color: var(--bg-secondary);
     border-radius: var(--border-radius-xl);
     box-shadow: var(--box-shadow-light);
-    margin-bottom: 1.25rem; /* DIKECILKAN */
+    margin-bottom: 1.5rem; /* DIKEMBALIKAN KE AWAL */
     transition: background-color 0.5s ease;
     max-width: var(--desktop-max-width); 
     margin-left: auto;
@@ -107,293 +107,619 @@ a {
 .logo-link {
     display: flex;
     align-items: center;
-    gap: 0.5rem; /* DIKECILKAN */
+    gap: 0.5rem;
 }
 
 .logo-icon {
-    width: 2.25rem; /* DIKECILKAN */
-    height: 2.25rem; /* DIKECILKAN */
-    border-radius: var(--border-radius-lg); 
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%; /* DIKEMBALIKAN KE AWAL */
     object-fit: cover;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
 }
 
 .logo-icon:hover {
-    transform: translateY(-1px) scale(1.03); /* Efek dikecilkan */
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    transform: rotate(15deg) scale(1.1);
 }
 
 .website-name {
-    font-size: 1.25rem; /* DIKECILKAN */
+    font-size: 1.25rem;
     font-weight: 700;
     color: var(--accent-color);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
 }
 
 .header-right {
     display: flex;
     align-items: center;
-    gap: 0.75rem; /* DIKECILKAN */
+    gap: 0.5rem;
 }
 
 .search-box {
-    padding: 0.4rem 0.8rem; /* DIKECILKAN */
-    width: 10rem; /* DIKECILKAN */
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-primary);
+    border-radius: 50px;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    box-shadow: var(--box-shadow-light);
+    width: 10rem;
 }
 
 .search-box:focus-within {
-    width: 12rem; /* DIKECILKAN */
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    width: 12rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 }
 
 .search-box input {
-    font-size: 0.85rem; /* DIKECILKAN */
+    border: none;
+    background: transparent;
+    outline: none;
+    color: var(--text-color);
+    font-size: 0.8rem;
+    padding-right: 1.5rem;
+    width: 100%;
+}
+
+.search-box input::placeholder {
+    color: var(--text-light);
 }
 
 .search-box .search-icon {
-    right: 0.8rem; /* DIKECILKAN */
+    position: absolute;
+    right: 1rem;
+    color: var(--text-light);
+    pointer-events: none;
+    transition: color 0.3s ease;
+}
+
+.search-box:focus-within .search-icon {
+    color: var(--accent-color);
 }
 
 .theme-toggle-btn {
-    width: 2.5rem; /* DIKECILKAN */
-    height: 2.5rem; /* DIKECILKAN */
-    font-size: 1.2rem; /* DIKECILKAN */
+    background-color: var(--bg-primary);
+    color: var(--text-color);
+    border: none;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    cursor: pointer;
+    font-size: 1.2rem;
+    box-shadow: var(--box-shadow-light);
+    transition: all 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+    transform: scale(1.1);
+    box-shadow: var(--box-shadow-dark);
 }
 
 /* ======================== */
 /* Game List & Cards (Home) */
 /* ======================== */
 .guidance-card {
-    padding: 1.25rem; /* DIKECILKAN */
-    margin-bottom: 1.25rem; /* DIKECILKAN */
+    background: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow-light);
+    margin-bottom: 1.5rem;
 }
 
 .guidance-card h3 {
-    font-size: 1.15rem; /* DIKECILKAN */
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
 }
 
 .guidance-card p {
-    font-size: 0.85rem; /* DIKECILKAN */
+    font-size: 0.9rem;
+    color: var(--text-light);
 }
 
 .game-grid-custom {
-    grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr)); /* DIKECILKAN */
-    gap: 1rem; /* DIKECILKAN */
-    margin-top: 1.25rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr)); /* Sedikit lebih besar dari awal */
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.game-card-custom {
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    position: relative;
+    box-shadow: var(--box-shadow-light);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease;
+    cursor: pointer;
 }
 
 .game-card-custom:hover {
-    transform: translateY(-3px) scale(1.02); /* Efek dikecilkan */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); 
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: var(--box-shadow-dark);
 }
 
 .game-card-img {
-    height: 8rem; /* DIKECILKAN */
+    width: 100%;
+    height: 8rem;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.game-card-custom:hover .game-card-img {
+    transform: scale(1.1);
 }
 
 .game-card-content-custom {
-    padding: 0.75rem 0.5rem; /* DIKECILKAN */
+    padding: 0.75rem 0.5rem;
+    text-align: center;
 }
 
 .game-card-content-custom h3 {
-    font-size: 0.95rem; /* DIKECILKAN */
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--text-color);
 }
 
 .game-card-content-custom p {
-    font-size: 0.65rem; /* DIKECILKAN */
+    font-size: 0.6rem;
+    color: var(--text-light);
 }
 
 /* ======================== */
 /* Page Styles (Game, Pulsa, Panel) */
 /* ======================== */
+.page-content-wrapper {
+    display: block; /* Default untuk mobile */
+}
+
 .back-button-top {
-    padding: 0.6rem 0.9rem; /* DIKECILKAN */
-    font-size: 0.85rem; /* DIKECILKAN */
-    margin-bottom: 1.25rem; /* DIKECILKAN */
+    font-size: 0.9rem;
+    color: var(--text-color);
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--bg-secondary);
+    border-radius: 50px;
+    box-shadow: var(--box-shadow-light);
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.back-button-top:hover {
+    color: var(--accent-color);
+    background: var(--bg-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-dark);
 }
 
 .game-info-header {
-    padding: 1.5rem; /* DIKECILKAN */
-    margin-bottom: 1.25rem; /* DIKECILKAN */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-xl);
+    margin-bottom: 1.5rem;
+    box-shadow: var(--box-shadow-dark);
+    transition: background-color 0.5s ease;
 }
 
 .game-info-header .game-img {
-    width: 7rem; /* DIKECILKAN */
-    height: 7rem; /* DIKECILKAN */
+    width: 7rem;
+    height: 7rem;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border: 3px solid var(--accent-color);
+    box-shadow: 0 0 10px rgba(192, 54, 44, 0.5);
 }
 
 .game-info-header h2 {
-    font-size: 1.6rem; /* DIKECILKAN */
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 3px rgba(255, 215, 0, 0.3);
 }
 
 .game-info-details {
-    margin-top: 1.25rem;
-    padding-top: 1.25rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    margin-top: 1rem;
+    border-top: 1px dashed var(--text-light);
+    padding-top: 1rem;
+    color: var(--text-light);
 }
 
 .game-detail-item {
-    font-size: 0.85rem; /* DIKECILKAN */
+    text-align: center;
+    font-size: 0.8rem;
+    opacity: 0.8;
 }
 
 .game-detail-item i {
-    font-size: 1.3rem; /* DIKECILKAN */
+    font-size: 1.2rem;
+    margin-bottom: 0.25rem;
+    color: var(--accent-color);
 }
 
 .section-card {
-    padding: 1.25rem; /* DIKECILKAN */
-    margin-bottom: 1.25rem; /* DIKECILKAN */
+    background: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    margin-bottom: 1.5rem;
+    box-shadow: var(--box-shadow-dark);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.5s ease;
+}
+
+.section-card:hover {
+    transform: none; /* Hilangkan efek translateY pada hover section card */
+    box-shadow: var(--box-shadow-dark);
 }
 
 .section-header {
-    gap: 0.75rem; /* DIKECILKAN */
-    margin-bottom: 0.85rem; /* DIKECILKAN */
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
 }
 
 .section-number {
-    width: 2rem; /* DIKECILKAN */
-    height: 2rem; /* DIKECILKAN */
-    font-size: 1rem; /* DIKECILKAN */
+    width: 2.25rem;
+    height: 2.25rem;
+    background: var(--accent-color);
+    color: #fff;
+    border-radius: 50%; /* DIKEMBALIKAN KE AWAL */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: bold;
+    box-shadow: 0 0 8px rgba(192, 54, 44, 0.5);
 }
 
 .section-header h3 {
-    font-size: 1.15rem; /* DIKECILKAN */
+    font-size: 1.2rem;
+    font-weight: 600;
 }
 
 .section-description {
-    font-size: 0.85rem; /* DIKECILKAN */
-    padding-left: 0.85rem; /* DIKECILKAN */
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-bottom: 0.75rem;
+    border-left: none; /* Hilangkan border left */
+    padding-left: 0;
 }
 
-.input-group input, .input-group select {
-    padding: 0.75rem 1rem; /* DIKECILKAN */
-    padding-left: 2.5rem; /* DIKECILKAN */
-    font-size: 0.9rem; /* DIKECILKAN */
+.input-group {
+    margin-bottom: 1rem;
+    position: relative;
 }
 
 .input-group .input-icon {
-    font-size: 1rem; /* DIKECILKAN */
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    font-size: 1rem;
+}
+
+.input-group input, .input-group select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    padding-left: 2.5rem;
+    background-color: var(--bg-primary);
+    border: 2px solid transparent;
+    border-radius: var(--border-radius-md);
+    color: var(--text-color);
+    font-size: 0.9rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease;
+}
+
+.input-group input:focus, .input-group select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px rgba(192, 54, 44, 0.5);
+}
+
+.input-group input::placeholder {
+    color: var(--text-light);
 }
 
 .options-grid {
-    grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr)); /* DIKECILKAN */
-    gap: 0.75rem; /* DIKECILKAN */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); /* Disesuaikan agar lebih baik dari awal */
+    gap: 1rem;
 }
 
 .option-card {
-    border: 2px solid transparent; /* DIKECILKAN */
-    padding: 1rem 0.5rem; /* DIKECILKAN */
+    background: var(--card-bg);
+    border-radius: var(--border-radius-md);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease, background-color 0.5s ease;
+    border: 2px solid transparent;
+    padding: 1rem 0.5rem;
+    position: relative;
+    box-shadow: var(--box-shadow-light);
+}
+
+.option-card:hover {
+    transform: translateY(-3px) scale(1.02); /* Efek hover lebih halus */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .option-card.selected {
-    box-shadow: 0 0 15px rgba(192, 54, 44, 0.7); /* Efek dikecilkan */
-    transform: scale(1.04); /* Efek dikecilkan */
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px rgba(192, 54, 44, 0.7);
+    transform: scale(1.05); /* Skala sedikit lebih besar saat dipilih */
+    animation: pulse-border 1s infinite alternate;
+}
+
+@keyframes pulse-border {
+    from { box-shadow: 0 0 10px rgba(192, 54, 44, 0.7); }
+    to { box-shadow: 0 0 20px rgba(192, 54, 44, 1); }
 }
 
 .option-card .label {
-    font-size: 0.9rem; /* DIKECILKAN */
-    margin-bottom: 0.25rem; /* DIKECILKAN */
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    color: var(--text-color);
+}
+
+.option-card .price-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.2;
 }
 
 .option-card .price {
-    font-size: 1.1rem; /* DIKECILKAN */
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--price-color);
 }
 
 .option-card .original-price {
-    font-size: 0.75rem; /* DIKECILKAN */
+    font-size: 0.7rem;
+    color: var(--text-light);
+    text-decoration: line-through;
 }
 
 .option-card .discounted-price {
-    font-size: 0.9rem; /* DIKECILKAN */
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--selected-border);
 }
 
-/* Memperbaiki Posisi Ikon Voucher (Masalah Utama) */
+/* FIX: Ikon Voucher - Disesuaikan agar pas di tengah */
 .option-card .icon {
-    font-size: 2rem; /* DIKECILKAN */
+    font-size: 1.8rem; /* Sedikit dikecilkan */
     color: var(--accent-color);
-    margin-bottom: 0.25rem; /* Disesuaikan agar pas di tengah square */
+    margin-bottom: 0.1rem; /* Disesuaikan agar lebih center */
 }
 
 .option-card.payment {
-    padding: 1rem; /* DIKECILKAN */
+    background-color: var(--bg-secondary);
+    padding: 1rem;
 }
 
 .option-card.payment img {
-    width: 3rem; /* DIKECILKAN */
-    height: 1.8rem; /* DIKECILKAN */
+    width: 3.5rem;
+    height: 2rem;
+    object-fit: contain;
 }
 
-/* Memperbaiki Posisi Ikon di Input Voucher */
+.option-card.payment .label {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.special-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background-color: var(--accent-color); /* Menggunakan accent-color */
+    color: white;
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
 .voucher-input-group {
-    gap: 0.5rem; /* DIKECILKAN */
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
 }
 
 .voucher-input-group .voucher-input {
-    padding-left: 2.5rem; /* DIKECILKAN */
+    flex-grow: 1;
+    padding-left: 2.5rem;
+}
+
+.voucher-input-group .input-icon {
+    left: 1rem;
 }
 
 .voucher-button {
-    padding: 0.75rem 1.25rem; /* DIKECILKAN */
-    font-size: 0.9rem; /* DIKECILKAN */
+    padding: 0.75rem 1.25rem;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: var(--box-shadow-light);
+}
+
+.voucher-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-dark);
 }
 
 /* ======================== */
 /* SUMMARY CARD (FIXED/STICKY) */
 /* ======================== */
 .summary-card {
-    padding: 1.25rem; /* DIKECILKAN */
-    margin-top: 1.25rem;
-    
-    /* Perubahan untuk membuat summary sticky di mobile */
-    position: fixed; /* Berubah dari sticky ke fixed untuk mobile/tablet */
-    bottom: 4rem; /* Di atas footer mobile */
+    background: var(--bg-secondary);
+    padding: 1.25rem; /* Sedikit dikecilkan agar kompak */
+    margin-top: 1.5rem;
+    box-shadow: var(--box-shadow-dark);
+    z-index: 100;
+    transition: background-color 0.5s ease;
+
+    /* Mobile/Tablet: FIXED position */
+    position: fixed;
+    bottom: 4rem; /* Di atas footer */
     left: 50%;
     transform: translateX(-50%);
-    width: 95%; /* Mengambil lebar layar mobile */
-    max-width: 450px; /* Batasan lebar di mobile/tablet */
-    z-index: 100; /* Pastikan di atas konten lain */
+    width: 95%; 
+    max-width: 450px; 
     border-radius: var(--border-radius-lg);
-    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.2); /* Bayangan di atas */
-
-    /* Reset untuk desktop nanti */
-    transition: all 0.3s ease;
-}
-
-/* Mengatur ulang posisi tombol confirm untuk mobile */
-.confirm-button {
-    width: 100%;
-    padding: 0.9rem; /* DIKECILKAN */
-    font-size: 1rem; /* DIKECILKAN */
-    margin-top: 0.75rem; /* DIKECILKAN */
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.25); /* Shadow di atas */
 }
 
 .summary-product {
-    font-size: 1rem; /* DIKECILKAN */
-    margin-bottom: 0.5rem; /* DIKECILKAN */
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem; /* Sedikit dikecilkan */
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
 }
 
 .summary-price {
-    font-size: 1.25rem; /* DIKECILKAN */
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.confirm-button {
+    width: 100%;
+    padding: 0.9rem; /* Sedikit dikecilkan */
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 0.75rem; /* Sedikit dikecilkan */
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.confirm-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.confirm-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ======================== */
+/* Cart Page Styles */
+/* ======================== */
+/* Mempertahankan tampilan yang lebih baik untuk Cart */
+.cart-page-wrapper {
+    display: block; /* Default untuk mobile */
+}
+
+.cart-summary-card {
+    padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    margin-bottom: 1.5rem;
+}
+
+.cart-summary-card h3 {
+    font-size: 1.4rem;
+}
+
+.summary-detail-item {
+    padding: 0.75rem 0;
+    font-size: 0.9rem;
+}
+
+.summary-total {
+    padding: 1.25rem 0 0.5rem;
+    font-size: 1.15rem;
+}
+
+.payment-info-section {
+    padding: 1.5rem;
+    max-width: 450px;
+}
+
+.payment-info-section .payment-number {
+    font-size: 1.5rem;
 }
 
 /* ======================== */
 /* Footer (Floating) */
 /* ======================== */
 .main-footer {
-    padding: 0.6rem 0; /* DIKECILKAN */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--bg-secondary);
+    backdrop-filter: blur(10px) saturate(180%);
+    -webkit-backdrop-filter: blur(10px) saturate(180%);
+    padding: 0.75rem 0;
+    text-align: center;
+    z-index: 1000;
+    box-shadow: 0 -3px 15px rgba(0, 0, 0, 0.1);
+    border-top: 1px solid var(--text-light);
+    transition: background-color 0.5s ease, box-shadow 0.5s ease;
 }
 
 .footer-links-group {
-    max-width: 500px; /* DIKECILKAN */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .footer-links-group a {
-    font-size: 0.8rem; /* DIKECILKAN */
-    gap: 0.1rem; /* DIKECILKAN */
+    color: var(--text-color);
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: color 0.2s, transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.footer-links-group a:hover {
+    color: var(--accent-color);
+    transform: scale(1.1);
 }
 
 .footer-links-group i {
-    font-size: 1.1rem; /* DIKECILKAN */
+    font-size: 1.25rem;
 }
 
 
@@ -405,16 +731,25 @@ a {
 @media (min-width: 501px) and (max-width: 1023px) {
     .main-container {
         max-width: 768px;
-        padding: 1.5rem;
-    }
-
-    .summary-card {
-        bottom: 4.5rem; /* Sedikit lebih tinggi dari mobile */
-        max-width: 600px;
+        padding: 1.25rem;
     }
 
     .game-grid-custom {
-        grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
+        gap: 0.75rem;
+    }
+    
+    .game-card-img {
+        height: 7rem;
+    }
+
+    .options-grid {
+        grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+    }
+
+    .summary-card {
+        bottom: 4rem;
+        max-width: 700px;
     }
 }
 
@@ -422,92 +757,151 @@ a {
 /* --- Desktop & Lanskap Besar (>= 1024px) --- */
 @media (min-width: 1024px) {
     body {
-        padding-top: 1.25rem; /* DIKECILKAN */
+        padding-top: 1.5rem; /* Ruang di atas untuk header */
     }
 
     .main-container {
         max-width: var(--desktop-max-width); 
-        padding: 2rem; /* DIKECILKAN */
-        margin-top: 1.25rem;
-        margin-bottom: 2rem; 
+        padding: 2rem;
+        margin-top: 1.5rem;
+        margin-bottom: 2.5rem;
     }
     
-    .header {
-        margin-bottom: 1.5rem;
-    }
-
     /* Simetri 2 Kolom untuk Halaman Detail */
     .page-content-wrapper {
         display: grid;
-        grid-template-columns: 2fr 1fr; /* Sedikit lebih simetris: 66/33 */
-        gap: var(--column-gap); /* DIKECILKAN */
+        grid-template-columns: 2fr 1.25fr; /* Rasio 60/40 */
+        gap: var(--column-gap);
         align-items: start; 
     }
-    
+
     /* Simetri 2 Kolom untuk Halaman Cart */
     .cart-page-wrapper {
-        grid-template-columns: 1.5fr 1fr; /* Lebih seimbang untuk cart */
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* 50/50 untuk cart */
         gap: var(--column-gap);
+        align-items: start;
     }
-    
-    /* Summary Card Sticky DI SISI KANAN DESKTOP */
+
+    /* Summary Card STICKY di SISI KANAN DESKTOP */
     .summary-card {
         position: sticky; /* Kembalikan ke sticky untuk desktop */
-        top: 2rem; /* Menempel di bawah header */
+        top: 2rem; /* Menempel di bawah ruang header */
         bottom: unset; /* Reset properti mobile */
         left: unset;
         transform: none;
         width: 100%; /* Mengisi kolom grid */
-        max-width: none; /* Reset max-width */
+        max-width: none; 
         margin-top: 0;
         border-radius: var(--border-radius-lg);
         box-shadow: var(--box-shadow-dark);
     }
-
+    
     .game-info-header {
-        padding: 1.25rem 1.5rem; /* DIKECILKAN */
+        flex-direction: row;
+        text-align: left;
+        padding: 1.25rem 1.5rem;
     }
 
     .game-info-header .game-img {
-        width: 5rem; /* DIKECILKAN */
-        height: 5rem; /* DIKECILKAN */
+        margin-bottom: 0;
+        margin-right: 1.5rem;
+        width: 5.5rem;
+        height: 5.5rem;
     }
-
-    .game-info-header h2 {
-        font-size: 1.5rem; /* DIKECILKAN */
-    }
-
-    .footer-links-group i {
-        display: inline-block; /* Tampilkan kembali ikon footer di desktop (opsional) */
-        font-size: 1.1rem;
-    }
-    .footer-links-group a {
+    
+    .game-info-details {
+        border-top: none;
+        padding-top: 0;
+        margin-top: 0;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        width: auto;
         gap: 0.5rem;
+        margin-left: auto;
+    }
+    
+    .main-footer {
+        position: static; /* Footer statis di desktop */
+        margin-top: 2rem;
+        border-top: 1px solid var(--bg-primary);
+        box-shadow: none;
     }
 
+    .footer-links-group {
+        justify-content: flex-end;
+        gap: 2rem;
+        padding: 1rem 0;
+    }
+    
+    .footer-links-group a {
+        flex-direction: row;
+        font-size: 0.9rem;
+    }
+    
+    .footer-links-group i {
+        display: none;
+    }
 }
 
 
 /* --- Mobile Portrait (<= 500px) --- */
 @media (max-width: 500px) {
     .main-container {
-        padding: 0.8rem 0.6rem; /* DIKECILKAN */
+        padding: 1rem 0.75rem;
         margin-bottom: 4rem;
     }
     
     .header {
-        padding: 0.6rem 0.8rem; /* DIKECILKAN */
+        padding: 0.75rem 1rem;
     }
 
+    .search-box {
+        width: 80%;
+    }
+
+    .search-box:focus-within {
+        width: 90%;
+    }
+
+    .game-grid-custom {
+        grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+        gap: 0.75rem;
+    }
+
+    .game-card-img {
+        height: 6.5rem;
+    }
+
+    .game-info-header .game-img {
+        width: 6rem;
+        height: 6rem;
+    }
+
+    .game-info-header h2 {
+        font-size: 1.25rem;
+    }
+
+    .section-card {
+        padding: 1.25rem;
+    }
+
+    .options-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
     .summary-card {
-        bottom: 3.5rem; /* Sesuaikan agar tidak menutupi footer */
-        padding: 1rem; /* DIKECILKAN */
-        width: 98%;
-        max-width: 100%;
+        bottom: 4rem;
+        padding: 1rem;
     }
 
     .confirm-button {
         padding: 0.8rem;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
+    }
+
+    .main-footer {
+        padding: 0.5rem 0;
     }
 }
