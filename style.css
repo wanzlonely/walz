@@ -5,43 +5,53 @@
 
 /* --- Light Theme Variables --- */
 :root {
-    --bg-primary: #eef2f5;
-    --bg-secondary: #ffffff;
-    --card-bg: #f7f9fa;
-    --text-color: #2c2f33;
-    --text-light: #6e7a91;
-    --accent-color: #c0362c; /* Merah Marun */
-    --accent-light: #ff6b6b;
-    --price-color: #c0362c;
+    /* Skema Warna Lebih Terang, Lebih Kontras */
+    --bg-primary: #f0f3f6; /* Latar Belakang Utama Lebih Cerah */
+    --bg-secondary: #ffffff; /* Kartu/Kontainer Sangat Putih */
+    --card-bg: #e5e8eb; /* Warna untuk Pilihan yang Belum Dipilih (Neumorphic base) */
+    --text-color: #1e2022;
+    --text-light: #6b7588;
+    --accent-color: #007bff; /* Biru Neon untuk Aksen Modern */
+    --accent-light: #52a7ff;
+    --price-color: #007bff;
     --selected-border: #007bff;
-    --box-shadow-dark: 0 5px 15px rgba(0, 0, 0, 0.15);
-    --box-shadow-light: 0 2px 8px rgba(0, 0, 0, 0.08);
-    --border-radius-xl: 16px;
-    --border-radius-lg: 12px;
-    --border-radius-md: 8px;
-    --border-radius-sm: 4px;
-    --bg-gradient: linear-gradient(135deg, #f0f4f8 0%, #d9e2ea 100%);
-    --container-bg-color: rgba(255, 255, 255, 0.85);
+    
+    /* Box Shadow Neumorphism/Sleek */
+    --box-shadow-dark: 5px 5px 10px rgba(0, 0, 0, 0.05), -5px -5px 10px rgba(255, 255, 255, 0.8);
+    --box-shadow-light: 2px 2px 5px rgba(0, 0, 0, 0.05), -2px -2px 5px rgba(255, 255, 255, 0.5);
+    --box-shadow-inset: inset 3px 3px 5px rgba(0, 0, 0, 0.05), inset -3px -3px 5px rgba(255, 255, 255, 0.7);
+
+    --border-radius-xl: 20px; /* Lebih Bulat */
+    --border-radius-lg: 14px;
+    --border-radius-md: 10px;
+    --border-radius-sm: 6px;
+    --bg-gradient: linear-gradient(135deg, #f0f3f6 0%, #e2e5e8 100%);
+    --container-bg-color: rgba(255, 255, 255, 0.95);
+    
     /* Layout Variables */
-    --desktop-max-width: 1100px; 
+    --desktop-max-width: 1200px; /* Diperlebar sedikit */
     --column-gap: 2rem;
 }
 
 /* --- Dark Theme Variables --- */
 .dark-mode {
-    --bg-primary: #121212;
-    --bg-secondary: #1e1e1e;
-    --card-bg: #2d2d2d;
-    --text-color: #f0f0f0;
-    --text-light: #b0b0b0;
-    --accent-color: #8a2be2; 
-    --accent-light: #a745ff;
-    --price-color: #ff3b30;
+    --bg-primary: #1e2124;
+    --bg-secondary: #282c31;
+    --card-bg: #35393f;
+    --text-color: #f5f5f5;
+    --text-light: #a9a9a9;
+    --accent-color: #00e69b; /* Hijau Neon untuk Dark Mode */
+    --accent-light: #33ffb3;
+    --price-color: #ff5757;
     --selected-border: #00e69b;
-    --box-shadow-dark: 0 5px 15px rgba(0, 0, 0, 0.5);
-    --box-shadow-light: 0 2px 8px rgba(0, 0, 0, 0.3);
-    --bg-gradient: linear-gradient(135deg, #1e1e1e 0%, #0a0a0a 100%);
-    --container-bg-color: rgba(30, 30, 30, 0.9);
+    
+    /* Dark Mode Shadow - Lebih Dalam */
+    --box-shadow-dark: 5px 5px 10px rgba(0, 0, 0, 0.4), -5px -5px 10px rgba(53, 58, 64, 0.4);
+    --box-shadow-light: 2px 2px 5px rgba(0, 0, 0, 0.3), -2px -2px 5px rgba(53, 58, 64, 0.2);
+    --box-shadow-inset: inset 3px 3px 5px rgba(0, 0, 0, 0.2), inset -3px -3px 5px rgba(53, 58, 64, 0.3);
+
+    --bg-gradient: linear-gradient(135deg, #1e2124 0%, #15181a 100%);
+    --container-bg-color: rgba(40, 44, 49, 0.95);
 }
 
 * {
@@ -61,21 +71,21 @@ body {
     flex-direction: column;
     min-height: 100vh;
     transition: background 0.5s ease, color 0.5s ease;
-    /* FIX: HILANGKAN HORIZONTAL SCROLL */
-    overflow-x: hidden; 
+    overflow-x: hidden; /* FIX: HILANGKAN HORIZONTAL SCROLL */
 }
 
 .main-container {
-    padding: 1.5rem;
+    padding: 2rem; /* Padding lebih besar untuk kesan premium */
     max-width: 800px;
     margin: 0 auto;
     background-color: var(--container-bg-color);
-    backdrop-filter: blur(10px) saturate(180%);
-    -webkit-backdrop-filter: blur(10px) saturate(180%);
+    backdrop-filter: blur(15px) saturate(180%); /* Blur lebih tinggi */
+    -webkit-backdrop-filter: blur(15px) saturate(180%);
     border-radius: var(--border-radius-xl);
     box-shadow: var(--box-shadow-dark);
     flex-grow: 1;
     margin-bottom: 5rem;
+    border: 1px solid var(--card-bg); /* Border halus */
     transition: background-color 0.5s ease, box-shadow 0.5s ease;
 }
 
@@ -95,108 +105,57 @@ a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 1.5rem; 
+    padding: 1rem 2rem; 
     background-color: var(--bg-secondary);
     border-radius: var(--border-radius-xl);
-    box-shadow: var(--box-shadow-light);
+    box-shadow: var(--box-shadow-dark);
     margin-bottom: 1.5rem;
-    transition: background-color 0.5s ease;
+    transition: background-color 0.5s ease, box-shadow 0.3s ease;
     max-width: var(--desktop-max-width); 
     margin-left: auto;
     margin-right: auto;
-}
-
-.logo-link {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    border: 1px solid var(--card-bg);
 }
 
 .logo-icon {
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%; 
-    object-fit: cover;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+    border-radius: var(--border-radius-md); /* Lebih kotak modern */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
 .logo-icon:hover {
-    transform: rotate(15deg) scale(1.1);
+    transform: scale(1.05); /* Efek lebih halus */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    filter: brightness(1.1);
 }
 
 .website-name {
-    font-size: 1.25rem;
+    font-size: 1.4rem; /* Lebih menonjol */
     font-weight: 700;
-    color: var(--accent-color);
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
-}
-
-.header-right {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    color: var(--text-color); /* Warna Teks Biasa */
+    background: linear-gradient(90deg, var(--accent-color), var(--accent-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
 }
 
 .search-box {
-    position: relative;
-    display: flex;
-    align-items: center;
-    background-color: var(--bg-primary);
-    border-radius: 50px;
-    padding: 0.5rem 1rem;
-    transition: all 0.3s ease;
-    box-shadow: var(--box-shadow-light);
-    width: 10rem;
+    background-color: var(--card-bg); /* Menggunakan card-bg untuk kesan 'ditekan' */
+    box-shadow: var(--box-shadow-inset);
+    border: 1px solid var(--text-light); /* Border tipis */
+    padding: 0.6rem 1rem;
 }
 
 .search-box:focus-within {
-    width: 12rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-}
-
-.search-box input {
-    border: none;
-    background: transparent;
-    outline: none;
-    color: var(--text-color);
-    font-size: 0.8rem;
-    padding-right: 1.5rem;
-    width: 100%;
-}
-
-.search-box input::placeholder {
-    color: var(--text-light);
-}
-
-.search-box .search-icon {
-    position: absolute;
-    right: 1rem;
-    color: var(--text-light);
-    pointer-events: none;
-    transition: color 0.3s ease;
-}
-
-.search-box:focus-within .search-icon {
-    color: var(--accent-color);
+    width: 13rem; /* Sedikit lebih lebar */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1);
+    border-color: var(--accent-color);
 }
 
 .theme-toggle-btn {
-    background-color: var(--bg-primary);
-    color: var(--text-color);
-    border: none;
-    border-radius: 50%;
-    width: 2.5rem;
-    height: 2.5rem;
-    cursor: pointer;
-    font-size: 1.2rem;
-    box-shadow: var(--box-shadow-light);
-    transition: all 0.3s ease;
-}
-
-.theme-toggle-btn:hover {
-    transform: scale(1.1);
+    background-color: var(--card-bg);
     box-shadow: var(--box-shadow-dark);
+    border: 1px solid var(--text-light);
+    color: var(--accent-color);
 }
 
 /* ======================== */
@@ -204,375 +163,129 @@ a {
 /* ======================== */
 .guidance-card {
     background: var(--bg-secondary);
-    padding: 1.5rem;
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--box-shadow-light);
-    margin-bottom: 1.5rem;
-}
-
-.guidance-card h3 {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-}
-
-.guidance-card p {
-    font-size: 0.9rem;
-    color: var(--text-light);
+    border: 1px solid var(--card-bg);
 }
 
 .game-grid-custom {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr)); 
-    gap: 1rem;
-    margin-top: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr)); 
 }
 
 .game-card-custom {
     background: var(--bg-secondary);
-    border-radius: var(--border-radius-lg);
-    overflow: hidden;
-    position: relative;
-    box-shadow: var(--box-shadow-light);
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease;
-    cursor: pointer;
+    border: 1px solid var(--card-bg);
 }
 
 .game-card-custom:hover {
-    transform: translateY(-5px) scale(1.03);
-    box-shadow: var(--box-shadow-dark);
-}
-
-.game-card-img {
-    width: 100%;
-    height: 8rem;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.3s ease;
-}
-
-.game-card-custom:hover .game-card-img {
-    transform: scale(1.1);
-}
-
-.game-card-content-custom {
-    padding: 0.75rem 0.5rem;
-    text-align: center;
-}
-
-.game-card-content-custom h3 {
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-    color: var(--text-color);
-}
-
-.game-card-content-custom p {
-    font-size: 0.6rem;
-    color: var(--text-light);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15); /* Bayangan yang lebih jelas */
 }
 
 /* ======================== */
 /* Page Styles (Game, Pulsa, Panel) */
 /* ======================== */
-.page-content-wrapper {
-    display: block; /* Default untuk mobile */
-}
-
 .back-button-top {
-    font-size: 0.9rem;
-    color: var(--text-color);
-    z-index: 10;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
     background: var(--bg-secondary);
-    border-radius: 50px;
     box-shadow: var(--box-shadow-light);
-    margin-bottom: 1.5rem;
-    transition: all 0.3s ease;
-}
-
-.back-button-top:hover {
     color: var(--accent-color);
-    background: var(--bg-primary);
-    transform: translateY(-2px);
-    box-shadow: var(--box-shadow-dark);
+    font-weight: 600;
 }
 
 .game-info-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 1.5rem;
     background: var(--bg-secondary);
-    border-radius: var(--border-radius-xl);
-    margin-bottom: 1.5rem;
-    box-shadow: var(--box-shadow-dark);
-    transition: background-color 0.5s ease;
+    border: 1px solid var(--card-bg);
 }
 
 .game-info-header .game-img {
-    width: 7rem;
-    height: 7rem;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 1rem;
     border: 3px solid var(--accent-color);
-    box-shadow: 0 0 10px rgba(192, 54, 44, 0.5);
+    box-shadow: 0 0 15px var(--accent-light); /* Glow halus */
 }
 
 .game-info-header h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 3px rgba(255, 215, 0, 0.3);
-}
-
-.game-info-details {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
-    margin-top: 1rem;
-    border-top: 1px dashed var(--text-light);
-    padding-top: 1rem;
-    color: var(--text-light);
-}
-
-.game-detail-item {
-    text-align: center;
-    font-size: 0.8rem;
-    opacity: 0.8;
-}
-
-.game-detail-item i {
-    font-size: 1.2rem;
-    margin-bottom: 0.25rem;
-    color: var(--accent-color);
+    font-size: 1.6rem;
 }
 
 .section-card {
     background: var(--bg-secondary);
-    padding: 1.5rem;
-    border-radius: var(--border-radius-lg);
-    margin-bottom: 1.5rem;
-    box-shadow: var(--box-shadow-dark);
-    transition: box-shadow 0.2s ease, background-color 0.5s ease;
-}
-
-.section-card:hover {
-    transform: none; 
-    box-shadow: var(--box-shadow-dark);
+    border: 1px solid var(--card-bg);
 }
 
 .section-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--card-bg); /* Garis pemisah halus */
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.25rem;
 }
 
 .section-number {
-    width: 2.25rem;
-    height: 2.25rem;
     background: var(--accent-color);
-    color: #fff;
-    border-radius: 50%; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1rem;
-    font-weight: bold;
-    box-shadow: 0 0 8px rgba(192, 54, 44, 0.5);
-}
-
-.section-header h3 {
-    font-size: 1.2rem;
-    font-weight: 600;
-}
-
-.section-description {
-    font-size: 0.8rem;
-    color: var(--text-light);
-    margin-bottom: 0.75rem;
-    border-left: none; 
-    padding-left: 0;
-}
-
-.input-group {
-    margin-bottom: 1rem;
-    position: relative;
-}
-
-.input-group .input-icon {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-light);
-    font-size: 1rem;
+    border-radius: var(--border-radius-sm); /* Kotak kecil */
+    box-shadow: 0 3px 10px rgba(0, 123, 255, 0.3);
 }
 
 .input-group input, .input-group select {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    padding-left: 2.5rem;
     background-color: var(--bg-primary);
-    border: 2px solid transparent;
-    border-radius: var(--border-radius-md);
-    color: var(--text-color);
-    font-size: 0.9rem;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease;
+    border: 1px solid var(--card-bg);
+    box-shadow: var(--box-shadow-inset);
+    padding: 0.9rem 1rem; /* Padding lebih besar */
+    padding-left: 3rem;
 }
 
 .input-group input:focus, .input-group select:focus {
-    outline: none;
     border-color: var(--accent-color);
-    box-shadow: 0 0 10px rgba(192, 54, 44, 0.5);
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5), var(--box-shadow-inset);
 }
 
-.input-group input::placeholder {
-    color: var(--text-light);
+.input-group .input-icon {
+    font-size: 1.1rem;
+    left: 1.2rem;
 }
 
 .options-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); 
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); /* Lebih lebar */
+    gap: 1.25rem;
 }
 
 .option-card {
-    background: var(--card-bg);
-    border-radius: var(--border-radius-md);
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease, background-color 0.5s ease;
-    border: 2px solid transparent;
-    padding: 1rem 0.5rem;
-    position: relative;
+    background: var(--bg-primary);
+    border: 1px solid var(--bg-primary);
     box-shadow: var(--box-shadow-light);
+    padding: 1.2rem 0.6rem; /* Padding diperbesar */
 }
 
 .option-card:hover {
-    transform: translateY(-3px) scale(1.02); 
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15), -5px -5px 10px rgba(255, 255, 255, 0.5);
 }
 
 .option-card.selected {
     border-color: var(--accent-color);
-    box-shadow: 0 0 15px rgba(192, 54, 44, 0.7);
-    transform: scale(1.05); 
-    animation: pulse-border 1s infinite alternate;
+    background: var(--bg-secondary);
+    box-shadow: 0 0 20px rgba(0, 123, 255, 0.5);
+    transform: scale(1.05);
 }
 
-@keyframes pulse-border {
-    from { box-shadow: 0 0 10px rgba(192, 54, 44, 0.7); }
-    to { box-shadow: 0 0 20px rgba(192, 54, 44, 1); }
-}
-
-.option-card .label {
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin-bottom: 0.25rem;
-    color: var(--text-color);
-}
-
-.option-card .price-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    line-height: 1.2;
+/* FIX: Ikon Voucher - Lebih besar, lebih center */
+.option-card .icon {
+    font-size: 2.2rem; 
+    margin-bottom: 0.2rem; 
+    color: var(--accent-color);
 }
 
 .option-card .price {
-    font-size: 1rem;
-    font-weight: bold;
-    color: var(--price-color);
-}
-
-.option-card .original-price {
-    font-size: 0.7rem;
-    color: var(--text-light);
-    text-decoration: line-through;
+    font-size: 1.1rem;
 }
 
 .option-card .discounted-price {
-    font-size: 0.9rem;
-    font-weight: bold;
-    color: var(--selected-border);
-}
-
-/* FIX: Perbaikan Posisi Ikon Voucher */
-.option-card .icon {
-    font-size: 1.8rem; 
-    color: var(--accent-color);
-    margin-bottom: 0.1rem; 
-}
-
-.option-card.payment {
-    background-color: var(--bg-secondary);
-    padding: 1rem;
-}
-
-.option-card.payment img {
-    width: 3.5rem;
-    height: 2rem;
-    object-fit: contain;
-}
-
-.option-card.payment .label {
-    margin: 0;
-    font-size: 0.9rem;
-    color: var(--text-color);
-}
-
-.special-badge {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    background-color: var(--accent-color); 
-    color: white;
-    font-size: 0.6rem;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-weight: bold;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-.voucher-input-group {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-}
-
-.voucher-input-group .voucher-input {
-    flex-grow: 1;
-    padding-left: 2.5rem;
-}
-
-.voucher-input-group .input-icon {
-    left: 1rem;
+    font-size: 1rem;
 }
 
 .voucher-button {
-    padding: 0.75rem 1.25rem;
     background-color: var(--accent-color);
-    color: white;
-    border: none;
-    border-radius: var(--border-radius-md);
-    cursor: pointer;
-    font-weight: 600;
-    transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: var(--box-shadow-light);
+    box-shadow: 0 3px 10px rgba(0, 123, 255, 0.3);
 }
 
 .voucher-button:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--box-shadow-dark);
+    background-color: var(--accent-light);
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.5);
 }
 
 /* ======================== */
@@ -580,248 +293,89 @@ a {
 /* ======================== */
 .summary-card {
     background: var(--bg-secondary);
-    padding: 1.25rem; 
-    margin-top: 1.5rem;
+    padding: 1.5rem; /* Padding yang nyaman */
+    border: 1px solid var(--card-bg);
     box-shadow: var(--box-shadow-dark);
     z-index: 100;
-    transition: background-color 0.5s ease;
 
     /* Mobile/Tablet: FIXED position */
     position: fixed;
-    bottom: 4rem; /* Di atas footer */
+    bottom: 4.5rem; /* Di atas footer */
     left: 50%;
     transform: translateX(-50%);
     width: 95%; 
     max-width: 450px; 
-    border-radius: var(--border-radius-lg);
-    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.25); 
+    border-radius: var(--border-radius-xl);
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.15); 
 }
 
 .summary-product {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.95rem; 
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: var(--text-color);
+    font-size: 1rem; 
 }
 
 .summary-price {
-    font-size: 1.25rem;
-    font-weight: bold;
+    font-size: 1.4rem; /* Lebih menonjol */
     color: var(--accent-color);
 }
 
 .confirm-button {
-    width: 100%;
-    padding: 0.9rem; 
     background-color: var(--accent-color);
-    color: white;
-    border: none;
-    border-radius: var(--border-radius-md);
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    margin-top: 0.75rem; 
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    font-size: 1.1rem;
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
 }
 
 .confirm-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-.confirm-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+    background-color: var(--accent-light);
+    box-shadow: 0 7px 20px rgba(0, 123, 255, 0.5);
 }
 
 /* ======================== */
 /* Cart Page Styles */
 /* ======================== */
-.cart-page-wrapper {
-    display: block; /* Default untuk mobile */
-}
-
 .cart-summary-card {
-    padding: 1.5rem;
-    border-radius: var(--border-radius-lg);
-    margin-bottom: 1.5rem;
-}
-
-.cart-summary-card h3 {
-    font-size: 1.4rem;
-}
-
-.summary-detail-item {
-    padding: 0.75rem 0;
-    font-size: 0.9rem;
+    border: 1px solid var(--card-bg);
 }
 
 .summary-total {
-    padding: 1.25rem 0 0.5rem;
-    font-size: 1.15rem;
+    border-top: 3px solid var(--accent-color);
+    font-size: 1.3rem;
 }
 
 .payment-info-section {
     background: var(--bg-secondary);
-    padding: 1.5rem;
-    border-radius: var(--border-radius-lg);
-    width: 100%;
-    max-width: 450px;
-    margin: 1.5rem auto;
-    text-align: center;
-    color: var(--text-color);
-    box-shadow: var(--box-shadow-dark);
-    transition: background-color 0.5s ease;
-}
-
-.payment-info-section .payment-image {
-    height: 3rem;
-    margin-bottom: 1rem;
+    border: 1px solid var(--card-bg);
 }
 
 /* FIX: Ukuran QR Code Disesuaikan untuk Scan */
 .payment-info-section .qr-code-image {
-    width: 12rem; /* Ukuran yang ideal untuk di-scan */
-    height: 12rem;
-    object-fit: contain;
-    border-radius: var(--border-radius-sm);
-    margin-bottom: 1rem;
+    width: 11rem; 
+    height: 11rem;
     border: 3px solid var(--bg-primary);
     box-shadow: var(--box-shadow-dark);
 }
 
-.payment-info-section h4 {
-    color: var(--text-color);
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-}
-
 .payment-info-section .payment-number {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 1.5rem;
+    font-size: 1.6rem;
     color: var(--accent-color);
 }
 
 .payment-info-section .copy-button {
-    padding: 0.75rem 1.5rem;
     background-color: var(--accent-color);
-    color: white;
-    border: none;
-    border-radius: var(--border-radius-sm);
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.2s, transform 0.2s;
-    box-shadow: var(--box-shadow-light);
-}
-
-.payment-info-section .copy-button:hover {
-    background-color: var(--accent-light);
-    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(0, 123, 255, 0.3);
 }
 
 /* ======================== */
 /* Footer (Floating) */
 /* ======================== */
 .main-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
     background-color: var(--bg-secondary);
-    backdrop-filter: blur(10px) saturate(180%);
-    -webkit-backdrop-filter: blur(10px) saturate(180%);
-    padding: 0.75rem 0;
-    text-align: center;
-    z-index: 1000;
-    box-shadow: 0 -3px 15px rgba(0, 0, 0, 0.1);
-    border-top: 1px solid var(--text-light);
-    transition: background-color 0.5s ease, box-shadow 0.5s ease;
-}
-
-.footer-links-group {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.footer-links-group a {
-    color: var(--text-color);
-    font-size: 0.8rem;
-    font-weight: 500;
-    transition: color 0.2s, transform 0.2s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+    border-top: 1px solid var(--card-bg);
 }
 
 .footer-links-group a:hover {
     color: var(--accent-color);
-    transform: scale(1.1);
-}
-
-.footer-links-group i {
-    font-size: 1.25rem;
-}
-
-/* --- Pop-up Notifikasi --- */
-.notification-container {
-    position: fixed;
-    top: 1.5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.notification-popup {
-    background-color: var(--bg-secondary);
-    color: var(--text-color);
-    padding: 1rem 1.5rem;
-    border-radius: var(--border-radius-md);
-    box-shadow: var(--box-shadow-dark);
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    opacity: 0;
-    transform: translateY(-1rem);
-    animation: fade-in-up 0.5s forwards;
-    min-width: 18rem;
-    text-align: center;
-    justify-content: center;
-    transition: background-color 0.5s ease;
-}
-
-.notification-popup.fade-out {
-    animation: fade-out-down 0.5s forwards;
-}
-
-@keyframes fade-in-up {
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fade-out-down {
-    from { opacity: 1; transform: translateY(0); }
-    to { opacity: 0; transform: translateY(1rem); }
-}
-
-.notification-popup .icon {
-    font-size: 1.5rem;
-}
-
-.notification-popup .message {
-    font-weight: 600;
 }
 
 /* ======================== */
@@ -830,26 +384,9 @@ a {
 @media (max-width: 500px) {
     .main-container {
         padding: 1rem 0.75rem;
-        margin-bottom: 4rem;
+        margin-bottom: 4.5rem; /* Tambah margin bawah */
     }
     
-    .header {
-        flex-wrap: wrap;
-        justify-content: space-between;
-        gap: 0.5rem;
-        padding: 0.75rem 1rem;
-    }
-
-    .header-right {
-        width: auto;
-        justify-content: flex-end;
-        margin-top: 0;
-    }
-
-    .website-name {
-        font-size: 1.2rem;
-    }
-
     .search-box {
         width: 80%;
     }
@@ -859,158 +396,53 @@ a {
     }
 
     .game-grid-custom {
-        grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
-        gap: 0.75rem;
+        grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
     }
 
     .game-card-img {
-        height: 6.5rem;
-    }
-
-    .game-info-header {
-        padding: 1.25rem;
-    }
-
-    .game-info-header .game-img {
-        width: 6rem;
         height: 6rem;
-    }
-
-    .game-info-header h2 {
-        font-size: 1.25rem;
-    }
-
-    .game-detail-item {
-        font-size: 0.7rem;
-    }
-    
-    .game-detail-item i {
-        font-size: 1rem;
-    }
-
-    .section-card {
-        padding: 1.25rem;
     }
 
     .options-grid {
         grid-template-columns: 1fr 1fr;
-        gap: 0.75rem;
     }
-
-    .option-card .label {
-        font-size: 0.8rem;
-    }
-
-    .option-card .price {
-        font-size: 0.9rem;
-    }
-
-    .confirm-button {
-        padding: 0.8rem;
-        font-size: 0.95rem;
-    }
-
+    
     .summary-card {
         bottom: 4rem;
         padding: 1rem;
-    }
-
-    .main-footer {
-        padding: 0.5rem 0;
-    }
-
-    .footer-links-group a {
-        font-size: 0.7rem;
+        border-radius: var(--border-radius-lg);
     }
 }
 
 /* --- Desktop & Lanskap Besar (>= 1024px) --- */
 @media (min-width: 1024px) {
-    body {
-        padding-top: 1.5rem; 
-    }
-
     .main-container {
         max-width: var(--desktop-max-width); 
-        padding: 2rem;
-        margin-top: 1.5rem;
-        margin-bottom: 2.5rem;
     }
     
-    /* Simetri 2 Kolom untuk Halaman Detail */
+    .header {
+        padding: 1.25rem 2.5rem;
+    }
+
     .page-content-wrapper {
-        display: grid;
-        grid-template-columns: 2fr 1.25fr; /* Rasio 60/40 untuk simetri yang bagus */
-        gap: var(--column-gap);
-        align-items: start; 
+        grid-template-columns: 2fr 1.1fr; /* Sedikit lebih proporsional */
+        gap: 2.5rem;
     }
 
-    /* Simetri 2 Kolom untuk Halaman Cart */
-    .cart-page-wrapper {
-        display: grid;
-        grid-template-columns: 1fr 1fr; 
-        gap: var(--column-gap);
-        align-items: start;
-    }
-
-    /* Summary Card STICKY di SISI KANAN DESKTOP */
     .summary-card {
-        position: sticky; /* Kembalikan ke sticky untuk desktop */
         top: 2rem; 
-        bottom: unset; 
-        left: unset;
-        transform: none;
-        width: 100%; 
-        max-width: none; 
-        margin-top: 0;
-        border-radius: var(--border-radius-lg);
-        box-shadow: var(--box-shadow-dark);
-        /* Tombol confirm di desktop ada di dalam summary-card */
+        padding: 1.75rem;
     }
-    
+
     .game-info-header {
-        flex-direction: row;
-        text-align: left;
-        padding: 1.25rem 1.5rem;
+        padding: 1.5rem 2rem;
     }
-
+    
     .game-info-header .game-img {
-        margin-bottom: 0;
-        margin-right: 1.5rem;
-        width: 5.5rem;
-        height: 5.5rem;
-    }
-    
-    .game-info-details {
-        border-top: none;
-        padding-top: 0;
-        margin-top: 0;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: center;
-        width: auto;
-        gap: 0.5rem;
-        margin-left: auto;
-    }
-    
-    .main-footer {
-        position: static; 
-        margin-top: 2rem;
-        border-top: 1px solid var(--bg-primary);
-        box-shadow: none;
+        width: 5rem;
+        height: 5rem;
     }
 
-    .footer-links-group {
-        justify-content: flex-end;
-        gap: 2rem;
-        padding: 1rem 0;
-    }
-    
-    .footer-links-group a {
-        flex-direction: row;
-        font-size: 0.9rem;
-    }
-    
     .footer-links-group i {
         display: none;
     }
