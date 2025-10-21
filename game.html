@@ -1,125 +1,163 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top Up Game</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top Up Game - WALZSHOP</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+
 <body>
+  <!-- Header -->
+  <header class="header">
+    <a href="index.html" class="logo-link">
+      <img src="https://files.catbox.moe/hrtpys.jpg" alt="Logo" class="logo-icon">
+      <h1 class="website-name">WALZSHOP</h1>
+    </a>
+  </header>
 
-    <div class="main-container">
-        <header class="header">
-            <a href="index.html" class="logo-link">
-                <img src="https://files.catbox.moe/hrtpys.jpg" alt="WALZSHOP Icon" class="logo-icon">
-                <h1 class="website-name">WALZSHOP</h1>
-            </a>
-            <div class="header-right">
-                <button id="theme-toggle" class="theme-toggle-btn">
-                    <i class="fas fa-sun"></i>
-                </button>
-            </div>
-        </header>
+  <!-- Main -->
+  <main class="main-container">
+    <!-- Back Button -->
+    <a href="index.html" class="back-button-top">
+      <i class="fas fa-arrow-left"></i> Kembali
+    </a>
 
-        <main class="game-page-container">
-            <a href="javascript:history.back()" class="back-button-top">
-                <i class="fas fa-arrow-left"></i> Kembali
-            </a>
-
-            <div id="game-info-header" class="game-info-header">
-            </div>
-
-            <form id="topup-form" onsubmit="return false;">
-                <section class="section-card">
-                    <div class="section-header">
-                        <div class="section-number">1</div>
-                        <h3>Lengkapi Data Akun</h3>
-                    </div>
-                    <div class="section-description">
-                        Pastikan ID pemain sudah benar untuk menghindari kesalahan.
-                    </div>
-                    <div class="input-group">
-                        <i class="fas fa-user input-icon"></i>
-                        <input type="number" id="user-id" placeholder="Masukkan ID">
-                    </div>
-                    <div id="server-id-container">
-                    </div>
-                </section>
-
-                <section class="section-card">
-                    <div class="section-header">
-                        <div class="section-number">2</div>
-                        <h3>Pilih Nominal Top Up</h3>
-                    </div>
-                    <div id="product-list" class="options-grid">
-                    </div>
-                </section>
-                
-                <section class="section-card">
-                    <div class="section-header">
-                        <div class="section-number">3</div>
-                        <h3>Pilih Metode Pembayaran</h3>
-                    </div>
-                    <div id="payment-list" class="options-grid">
-                    </div>
-                </section>
-                
-                <section class="section-card">
-                    <div class="section-header">
-                        <div class="section-number">4</div>
-                        <h3>Lengkapi Kontak</h3>
-                    </div>
-                    <div class="section-description">
-                        Masukkan nomor WhatsApp aktif untuk notifikasi.
-                    </div>
-                    <div class="input-group">
-                        <i class="fab fa-whatsapp input-icon"></i>
-                        <input type="tel" id="whatsapp-number" placeholder="Masukkan Nomor WhatsApp">
-                    </div>
-                </section>
-
-                <section class="section-card">
-                    <div class="section-header">
-                        <div class="section-number">5</div>
-                        <h3>Gunakan Kode Voucher</h3>
-                    </div>
-                    <div class="input-group voucher-input-group">
-                        <i class="fas fa-ticket-alt input-icon"></i>
-                        <input type="text" id="promo-code" class="voucher-input" placeholder="Masukkan Kode Voucher">
-                        <button type="button" id="use-voucher-btn" class="voucher-button">Gunakan</button>
-                    </div>
-                </section>
-            </form>
-
-            <div id="summary-card" class="summary-card" style="display:none;">
-                <div class="summary-product" id="summary-product-details"></div>
-                <div class="summary-price" id="summary-price"></div>
-            </div>
-
-            <button type="button" id="confirm-button" class="confirm-button" disabled>Beli Sekarang</button>
-        </main>
-    </div>
-    
-    <footer class="main-footer">
-        <div class="footer-links-group">
-            <a href="index.html">
-                <i class="fas fa-gem"></i>
-                <span>Top Up</span>
-            </a>
-            <a href="pulsa.html">
-                <i class="fas fa-mobile-alt"></i>
-                <span>Pulsa</span>
-            </a>
-            <a href="panel.html">
-                <i class="fas fa-server"></i>
-                <span>Panel</span>
-            </a>
+    <!-- Game Info -->
+    <section class="game-info-header">
+      <img src="https://files.catbox.moe/zj5b6d.jpg" alt="Mobile Legends" class="game-img">
+      <h2>Mobile Legends</h2>
+      <div class="game-info-details">
+        <div class="game-detail-item">
+          <i class="fas fa-shield"></i>
+          <p>Server: Global</p>
         </div>
-    </footer>
+        <div class="game-detail-item">
+          <i class="fas fa-star"></i>
+          <p>Top Seller</p>
+        </div>
+      </div>
+    </section>
 
-    <div class="notification-container"></div>
-    <script src="script.js"></script>
+    <!-- Input Section -->
+    <section class="section-card">
+      <div class="section-header">
+        <div class="section-number">1</div>
+        <h3>Masukkan ID Player</h3>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-user input-icon"></i>
+        <input type="text" id="player-id" placeholder="Masukkan ID Player">
+      </div>
+      <div class="input-group">
+        <i class="fas fa-server input-icon"></i>
+        <input type="text" id="server-id" placeholder="Masukkan Server ID">
+      </div>
+    </section>
+
+    <!-- Nominal Section -->
+    <section class="section-card">
+      <div class="section-header">
+        <div class="section-number">2</div>
+        <h3>Pilih Nominal</h3>
+      </div>
+      <div class="options-grid">
+        <div class="option-card">
+          <div class="label">86 Diamond</div>
+          <div class="price-group">
+            <span class="price">Rp 22.000</span>
+          </div>
+        </div>
+        <div class="option-card">
+          <div class="label">170 Diamond</div>
+          <div class="price-group">
+            <span class="price">Rp 43.000</span>
+          </div>
+        </div>
+        <div class="option-card">
+          <div class="label">257 Diamond</div>
+          <div class="price-group">
+            <span class="price">Rp 63.000</span>
+          </div>
+        </div>
+        <div class="option-card">
+          <div class="label">514 Diamond</div>
+          <div class="price-group">
+            <span class="price">Rp 126.000</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Payment Section -->
+    <section class="section-card">
+      <div class="section-header">
+        <div class="section-number">3</div>
+        <h3>Pilih Pembayaran</h3>
+      </div>
+      <div class="options-grid">
+        <div class="option-card payment">
+          <img src="https://files.catbox.moe/lm1wr5.png" alt="Dana">
+          <div class="label">Dana</div>
+        </div>
+        <div class="option-card payment">
+          <img src="https://files.catbox.moe/l2h1p1.png" alt="Gopay">
+          <div class="label">GoPay</div>
+        </div>
+        <div class="option-card payment">
+          <img src="https://files.catbox.moe/m3qf2n.png" alt="OVO">
+          <div class="label">OVO</div>
+        </div>
+        <div class="option-card payment">
+          <img src="https://files.catbox.moe/xt3djv.png" alt="QRIS">
+          <div class="label">QRIS</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Voucher -->
+    <section class="section-card">
+      <div class="section-header">
+        <div class="section-number">4</div>
+        <h3>Gunakan Voucher (Opsional)</h3>
+      </div>
+      <div class="voucher-input-group">
+        <i class="fas fa-ticket input-icon"></i>
+        <input type="text" class="voucher-input" placeholder="Masukkan kode voucher">
+        <button class="voucher-button">Gunakan</button>
+      </div>
+    </section>
+
+    <!-- Summary -->
+    <section class="summary-card">
+      <div class="summary-product">
+        <i class="fas fa-gamepad"></i>
+        <span>Mobile Legends - 86 Diamond</span>
+      </div>
+      <div class="summary-price">Rp 22.000</div>
+      <button class="confirm-button">Beli Sekarang</button>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="footer-links-group">
+      <a href="index.html"><i class="fas fa-gem"></i><span>Top Up</span></a>
+      <a href="pulsa.html"><i class="fas fa-mobile-alt"></i><span>Pulsa</span></a>
+      <a href="panel.html"><i class="fas fa-server"></i><span>Panel</span></a>
+      <a href="cart.html"><i class="fas fa-shopping-cart"></i><span>Keranjang</span></a>
+    </div>
+  </footer>
+
+  <script>
+    // Highlight pilihan nominal
+    document.querySelectorAll('.option-card').forEach(card => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+      });
+    });
+  </script>
 </body>
 </html>
