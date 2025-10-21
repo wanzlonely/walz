@@ -1,36 +1,115 @@
 /* ======================== */
-/* FUTURISTIC NEON THEME */
+/* General Styles & Fonts  */
 /* ======================== */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
+/* --- Light Theme Variables --- */
 :root {
-    --bg-gradient: radial-gradient(circle at top left, #1a0033, #000010 80%);
-    --glass-bg: rgba(25, 25, 40, 0.6);
-    --accent: #8a2be2;
-    --accent-light: #9b5cff;
-    --accent-glow: rgba(138, 43, 226, 0.5);
-    --text-color: #f1f1f1;
-    --text-dim: #a0a0a0;
-    --border-radius: 16px;
-    --shadow-glow: 0 0 20px var(--accent-glow);
-    --transition: all 0.3s ease;
+    --bg-primary: #eef2f5;
+    --bg-secondary: #ffffff;
+    --card-bg: #f7f9fa;
+    --text-color: #2c2f33;
+    --text-light: #6e7a91;
+    --accent-color: #c0362c;
+    --accent-light: #ff6b6b;
+    --price-color: #c0362c;
+    --selected-border: #007bff;
+    
+    /* --- UPGRADE: Bayangan (Shadow) lebih soft --- */
+    --box-shadow-dark: 0 8px 24px rgba(0, 0, 0, 0.1);
+    --box-shadow-light: 0 4px 12px rgba(0, 0, 0, 0.06);
+    
+    --border-radius-xl: 16px;
+    --border-radius-lg: 12px;
+    --border-radius-md: 8px;
+    --border-radius-sm: 4px;
+    
+    /* --- UPGRADE: Gradasi background lebih modern --- */
+    --bg-gradient: radial-gradient(circle at 10% 20%, rgb(240, 244, 248) 0%, rgb(217, 226, 234) 90%);
+    /* --- UPGRADE: Glassmorphism lebih transparan --- */
+    --container-bg-color: rgba(255, 255, 255, 0.75);
+    --footer-bg-color: rgba(255, 255, 255, 0.85);
+    --footer-border: rgba(0, 0, 0, 0.08);
+
+    /* --- UPGRADE: Transisi lebih smooth --- */
+    --transition-smooth: cubic-bezier(0.25, 0.8, 0.25, 1);
+    --transition-fast: 0.3s var(--transition-smooth);
+    --transition-slow: 0.5s var(--transition-smooth);
 }
 
-/* Reset & Base */
+/* --- Dark Theme Variables --- */
+.dark-mode {
+    --bg-primary: #121212;
+    --bg-secondary: #1e1e1e;
+    --card-bg: #2d2d2d;
+    --text-color: #f0f0f0;
+    --text-light: #b0b0b0;
+    --accent-color: #8a2be2;
+    --accent-light: #a745ff;
+    --price-color: #ff3b30;
+    --selected-border: #00e69b;
+
+    /* --- UPGRADE: Bayangan (Shadow) dark mode --- */
+    --box-shadow-dark: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --box-shadow-light: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+    /* --- UPGRADE: Gradasi background dark mode --- */
+    --bg-gradient: radial-gradient(circle at 10% 20%, rgb(30, 30, 30) 0%, rgb(10, 10, 10) 90%);
+    /* --- UPGRADE: Glassmorphism dark mode --- */
+    --container-bg-color: rgba(30, 30, 30, 0.75);
+    --footer-bg-color: rgba(30, 30, 30, 0.85);
+    --footer-border: rgba(255, 255, 255, 0.1);
+}
+
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+}
+
+/* --- UPGRADE: Keyframe untuk animasi fade-in --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 body {
+    background: var(--bg-gradient) no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
     font-family: 'Poppins', sans-serif;
-    background: var(--bg-gradient);
     color: var(--text-color);
+    line-height: 1.6;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    overflow-x: hidden;
+    transition: background var(--transition-slow), color var(--transition-slow);
+}
+
+.main-container {
+    padding: 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: var(--container-bg-color);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--box-shadow-dark);
+    flex-grow: 1;
+    margin-bottom: 5rem;
+    transition: background-color var(--transition-slow), box-shadow var(--transition-slow);
+    
+    /* --- UPGRADE: Animasi fade-in saat load --- */
+    animation: fadeIn 0.8s var(--transition-smooth) forwards;
+}
+
+h1, h2, h3, h4 {
+    color: var(--text-color);
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
 }
 
 /* ======================== */
@@ -40,165 +119,172 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 1.5rem;
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px) saturate(180%);
-    -webkit-backdrop-filter: blur(12px) saturate(180%);
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    padding: 1rem;
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--box-shadow-light);
+    margin-bottom: 1.5rem;
+    transition: background-color var(--transition-slow);
 }
 
 .logo-link {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    text-decoration: none;
+    gap: 0.5rem;
 }
 
 .logo-icon {
-    width: 45px;
-    height: 45px;
+    width: 2.5rem;
+    height: 2.5rem;
     border-radius: 50%;
-    border: 2px solid var(--accent);
-    box-shadow: 0 0 12px var(--accent-glow);
-    transition: var(--transition);
+    object-fit: cover;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    transition: transform var(--transition-fast);
 }
 
 .logo-icon:hover {
-    transform: rotate(10deg) scale(1.1);
+    transform: rotate(15deg) scale(1.1);
 }
 
 .website-name {
-    font-size: 1.4rem;
+    font-size: 1.25rem;
     font-weight: 700;
-    background: linear-gradient(90deg, var(--accent), var(--accent-light));
+    /* --- UPGRADE: Efek gradasi teks --- */
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .header-right {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem;
 }
 
 .search-box {
     position: relative;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-primary);
+    border-radius: 50px;
     padding: 0.5rem 1rem;
-    border: 1px solid rgba(255,255,255,0.1);
-    transition: var(--transition);
+    box-shadow: var(--box-shadow-light);
+    width: 10rem;
+    /* --- UPGRADE: Transisi lebih spesifik --- */
+    transition: width var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+    border: 2px solid transparent;
 }
 
-.search-box:hover {
-    box-shadow: 0 0 10px var(--accent-glow);
+.search-box:focus-within {
+    width: 12rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* --- UPGRADE: Efek border saat fokus --- */
+    border-color: var(--accent-color);
 }
 
 .search-box input {
-    background: transparent;
     border: none;
-    color: var(--text-color);
+    background: transparent;
     outline: none;
-    width: 140px;
+    color: var(--text-color);
+    font-size: 0.8rem;
+    padding-right: 1.5rem;
+    width: 100%;
 }
 
-.search-icon {
-    color: var(--text-dim);
-    margin-left: 0.5rem;
+.search-box input::placeholder {
+    color: var(--text-light);
+}
+
+.search-box .search-icon {
+    position: absolute;
+    right: 1rem;
+    color: var(--text-light);
+    pointer-events: none;
+    transition: color var(--transition-fast);
+}
+
+.search-box:focus-within .search-icon {
+    color: var(--accent-color);
 }
 
 .theme-toggle-btn {
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.2);
-    color: var(--accent-light);
+    background-color: var(--bg-primary);
+    color: var(--text-color);
+    border: none;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 2.5rem;
+    height: 2.5rem;
     cursor: pointer;
-    transition: var(--transition);
-    box-shadow: 0 0 10px rgba(138,43,226,0.3);
+    font-size: 1.2rem;
+    box-shadow: var(--box-shadow-light);
+    /* --- UPGRADE: Transisi lebih spesifik --- */
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
 }
 
 .theme-toggle-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px var(--accent-glow);
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: var(--box-shadow-dark);
+    background-color: var(--bg-secondary);
 }
 
 /* ======================== */
-/* Main Container */
+/* Game List & Cards (Home) */
 /* ======================== */
-.main-container {
-    flex-grow: 1;
-    padding: 2rem 1.5rem;
-    max-width: 900px;
-    margin: 0 auto 6rem auto;
-}
-
 .guidance-card {
-    background: var(--glass-bg);
-    border-radius: var(--border-radius);
+    background: var(--bg-secondary);
     padding: 1.5rem;
-    box-shadow: var(--shadow-glow);
-    text-align: center;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow-light);
+    margin-bottom: 1.5rem;
 }
 
 .guidance-card h3 {
-    font-size: 1.3rem;
-    color: var(--accent-light);
+    font-size: 1.2rem;
     margin-bottom: 0.5rem;
 }
 
 .guidance-card p {
-    color: var(--text-dim);
     font-size: 0.9rem;
+    color: var(--text-light);
 }
 
-.section-title {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: var(--accent-light);
-    text-align: center;
-    margin: 2rem 0 1rem;
-}
-
-/* ======================== */
-/* Game Cards */
-/* ======================== */
 .game-grid-custom {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
     gap: 1rem;
+    margin-top: 1.5rem;
 }
 
 .game-card-custom {
-    background: var(--glass-bg);
-    border-radius: 12px;
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-lg);
     overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.1);
-    box-shadow: 0 0 10px rgba(0,0,0,0.4);
-    cursor: pointer;
-    transition: var(--transition);
     position: relative;
+    box-shadow: var(--box-shadow-light);
+    /* --- UPGRADE: Transisi lebih spesifik --- */
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-slow);
+    cursor: pointer;
+    /* --- UPGRADE: Optimasi animasi --- */
+    will-change: transform, box-shadow;
 }
 
 .game-card-custom:hover {
-    transform: translateY(-5px) scale(1.03);
-    box-shadow: 0 0 20px var(--accent-glow);
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-dark);
 }
 
 .game-card-img {
     width: 100%;
     height: 8rem;
     object-fit: cover;
-    transition: var(--transition);
+    display: block;
+    transition: transform var(--transition-fast);
 }
 
 .game-card-custom:hover .game-card-img {
-    filter: brightness(1.2);
+    transform: scale(1.1);
 }
 
 .game-card-content-custom {
@@ -208,42 +294,558 @@ body {
 
 .game-card-content-custom h3 {
     font-size: 0.9rem;
-    color: var(--text-color);
     font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--text-color);
 }
 
 .game-card-content-custom p {
-    font-size: 0.7rem;
-    color: var(--text-dim);
-}
-
-.game-card-custom::after {
-    content: "";
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: radial-gradient(circle at top left, rgba(138,43,226,0.1), transparent 70%);
-    opacity: 0;
-    transition: var(--transition);
-}
-
-.game-card-custom:hover::after {
-    opacity: 1;
+    font-size: 0.6rem;
+    color: var(--text-light);
 }
 
 /* ======================== */
-/* Footer */
+/* Page Styles (Game, Pulsa, Panel) */
+/* ======================== */
+.back-button-top {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--bg-secondary);
+    border-radius: 50px;
+    box-shadow: var(--box-shadow-light);
+    margin-bottom: 1.5rem;
+    /* --- UPGRADE: Transisi lebih spesifik --- */
+    transition: color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.back-button-top:hover {
+    color: var(--accent-color);
+    background: var(--bg-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-dark);
+}
+
+.game-info-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-xl);
+    margin-bottom: 1.5rem;
+    box-shadow: var(--box-shadow-dark);
+    transition: background-color var(--transition-slow);
+}
+
+.game-info-header .game-img {
+    width: 7rem;
+    height: 7rem;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border: 3px solid var(--accent-color);
+    box-shadow: 0 0 10px rgba(192, 54, 44, 0.5);
+    /* --- UPGRADE: Animasi hover di foto game --- */
+    transition: transform var(--transition-fast);
+}
+
+.game-info-header .game-img:hover {
+    transform: scale(1.05) rotate(5deg);
+}
+
+.game-info-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 3px rgba(255, 215, 0, 0.3);
+}
+
+.game-info-details {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    margin-top: 1rem;
+    border-top: 1px dashed var(--text-light);
+    padding-top: 1rem;
+    color: var(--text-light);
+}
+
+.game-detail-item {
+    text-align: center;
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.game-detail-item i {
+    font-size: 1.2rem;
+    margin-bottom: 0.25rem;
+    color: var(--accent-color);
+}
+
+.section-card {
+    background: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    margin-bottom: 1.5rem;
+    box-shadow: var(--box-shadow-dark);
+    /* --- UPGRADE: Transisi lebih spesifik --- */
+    transition: transform var(--transition-fast), background-color var(--transition-slow), box-shadow var(--transition-fast);
+}
+
+.section-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12); /* Shadow sedikit beda saat hover */
+    .dark-mode & {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+}
+
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.section-number {
+    width: 2.25rem;
+    height: 2.25rem;
+    background: var(--accent-color);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: bold;
+    box-shadow: 0 0 8px rgba(192, 54, 44, 0.5);
+}
+
+.section-header h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.section-description {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-bottom: 0.75rem;
+}
+
+.input-group {
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.input-group .input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    font-size: 1rem;
+    transition: color var(--transition-fast);
+}
+
+.input-group input, .input-group select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    padding-left: 2.5rem;
+    background-color: var(--bg-primary);
+    border: 2px solid transparent;
+    border-radius: var(--border-radius-md);
+    color: var(--text-color);
+    font-size: 0.9rem;
+    /* --- UPGRADE: Transisi lebih spesifik --- */
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-slow);
+}
+
+.input-group input:focus, .input-group select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px rgba(192, 54, 44, 0.5);
+}
+
+/* --- UPGRADE: Icon berubah warna saat input fokus --- */
+.input-group input:focus + .input-icon,
+.input-group select:focus + .input-icon {
+    color: var(--accent-color);
+}
+
+
+.input-group input::placeholder {
+    color: var(--text-light);
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+    gap: 1rem;
+}
+
+.option-card {
+    background: var(--card-bg);
+    border-radius: var(--border-radius-md);
+    text-align: center;
+    cursor: pointer;
+    /* --- UPGRADE: Transisi lebih spesifik --- */
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-slow);
+    border: 2px solid transparent;
+    padding: 1rem 0.5rem;
+    position: relative;
+    box-shadow: var(--box-shadow-light);
+    /* --- UPGRADE: Optimasi animasi --- */
+    will-change: transform, box-shadow;
+}
+
+.option-card:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: var(--box-shadow-dark);
+}
+
+.option-card.selected {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px rgba(192, 54, 44, 0.7);
+    transform: scale(1.05); /* Sedikit dikecilkan dari 1.06 */
+    animation: pulse-border 1.2s infinite alternate; /* Sedikit diperlambat */
+}
+
+/* --- UPGRADE: Animasi pulse lebih soft --- */
+@keyframes pulse-border {
+    from { box-shadow: 0 0 10px rgba(192, 54, 44, 0.5); }
+    to { box-shadow: 0 0 20px rgba(192, 54, 44, 0.9); }
+}
+
+.option-card .label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    color: var(--text-color);
+}
+
+.option-card .price-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.2;
+}
+
+.option-card .price {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--price-color);
+}
+
+.option-card .original-price {
+    font-size: 0.7rem;
+    color: var(--text-light);
+    text-decoration: line-through;
+}
+
+.option-card .discounted-price {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--selected-border);
+}
+
+.option-card .icon {
+    font-size: 2rem;
+    color: var(--accent-color);
+    margin-bottom: 0.25rem;
+}
+
+.option-card.payment {
+    background-color: var(--bg-secondary);
+    padding: 1rem;
+}
+
+.option-card.payment img {
+    width: 3.5rem;
+    height: 2rem;
+    object-fit: contain;
+}
+
+.option-card.payment .label {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.special-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background-color: var(--accent-red);
+    color: white;
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.voucher-input-group {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.voucher-input-group .voucher-input {
+    flex-grow: 1;
+    padding-left: 2.5rem;
+}
+
+.voucher-input-group .input-icon {
+    left: 1rem;
+}
+
+.voucher-button {
+    padding: 0.75rem 1.25rem;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    font-weight: 600;
+    /* --- UPGRADE: Transisi lebih spesifik --- */
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+    box-shadow: var(--box-shadow-light);
+}
+
+.voucher-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-dark);
+}
+
+/* --- UPGRADE: Efek tombol ditekan --- */
+.voucher-button:active {
+    transform: translateY(0);
+    box-shadow: var(--box-shadow-light);
+}
+
+.summary-card {
+    background: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    margin-top: 1.5rem;
+    box-shadow: var(--box-shadow-dark);
+    position: sticky;
+    bottom: 5rem;
+    z-index: 10;
+    transition: background-color var(--transition-slow);
+}
+
+.summary-product {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.summary-price {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.confirm-button {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    /* --- UPGRADE: Transisi lebih spesifik --- */
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+    margin-top: 1rem;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.confirm-button:hover {
+    transform: translateY(-3px); /* Sedikit lebih tinggi */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* --- UPGRADE: Efek tombol ditekan --- */
+.confirm-button:active {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.confirm-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ======================== */
+/* Cart Page Styles */
+/* ======================== */
+.cart-page-container {
+    padding: 1rem;
+}
+
+.cart-summary-card {
+    background: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    width: 100%;
+    box-shadow: var(--box-shadow-dark);
+    margin-bottom: 1.5rem;
+    transition: background-color var(--transition-slow);
+}
+
+.cart-summary-card h3 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.5rem;
+}
+
+.summary-detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px dashed var(--text-light);
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.summary-detail-item:last-of-type {
+    border-bottom: none;
+}
+
+.summary-detail-item .label {
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.summary-detail-item .value {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+}
+
+.summary-detail-item .payment-image {
+    height: 1.5rem;
+    vertical-align: middle;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5rem 0 0.75rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-top: 2px solid var(--accent-color);
+    margin-top: 0.75rem;
+    color: var(--text-color);
+}
+
+.payment-info-section {
+    background: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    width: 100%;
+    max-width: 450px;
+    margin: 1.5rem auto;
+    text-align: center;
+    color: var(--text-color);
+    box-shadow: var(--box-shadow-dark);
+    transition: background-color var(--transition-slow);
+}
+
+.payment-info-section .payment-image {
+    height: 3rem;
+    margin-bottom: 1rem;
+}
+
+.payment-info-section .qr-code-image {
+    width: 15rem;
+    height: auto;
+    border-radius: var(--border-radius-sm);
+    margin-bottom: 1rem;
+    border: 3px solid var(--bg-secondary);
+    box-shadow: var(--box-shadow-light);
+}
+
+.payment-info-section h4 {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.payment-info-section .payment-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    color: var(--accent-color);
+}
+
+.payment-info-section .copy-button {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    /* --- UPGRADE: Transisi lebih spesifik --- */
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
+    box-shadow: var(--box-shadow-light);
+}
+
+.payment-info-section .copy-button:hover {
+    background-color: var(--accent-light);
+    transform: translateY(-2px);
+}
+
+/* --- UPGRADE: Efek tombol ditekan --- */
+.payment-info-section .copy-button:active {
+    transform: translateY(0);
+}
+
+
+/* ======================== */
+/* Footer (Floating) */
 /* ======================== */
 .main-footer {
     position: fixed;
     bottom: 0;
+    left: 0;
     width: 100%;
-    background: rgba(20, 20, 35, 0.8);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid rgba(255,255,255,0.1);
-    box-shadow: 0 -2px 15px rgba(0,0,0,0.6);
-    padding: 0.8rem 0;
-    z-index: 100;
+    background-color: var(--footer-bg-color); /* --- UPGRADE: Pakai variabel baru --- */
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    padding: 0.75rem 0;
+    text-align: center;
+    z-index: 1000;
+    box-shadow: 0 -3px 15px rgba(0, 0, 0, 0.1);
+    border-top: 1px solid var(--footer-border); /* --- UPGRADE: Pakai variabel baru --- */
+    transition: background-color var(--transition-slow), box-shadow var(--transition-slow), border-top var(--transition-slow);
 }
 
 .footer-links-group {
@@ -253,64 +855,178 @@ body {
 }
 
 .footer-links-group a {
+    color: var(--text-color);
+    font-size: 0.8rem;
+    font-weight: 500;
+    /* --- UPGRADE: Transisi lebih spesifik --- */
+    transition: color var(--transition-fast), transform var(--transition-fast);
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-size: 0.8rem;
-    color: var(--text-dim);
-    text-decoration: none;
-    transition: var(--transition);
+    gap: 0.25rem;
 }
 
 .footer-links-group a:hover {
-    color: var(--accent-light);
-    transform: scale(1.15);
-    text-shadow: 0 0 10px var(--accent-glow);
+    color: var(--accent-color);
+    transform: scale(1.1);
 }
 
 .footer-links-group i {
-    font-size: 1.3rem;
+    font-size: 1.25rem;
+}
+
+/* --- Pop-up Notifikasi --- */
+.notification-container {
+    position: fixed;
+    top: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.notification-popup {
+    background-color: var(--bg-secondary);
+    color: var(--text-color);
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--box-shadow-dark);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0;
+    transform: translateY(-1rem);
+    animation: fade-in-up 0.5s var(--transition-smooth) forwards;
+    min-width: 18rem;
+    text-align: center;
+    justify-content: center;
+    transition: background-color var(--transition-slow);
+}
+
+.notification-popup.fade-out {
+    animation: fade-out-down 0.5s var(--transition-smooth) forwards;
+}
+
+@keyframes fade-in-up {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-out-down {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(1rem); }
+}
+
+.notification-popup .icon {
+    font-size: 1.5rem;
+}
+
+.notification-popup .message {
+    font-weight: 600;
 }
 
 /* ======================== */
-/* Animations */
+/* Media Queries (Responsive) */
 /* ======================== */
-@keyframes glowPulse {
-    0% { box-shadow: 0 0 10px var(--accent-glow); }
-    50% { box-shadow: 0 0 20px var(--accent-light); }
-    100% { box-shadow: 0 0 10px var(--accent-glow); }
-}
-
-.theme-toggle-btn:active {
-    animation: glowPulse 0.8s ease;
-}
-
-/* ======================== */
-/* Responsive */
-/* ======================== */
-@media (max-width: 600px) {
+@media (max-width: 500px) {
     .main-container {
-        padding: 1rem;
+        padding: 1rem 0.75rem;
+        margin-bottom: 4rem;
+        /* --- UPGRADE: Hilangkan radius di hp biar full-width --- */
+        border-radius: 0;
+        margin-top: -1.5rem; /* Tarik ke atas sedikit */
     }
-
+    
     .header {
-        flex-direction: column;
-        gap: 0.75rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+        /* --- UPGRADE: Samakan dengan container --- */
+        border-radius: 0;
+        margin-bottom: 1.5rem;
     }
 
-    .search-box input {
-        width: 100px;
+    .header-right {
+        width: 100%;
+        justify-content: center;
+        margin-top: 0.5rem;
+    }
+
+    .website-name {
+        font-size: 1.2rem;
+    }
+
+    .search-box {
+        width: 80%;
+    }
+
+    .search-box:focus-within {
+        width: 90%;
     }
 
     .game-grid-custom {
         grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
+        gap: 0.75rem;
     }
 
     .game-card-img {
         height: 6rem;
     }
 
+    .game-info-header {
+        padding: 1rem;
+    }
+
+    .game-info-header .game-img {
+        width: 6rem;
+        height: 6rem;
+    }
+
+    .game-info-header h2 {
+        font-size: 1.25rem;
+    }
+
+    .game-detail-item {
+        font-size: 0.7rem;
+    }
+    
+    .game-detail-item i {
+        font-size: 1rem;
+    }
+
+    .section-card {
+        padding: 1rem;
+    }
+
+    .options-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .option-card .label {
+        font-size: 0.8rem;
+    }
+
+    .option-card .price {
+        font-size: 0.9rem;
+    }
+
+    .confirm-button {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .summary-card {
+        bottom: 4rem;
+        padding: 1rem;
+    }
+
+    .main-footer {
+        padding: 0.5rem 0;
+    }
+
     .footer-links-group a {
         font-size: 0.7rem;
     }
 }
+
