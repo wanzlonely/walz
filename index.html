@@ -1,64 +1,118 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WALZSHOP - Top Up Games</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WALZSHOP - Top Up Games</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+
 <body>
-
-    <div class="main-container">
-        <header class="header">
-            <a href="index.html" class="logo-link">
-                <img src="https://files.catbox.moe/hrtpys.jpg" alt="WALZSHOP Icon" class="logo-icon">
-                <h1 class="website-name">WALZSHOP</h1>
-            </a>
-            <div class="header-right">
-                <div class="search-box">
-                    <input type="text" id="game-search" placeholder="Cari Game...">
-                    <i class="fas fa-search search-icon"></i>
-                </div>
-                <button id="theme-toggle" class="theme-toggle-btn">
-                    <i class="fas fa-sun"></i>
-                </button>
-            </div>
-        </header>
-
-        <main class="game-selection-main">
-            <section class="section-card guidance-card">
-                <h3>Selamat Datang di WALZSHOP!</h3>
-                <p>Pilih game favoritmu di bawah ini untuk memulai top up. Kami menawarkan layanan top up yang aman, cepat, dan terpercaya.</p>
-            </section>
-            <section class="section-card featured-section">
-                <div class="section-header">
-                    <h2 class="section-title">Pilih Game Favoritmu</h2>
-                </div>
-                <div id="game-list" class="game-grid-custom">
-                    </div>
-            </section>
-        </main>
+  <!-- Header -->
+  <header class="header">
+    <a href="index.html" class="logo-link">
+      <img src="https://files.catbox.moe/hrtpys.jpg" alt="WALZSHOP Icon" class="logo-icon">
+      <h1 class="website-name">WALZSHOP</h1>
+    </a>
+    <div class="header-right">
+      <div class="search-box">
+        <input type="text" id="game-search" placeholder="Cari Game...">
+        <i class="fas fa-search search-icon"></i>
+      </div>
+      <button id="theme-toggle" class="theme-toggle-btn">
+        <i class="fas fa-moon"></i>
+      </button>
     </div>
+  </header>
 
-    <footer class="main-footer">
-        <div class="footer-links-group">
-            <a href="index.html">
-                <i class="fas fa-gem"></i>
-                <span>Top Up</span>
-            </a>
-            <a href="pulsa.html">
-                <i class="fas fa-mobile-alt"></i>
-                <span>Pulsa</span>
-            </a>
-            <a href="panel.html">
-                <i class="fas fa-server"></i>
-                <span>Panel</span>
-            </a>
+  <!-- Main Content -->
+  <main class="main-container">
+    <section class="guidance-card">
+      <h3>Selamat Datang di <span style="color:#9b5cff;">WALZSHOP</span>!</h3>
+      <p>
+        Pilih game favoritmu di bawah untuk mulai top up!  
+        Kami menyediakan layanan cepat, aman, dan terpercaya dengan harga bersaing.
+      </p>
+    </section>
+
+    <h2 class="section-title"><i class="fa-solid fa-gamepad"></i> Pilih Game Favoritmu</h2>
+    <div id="game-list" class="game-grid-custom">
+      <!-- Contoh kartu game -->
+      <div class="game-card-custom">
+        <img src="https://files.catbox.moe/zj5b6d.jpg" alt="Mobile Legends" class="game-card-img">
+        <div class="game-card-content-custom">
+          <h3>Mobile Legends</h3>
+          <p>Top Up Diamond Instan</p>
         </div>
-    </footer>
+      </div>
 
-    <script src="script.js"></script>
+      <div class="game-card-custom">
+        <img src="https://files.catbox.moe/8v4mn4.jpg" alt="Free Fire" class="game-card-img">
+        <div class="game-card-content-custom">
+          <h3>Free Fire</h3>
+          <p>Voucher Murah & Cepat</p>
+        </div>
+      </div>
+
+      <div class="game-card-custom">
+        <img src="https://files.catbox.moe/6eqyxi.jpg" alt="PUBG Mobile" class="game-card-img">
+        <div class="game-card-content-custom">
+          <h3>PUBG Mobile</h3>
+          <p>UC Instan & Aman</p>
+        </div>
+      </div>
+
+      <div class="game-card-custom">
+        <img src="https://files.catbox.moe/g2y6rp.jpg" alt="Valorant" class="game-card-img">
+        <div class="game-card-content-custom">
+          <h3>Valorant</h3>
+          <p>Riot Points Resmi</p>
+        </div>
+      </div>
+
+      <div class="game-card-custom">
+        <img src="https://files.catbox.moe/x3wglb.jpg" alt="Genshin Impact" class="game-card-img">
+        <div class="game-card-content-custom">
+          <h3>Genshin Impact</h3>
+          <p>Genesis Crystals</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="footer-links-group">
+      <a href="index.html">
+        <i class="fas fa-gem"></i>
+        <span>Top Up</span>
+      </a>
+      <a href="pulsa.html">
+        <i class="fas fa-mobile-alt"></i>
+        <span>Pulsa</span>
+      </a>
+      <a href="panel.html">
+        <i class="fas fa-server"></i>
+        <span>Panel</span>
+      </a>
+      <a href="cart.html">
+        <i class="fas fa-shopping-cart"></i>
+        <span>Keranjang</span>
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    // Tema toggle (gelap/terang dengan animasi)
+    const toggleBtn = document.getElementById('theme-toggle');
+    let dark = true;
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('light-mode');
+      dark = !dark;
+      toggleBtn.innerHTML = dark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+    });
+  </script>
 </body>
 </html>
