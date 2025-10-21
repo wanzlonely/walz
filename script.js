@@ -1,137 +1,3 @@
-const GAMES = [
-    // ... (Data GAMES kamu tetap sama) ...
-    { key: "free-fire", name: "Free Fire", publisher: "Garena", img: "https://i.supaimg.com/023005b8-5541-4175-8563-072978e05973.jpg", url: "game.html?key=free-fire", needsServerId: false },
-    { key: "mobile-legends", name: "Mobile Legends", publisher: "Moonton", img: "https://i.supaimg.com/3272ce04-c4a0-4025-8d8a-b2723a2f2267.jpg", url: "game.html?key=mobile-legends", needsServerId: true },
-    { key: "honor-of-kings", name: "Honor of Kings", publisher: "Level Infinite", img: "https://i.supaimg.com/98bfce2d-9b90-40be-8f2e-b42ab896dc3d.jpg", url: "game.html?key=honor-of-kings", needsServerId: true },
-    { key: "genshin-impact", name: "Genshin Impact", publisher: "Hoyoverse", img: "https://i.supaimg.com/872628e9-c5f6-46f5-b5cc-8c8f3e8766c7.jpg", url: "game.html?key=genshin-impact", needsServerId: true },
-    { key: "roblox", name: "Roblox", publisher: "Roblox Corporation", img: "https://i.supaimg.com/c8d8f1c7-b02c-4643-a6e5-63a6487d622c.jpg", url: "game.html?key=roblox", needsServerId: false },
-    { key: "super-sus", name: "Super Sus", publisher: "Super Sus", img: "https://files.catbox.moe/j61uny.jpg", url: "game.html?key=super-sus", needsServerId: true },
-    { key: "coc", name: "Clash of Clans", publisher: "Supercell", img: "https://files.catbox.moe/6aia0n.jpg", url: "game.html?key=coc", needsServerId: false },
-    { key: "blood-strike", name: "Blood Strike", publisher: "NetEase", img: "https://files.catbox.moe/3y066i.jpg", url: "game.html?key=blood-strike", needsServerId: false },
-    { key: "pubg", name: "PUBG Mobile", publisher: "Semua Region", img: "https://files.catbox.moe/tatuo9.jpg", url: "game.html?key=pubg", needsServerId: false },
-    { key: "garena-delta", name: "Garena Delta Force", publisher: "Garena Delta...", img: "https://i.supaimg.com/51600c75-7f50-440c-b363-7b739a5bd976.png", url: "game.html?key=garena-delta", needsServerId: false },
-    { key: "garena-undawn", name: "Garena Undawn", publisher: "Garena", img: "https://i.supaimg.com/41450b00-c089-49c9-a6f2-a1d37b08f1cd.png", url: "game.html?key=garena-undawn", needsServerId: false },
-    { key: "valorant", name: "Valorant", publisher: "Riot Games", img: "https://i.supaimg.com/6f1b6502-92e1-4c94-8246-2ff54e08b93d.png", url: "game.html?key=valorant", needsServerId: false },
-    { key: "call-of-duty", name: "Call Of Duty", publisher: "Activision", img: "https://i.supaimg.com/f7665c44-d005-475b-adbb-3b685aaf1415.webp", url: "game.html?key=call-of-duty", needsServerId: false },
-    { key: "eggy-party", name: "Eggy Party", publisher: "NetEase Games", img: "https://i.supaimg.com/7e8f84ad-9663-4028-9fff-6bbdd6b72f0b.jpg", url: "game.html?key=eggy-party", needsServerId: false },
-    { key: "magic-ches-gogo", name: "Magic Ches Gogo", publisher: "Vizta Games", img: "https://files.catbox.moe/bbxhbo.jpg", url: "game.html?key=magic-ches-gogo", needsServerId: true },
-];
-
-const PAYMENTS = [
-    // ... (Data PAYMENTS kamu tetap sama) ...
-    { id: "qris", name: "QRIS", img: "https://i.supaimg.com/7b5fe49a-a708-4a05-8b00-9865481e0e13.jpg", qr: "https://files.catbox.moe/pa0iwo.png" },
-    { id: "krom", name: "Bank Krom", img: "https://i.supaimg.com/20eaef7a-3a63-4be3-a507-175348ab41de.jpg", number: "770072009565", holder: "Walzshop ID" },
-    { id: "dana", name: "Dana", img: "https://i.supaimg.com/e4a887fd-41fd-4075-9802-8b65bb52d1cb.jpg", number: "083139243389", holder: "Anom" },
-    { id: "gopay", name: "Gopay", img: "https://i.supaimg.com/104ae434-3bb9-4071-a946-73b301a5ba29.jpg", number: "082298902274", holder: "Anom" }
-];
-
-const PRODUCTS = {
-    // ... (Data PRODUCTS kamu tetap sama) ...
-    "free-fire": [
-        { id: "ff-5", label: "5 Diamonds", price: 901 },
-        { id: "ff-12", label: "12 Diamonds", price: 1802 },
-        { id: "ff-50", label: "50 Diamonds", price: 7207 },
-        { id: "ff-70", label: "70 Diamonds", price: 9009 },
-        { id: "ff-140", label: "140 Diamonds", price: 18018 },
-        { id: "ff-355", label: "355 Diamonds", price: 45045 },
-        { id: "ff-720", label: "720 Diamonds", price: 90090 },
-        { id: "ff-1450", label: "1450 Diamonds", price: 180180 },
-        { id: "ff-2180", label: "2180 Diamonds", price: 270270 },
-        { id: "ff-3640", label: "3640 Diamonds", price: 450450 },
-        { id: "ff-mw", label: "Membership Mingguan", price: 30500, badges: ["member"] },
-        { id: "ff-mb", label: "Membership Bulanan", price: 90000, badges: ["member"] },
-        { id: "ff-lvl6", label: "Level Up Pass Lv.6", price: 5500, badges: ["levelup"] },
-        { id: "ff-lvl10", label: "Level Up Pass Lv.10", price: 8800, badges: ["levelup"] },
-        { id: "ff-lvl15", label: "Level Up Pass Lv.15", price: 8800, badges: ["levelup"] },
-        { id: "ff-lvl20", label: "Level Up Pass Lv.20", price: 8800, badges: ["levelup"] },
-        { id: "ff-booyah", label: "BooYah Pass", price: 50000, badges: ["pass"] },
-    ],
-    "mobile-legends": [
-        { id: "ml-3", label: "3 Diamonds", price: 1171 },
-        { id: "ml-5", label: "5 Diamonds", price: 1423 },
-        { id: "ml-12", label: "12 Diamonds", price: 3323 },
-        { id: "ml-19", label: "19 Diamonds", price: 5223 },
-        { id: "ml-28", label: "28 Diamonds", price: 7600 },
-        { id: "ml-44", label: "44 Diamonds", price: 11400 },
-        { id: "ml-59", label: "59 Diamonds", price: 15200 },
-        { id: "ml-85", label: "85 Diamonds", price: 21850 },
-        { id: "ml-170", label: "170 Diamonds", price: 43700 },
-        { id: "ml-240", label: "240 Diamonds", price: 61750 },
-        { id: "ml-296", label: "296 Diamonds", price: 76000 },
-        { id: "ml-408", label: "408 Diamonds", price: 104500 },
-        { id: "ml-568", label: "568 Diamonds", price: 142500 },
-        { id: "ml-875", label: "875 Diamonds", price: 218500 },
-        { id: "ml-2010", label: "2010 Diamonds", price: 475000 },
-        { id: "ml-4830", label: "4830 Diamonds", price: 1140000 },
-        { id: "ml-wdp", label: "Weekly Diamond Pass", price: 28000, badges: ["weekly"] },
-        { id: "ml-twilight", label: "Twilight Pass", price: 150000, badges: ["pass"] },
-    ],
-    // ... (Sisa data PRODUCTS kamu tetap sama) ...
-    "pulsa": {
-        "telkomsel": [
-            { id: "tel-5k", label: "Pulsa Rp 5.000", price: 6500 },
-            { id: "tel-10k", label: "Pulsa Rp 10.000", price: 11500 },
-            { id: "tel-20k", label: "Pulsa Rp 20.000", price: 21500 },
-            { id: "tel-50k", label: "Pulsa Rp 50.000", price: 51500 },
-            { id: "tel-100k", label: "Pulsa Rp 100.000", price: 101500 }
-        ],
-        "indosat": [
-            { id: "ind-5k", label: "Pulsa Rp 5.000", price: 6800 },
-            { id: "ind-10k", label: "Pulsa Rp 10.000", price: 11800 },
-            { id: "ind-20k", label: "Pulsa Rp 20.000", price: 21800 },
-            { id: "ind-50k", label: "Pulsa Rp 50.000", price: 51800 },
-            { id: "ind-100k", label: "Pulsa Rp 100.000", price: 101800 }
-        ],
-        "xl": [
-            { id: "xl-5k", label: "Pulsa Rp 5.000", price: 6700 },
-            { id: "xl-10k", label: "Pulsa Rp 10.000", price: 11700 },
-            { id: "xl-20k", label: "Pulsa Rp 20.000", price: 21700 },
-            { id: "xl-50k", label: "Pulsa Rp 50.000", price: 51700 },
-            { id: "xl-100k", label: "Pulsa Rp 100.000", price: 101700 }
-        ],
-        "axis": [
-            { id: "axis-5k", label: "Pulsa Rp 5.000", price: 6700 },
-            { id: "axis-10k", label: "Pulsa Rp 10.000", price: 11700 },
-            { id: "axis-20k", label: "Pulsa Rp 20.000", price: 21700 },
-            { id: "axis-50k", label: "Pulsa Rp 50.000", price: 51700 },
-            { id: "axis-100k", label: "Pulsa Rp 100.000", price: 101700 }
-        ],
-        "smartfren": [
-            { id: "smf-5k", label: "Pulsa Rp 5.000", price: 6900 },
-            { id: "smf-10k", label: "Pulsa Rp 10.000", price: 11900 },
-            { id: "smf-20k", label: "Pulsa Rp 20.000", price: 21900 },
-            { id: "smf-50k", label: "Pulsa Rp 50.000", price: 51900 },
-            { id: "smf-100k", label: "Pulsa Rp 100.000", price: 101900 }
-        ],
-        "byu": [
-            { id: "byu-5k", label: "Pulsa Rp 5.000", price: 6500 },
-            { id: "byu-10k", label: "Pulsa Rp 10.000", price: 11500 },
-            { id: "byu-20k", label: "Pulsa Rp 20.000", price: 21500 },
-            { id: "byu-50k", label: "Pulsa Rp 50.000", price: 51500 },
-            { id: "byu-100k", label: "Pulsa Rp 100.000", price: 101500 }
-        ]
-    },
-    "panel": [
-        { name: "Paket 1", price: 10000, desc: "1 CPU, 256 MB RAM, 1 GB Storage" },
-        { name: "Paket 2", price: 20000, desc: "2 CPU, 512 MB RAM, 2 GB Storage" },
-        { name: "Paket 3", price: 35000, desc: "4 CPU, 1 GB RAM, 5 GB Storage" }
-    ]
-};
-
-// ========================
-// Global State
-// ========================
-let isVoucherApplied = false;
-
-// ========================
-// Helper Functions
-// ========================
-
-/**
- * Format angka menjadi mata uang Rupiah (IDR).
- * @param {number} number - Angka yang akan diformat.
- * @returns {string} - String Rupiah yang sudah diformat (e.g., "Rp 10.000").
- */
 function formatRupiah(number) {
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -141,12 +7,7 @@ function formatRupiah(number) {
 }
 
 /**
- * UPGRADE: Fungsi debounce untuk membatasi frekuensi eksekusi fungsi.
- * Berguna untuk event 'input' agar tidak lag.
- * @param {Function} func - Fungsi yang ingin di-debounce.
- * @param {number} delay - Waktu tunggu (ms) sebelum eksekusi.
- * @returns {Function} - Fungsi baru yang sudah di-debounce.
- */
+ * UPGRADE: Fungsi debounce untuk membatasi 
 function debounce(func, delay = 300) {
     let timer;
     return (...args) => {
@@ -160,12 +21,14 @@ function debounce(func, delay = 300) {
 /**
  * UPGRADE: Fungsi notifikasi yang di-upgrade.
  * Sekarang bisa menampilkan beberapa notifikasi (stacking).
- * @param {string} message - Pesan notifikasi.
- * @param {boolean} [isSuccess=true] - Tipe notifikasi (sukses/gagal).
- */
-function showNotification(message, isSuccess = true) {
-    const container = document.querySelector('.notification-container');
-    if (!container) return; // Jangan lakukan apa-apa jika container tidak ada
+ * @param {string} message - Pesan notifikasifunction showNotification(message, isSuccess = true) {
+    // Pastikan container ada di DOM
+    let container = document.querySelector('.notification-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.classList.add('notification-container');
+        document.body.appendChild(container);
+    }
 
     const popup = document.createElement('div');
     popup.classList.add('notification-popup');
@@ -415,7 +278,7 @@ function updateSummary() {
  * Setup untuk halaman detail game.
  */
 function setupGamePage() {
-    // UPGRADE: Gunakan URLSearchParams, hapus getUrlParameter
+    // UPGRADE: Gunakan URLSearchParams
     const params = new URLSearchParams(window.location.search);
     const gameKey = params.get('key');
     const game = GAMES.find(g => g.key === gameKey);
@@ -428,8 +291,8 @@ function setupGamePage() {
     const promoCodeInput = document.getElementById('promo-code');
 
     if (!game || !productListContainer || !paymentListContainer || !gameInfoHeader) {
-        window.location.href = 'index.html'; // Redirect jika data tidak valid
-        return;
+        // window.location.href = 'index.html'; // Redirect jika data tidak valid
+        return; // Jangan jalankan sisa script jika elemen tidak ada
     }
 
     // Render info header game
@@ -459,8 +322,6 @@ function setupGamePage() {
     } else {
         serverIdContainer.innerHTML = '';
     }
-    
-    // UPGRADE: Hapus `originalPrices` yang tidak perlu
     
     // Render produk dan pembayaran
     renderProducts(gameKey);
@@ -513,7 +374,7 @@ function setupGamePage() {
         const productId = selectedProductCard ? selectedProductCard.dataset.id : '';
         const paymentId = selectedPaymentCard ? selectedPaymentCard.dataset.id : '';
         const userId = document.getElementById('user-id').value;
-        const serverId = game.needsServerId ? document.getElementById('server-id').value : '';
+        const serverId = game.needsServerId && document.getElementById('server-id') ? document.getElementById('server-id').value : '';
         const whatsappNumber = document.getElementById('whatsapp-number').value;
 
         if (productId && paymentId && userId && whatsappNumber) {
@@ -540,15 +401,18 @@ function setupCartPage() {
     const whatsappNumber = params.get('whatsapp_number');
     const voucherApplied = params.get('voucher_applied') === 'true';
 
-    const game = GAMES.find(g => g.key === gameKey);
-    const product = PRODUCTS[gameKey] ? PRODUCTS[gameKey].find(p => p.id === productId) : null;
-    const payment = PAYMENTS.find(p => p.id === paymentId);
-
+    // Cek elemen
     const cartSummaryCard = document.getElementById('cart-summary-card');
     const paymentInfoSection = document.getElementById('payment-info-section');
     const payButton = document.getElementById('pay-button');
 
-    if (game && product && payment && cartSummaryCard) {
+    if (!cartSummaryCard) return; // Keluar jika bukan halaman cart
+
+    const game = GAMES.find(g => g.key === gameKey);
+    const product = PRODUCTS[gameKey] ? PRODUCTS[gameKey].find(p => p.id === productId) : null;
+    const payment = PAYMENTS.find(p => p.id === paymentId);
+
+    if (game && product && payment) {
         const voucherDiscount = 100;
         const finalPrice = voucherApplied ? Math.max(0, product.price - voucherDiscount) : product.price;
 
@@ -601,9 +465,9 @@ Silakan scan kode QR di atas untuk melakukan pembayaran. Setelah berhasil, klik 
             `;
         }
 
-        paymentInfoSection.innerHTML = paymentContent;
+        if(paymentInfoSection) paymentInfoSection.innerHTML = paymentContent;
 
-        payButton.addEventListener('click', () => {
+        if(payButton) payButton.addEventListener('click', () => {
             const adminWhatsapp = '6282298902274';
             const message = `Halo Admin, saya ingin konfirmasi pesanan saya.\n\n*Detail Pesanan:*\nGame: ${game.name}\nProduk: ${product.label}\nPlayer ID: ${userId}${serverId ? ` (${serverId})` : ''}\nMetode Pembayaran: ${payment.name}\nTotal: ${formatRupiah(finalPrice)}\n\nNomor WA saya: ${whatsappNumber}\n\nMohon bantuannya untuk diproses, terima kasih.`;
             
@@ -632,6 +496,13 @@ function renderPulsaProducts() {
 
     pulsaListContainer.innerHTML = '';
     const selectedOperator = operatorSelect.value;
+    
+    // Pastikan data pulsa dan operator ada
+    if (!PRODUCTS["pulsa"] || !PRODUCTS["pulsa"][selectedOperator]) {
+        pulsaListContainer.innerHTML = '<p class="no-results-message" style="text-align:center; color:var(--text-light);">Pilih operator.</p>';
+        return;
+    }
+    
     const products = PRODUCTS["pulsa"][selectedOperator];
 
     if (products) {
@@ -664,16 +535,20 @@ function updatePulsaSummary() {
     const isProductSelected = !!selectedProductCard;
     const isPaymentSelected = !!selectedPaymentCard;
     const isPhoneValid = phoneNumberInput && phoneRegex.test(phoneNumberInput.value);
+    
+    const operatorSelect = document.getElementById('operator-select');
+    if (!operatorSelect) return;
+    const selectedOperator = operatorSelect.value;
 
-    if (isProductSelected && isPaymentSelected && isPhoneValid) {
+    if (isProductSelected && isPaymentSelected && isPhoneValid && selectedOperator) {
         summaryCard.style.display = 'block';
         confirmButton.disabled = false;
 
         const productLabel = selectedProductCard.dataset.label;
         const productId = selectedProductCard.dataset.id;
-        const operatorSelect = document.getElementById('operator-select');
-        const selectedOperator = operatorSelect.value;
         const product = PRODUCTS["pulsa"][selectedOperator].find(p => p.id === productId);
+
+        if (!product) return; // Safety check
 
         document.getElementById('summary-product-details').innerHTML = `
             <i class="fas fa-mobile-alt" style="color:var(--accent-color);"></i>
@@ -681,8 +556,8 @@ function updatePulsaSummary() {
         `;
         document.getElementById('summary-price').innerText = formatRupiah(product.price);
     } else {
-        summaryCard.style.display = 'none';
-        confirmButton.disabled = true;
+        if(summaryCard) summaryCard.style.display = 'none';
+        if(confirmButton) confirmButton.disabled = true;
     }
 }
 
@@ -696,6 +571,14 @@ function setupPulsaPage() {
     if (!paymentListContainer || !phoneNumberInput || !operatorSelect || !pulsaListContainer) return;
 
     // Isi pilihan operator secara dinamis
+    // Tambahkan opsi "Pilih Operator"
+    const defaultOption = document.createElement('option');
+    defaultOption.value = "";
+    defaultOption.textContent = "-- Pilih Operator --";
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
+    operatorSelect.appendChild(defaultOption);
+
     Object.keys(PRODUCTS["pulsa"]).forEach(op => {
         const option = document.createElement('option');
         option.value = op;
@@ -836,19 +719,24 @@ function setupThemeToggle() {
     if (!themeToggleBtn) return; // Tidak ada tombol di halaman ini
 
     const body = document.body;
-    const currentTheme = localStorage.getItem('theme');
+    let currentTheme = localStorage.getItem('theme');
 
     // Inisialisasi tema saat load
-    if (currentTheme) {
-        body.classList.add(currentTheme);
-    } else {
-        body.classList.add('light-mode'); // Default
+    if (!currentTheme) {
+        // Jika tidak ada di localStorage, cek preferensi sistem
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            currentTheme = 'dark-mode';
+        } else {
+            currentTheme = 'light-mode'; // Default
+        }
     }
-    updateThemeIcon(); // Update ikon sesuai tema
+    
+    body.classList.add(currentTheme);
+    updateThemeIcon(currentTheme);
 
-    function updateThemeIcon() {
+    function updateThemeIcon(theme) {
         const icon = themeToggleBtn.querySelector('i');
-        if (body.classList.contains('dark-mode')) {
+        if (theme === 'dark-mode') {
             icon.classList.remove('fa-sun');
             icon.classList.add('fa-moon');
         } else {
@@ -870,6 +758,12 @@ function setupThemeToggle() {
 // Main DOMContentLoaded Router
 // ========================
 document.addEventListener("DOMContentLoaded", () => {
+    // Pastikan data sudah di-load (cek salah satu data)
+    if (typeof GAMES === 'undefined' || typeof PAYMENTS === 'undefined' || typeof PRODUCTS === 'undefined') {
+        alert("Error: Gagal memuat file data.js. Pastikan file ada dan di-load sebelum script.js.");
+        return;
+    }
+    
     // Setup global
     setupThemeToggle();
     
