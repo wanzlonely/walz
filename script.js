@@ -33,7 +33,7 @@ const GAMES = [
 
 // Data Pembayaran
 const PAYMENTS = [
-    { id: "qris", name: "QRIS", img: "https://files.catbox.moe/2eju1u.webp", qr: "https://files.catbox.moe/pa0iwo.png" },
+    { id: "qris", name: "QRIS", img: "https://files.catbox.moe/ak5m6z.webp", qr: "https://files.catbox.moe/pa0iwo.png" },
     { id: "krom", name: "Bank Krom", img: "https://i.supaimg.com/20eaef7a-3a63-4be3-a507-175348ab41de.jpg", number: "770072009565", holder: "Walzshop ID" },
     { id: "dana", name: "Dana", img: "https://i.supaimg.com/e4a887fd-41fd-4075-9802-8b65bb52d1cb.jpg", number: "083139243389", holder: "Anom" },
     { id: "gopay", name: "Gopay", img: "https://i.supaimg.com/104ae434-3bb9-4071-a946-73b301a5ba29.jpg", number: "082298902274", holder: "Anom" }
