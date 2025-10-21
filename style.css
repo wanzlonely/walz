@@ -883,8 +883,13 @@ a {
     transform: translateX(-50%);
     z-index: 2000;
     display: flex;
-    justify-content: center;
+    /* --- UPGRADE: Notif bisa stacking --- */
+    flex-direction: column; 
+    gap: 0.5rem;
     align-items: center;
+    width: 100%;
+    max-width: 20rem;
+    pointer-events: none; /* Biar bisa klik tembus */
 }
 
 .notification-popup {
@@ -899,10 +904,11 @@ a {
     opacity: 0;
     transform: translateY(-1rem);
     animation: fade-in-up 0.5s var(--transition-smooth) forwards;
-    min-width: 18rem;
+    width: 100%;
     text-align: center;
     justify-content: center;
     transition: background-color var(--transition-slow);
+    pointer-events: auto; /* Biar notifnya bisa diklik (kalau perlu) */
 }
 
 .notification-popup.fade-out {
@@ -1029,4 +1035,3 @@ a {
         font-size: 0.7rem;
     }
 }
-
