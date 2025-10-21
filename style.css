@@ -469,13 +469,13 @@ a {
 
 .input-group input, .input-group select {
     width: 100%;
-    padding: 0.7rem 0.8rem; /* REDUCED padding */
+    padding: 0.65rem 0.8rem; /* REDUCED padding */
     padding-left: 2.2rem; /* REDUCED */
     background-color: var(--bg-primary);
     border: 1px solid var(--footer-border); /* Visible border */
     border-radius: var(--border-radius-md);
     color: var(--text-color);
-    font-size: 0.85rem; /* REDUCED font */
+    font-size: 0.8rem; /* Further REDUCED font */
     transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-slow);
 }
 .input-group input[type="number"] {
@@ -549,7 +549,7 @@ a {
 
 
 .option-card .label {
-    font-size: 0.8rem; /* REDUCED */
+    font-size: 0.75rem; /* Further REDUCED */
     font-weight: 500;
     margin-bottom: 0.2rem;
     color: var(--text-color);
@@ -567,20 +567,20 @@ a {
 }
 
 .option-card .price {
-    font-size: 0.9rem; /* REDUCED */
+    font-size: 0.85rem; /* Further REDUCED */
     font-weight: bold;
     color: var(--price-color);
 }
 
 .option-card .original-price {
-    font-size: 0.65rem; /* REDUCED */
+    font-size: 0.6rem; /* Further REDUCED */
     color: var(--text-light);
     text-decoration: line-through;
     opacity: 0.8;
 }
 
 .option-card .discounted-price {
-    font-size: 0.85rem; /* REDUCED */
+    font-size: 0.8rem; /* Further REDUCED */
     font-weight: bold;
     color: var(--selected-border);
 }
@@ -607,13 +607,13 @@ a {
 }
 
 .option-card.payment img {
-    height: 1.5rem; /* REDUCED */
-    max-width: 4rem;
+    height: 2.2rem; /* ENHANCED: Increased payment image height */
+    max-width: 5rem; /* ENHANCED: Increased max width */
     object-fit: contain;
 }
 
 .option-card.payment .label {
-    font-size: 0.75rem; /* REDUCED */
+    font-size: 0.7rem; /* Further REDUCED */
     color: var(--text-color);
 }
 
@@ -735,7 +735,7 @@ a {
     font-weight: bold;
     cursor: pointer;
     transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
-    margin-top: 1rem; /* REDUCED */
+    margin-top: 1.0rem; /* Adjusted margin top */
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15); /* REDUCED shadow */
 }
 
@@ -854,7 +854,7 @@ a {
 }
 
 .payment-info-section .payment-image {
-    height: 2.5rem; /* REDUCED */
+    height: 3rem; /* ENHANCED: Further increased payment image height */
     margin-bottom: 1rem;
 }
 
@@ -1096,13 +1096,13 @@ a {
     .option-card .price { font-size: 0.8rem; }
     .option-card .icon { font-size: 1.5rem; }
     .special-badge { top: 0.3rem; right: 0.3rem; font-size: 0.55rem; padding: 1px 4px; }
-    .option-card.payment img { height: 1.2rem; }
+    .option-card.payment img { height: 1.8rem; /* Adjusted for mobile */ }
     .option-card.payment .label { font-size: 0.65rem; }
 
     .input-group input, .input-group select {
         padding: 0.6rem 0.7rem;
         padding-left: 2rem;
-        font-size: 0.8rem;
+        font-size: 0.75rem; /* Further reduced */
     }
     .input-group .input-icon { left: 0.7rem; font-size: 0.8rem;}
     .voucher-button { padding: 0.6rem 0.8rem; font-size: 0.75rem;}
