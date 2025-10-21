@@ -98,6 +98,7 @@ body {
     flex-grow: 1;
     transition: background-color var(--transition-slow), box-shadow var(--transition-slow);
     animation: fadeIn 0.6s var(--transition-smooth) forwards; /* Faster animation */
+    overflow-x: hidden; /* FIX: Prevent horizontal scroll inside container too */
 }
 
 h1, h2, h3, h4 {
@@ -602,18 +603,18 @@ a {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.3rem; /* REDUCED */
-    min-height: 5rem; /* Ensure minimum height */
+    gap: 0.4rem; /* Adjusted gap */
+    min-height: 6rem; /* ENHANCED: Increased min height slightly */
 }
 
 .option-card.payment img {
-    height: 2.2rem; /* ENHANCED: Increased payment image height */
-    max-width: 5rem; /* ENHANCED: Increased max width */
+    height: 2.5rem; /* ENHANCED: Larger payment image */
+    max-width: 5.5rem; /* ENHANCED: Larger max width */
     object-fit: contain;
 }
 
 .option-card.payment .label {
-    font-size: 0.7rem; /* Further REDUCED */
+    font-size: 0.7rem; /* REDUCED */
     color: var(--text-color);
 }
 
@@ -764,7 +765,7 @@ a {
 /* Cart Page Styles */
 /* ======================== */
 .cart-page-container {
-    padding: 0.75rem 0; /* REDUCED */
+    padding: 0.75rem; /* FIX: Added horizontal padding back */
 }
 
 .cart-summary-card {
@@ -775,6 +776,8 @@ a {
     box-shadow: var(--box-shadow-light);
     margin-bottom: 1.5rem; /* REDUCED */
     transition: background-color var(--transition-slow);
+    animation: fadeIn 0.4s var(--transition-smooth) forwards; /* ADDED: Animation */
+    opacity: 0; /* Initial state for animation */
 }
 
 .cart-summary-card h3 {
@@ -805,6 +808,8 @@ a {
     display: flex;
     align-items: center;
     gap: 0.5rem; /* REDUCED */
+    flex-shrink: 0; /* Prevent label from shrinking */
+    margin-right: 0.5rem; /* Add space between label and value */
 }
 .summary-detail-item .label i {
     width: 1.1em;
@@ -821,7 +826,7 @@ a {
     text-align: right;
     flex-grow: 1;
     justify-content: flex-end;
-    word-break: break-all; /* Allow long IDs to break */
+    word-break: break-all; /* Allow long IDs/numbers to break */
 }
 
 .summary-detail-item .payment-image {
@@ -851,6 +856,8 @@ a {
     color: var(--text-color);
     box-shadow: var(--box-shadow-light);
     transition: background-color var(--transition-slow);
+    animation: fadeIn 0.4s var(--transition-smooth) 0.1s forwards; /* ADDED: Animation with delay */
+    opacity: 0; /* Initial state for animation */
 }
 
 .payment-info-section .payment-image {
@@ -859,12 +866,14 @@ a {
 }
 
 .payment-info-section .qr-code-image {
-    width: 13rem; /* REDUCED */
+    width: 100%; /* Make QR responsive */
+    max-width: 13rem; /* REDUCED max width */
     height: auto;
     border-radius: var(--border-radius-md);
-    margin-bottom: 1rem;
+    margin: 0 auto 1rem auto; /* Center image */
     border: 3px solid var(--bg-secondary);
     box-shadow: var(--box-shadow-light);
+    display: block; /* Ensure it behaves like a block */
 }
 
 .payment-info-section h4 {
@@ -957,7 +966,7 @@ a {
     transform: translateX(-50%);
     z-index: 2000;
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     gap: 0.5rem; /* REDUCED */
     align-items: center;
     width: calc(100% - 1.5rem); /* Adjusted */
@@ -1026,7 +1035,7 @@ a {
         -webkit-backdrop-filter: none;
         box-shadow: none;
     }
-    
+
     .header {
         border-radius: 0;
         margin-bottom: 1rem;
@@ -1070,6 +1079,10 @@ a {
         font-size: 0.75rem;
         margin-bottom: 1rem;
     }
+    /* FIX: Added padding back to cart container for mobile */
+    .cart-page-container {
+        padding: 0 0.5rem;
+    }
 
 
     .game-info-header .game-img {
@@ -1096,7 +1109,7 @@ a {
     .option-card .price { font-size: 0.8rem; }
     .option-card .icon { font-size: 1.5rem; }
     .special-badge { top: 0.3rem; right: 0.3rem; font-size: 0.55rem; padding: 1px 4px; }
-    .option-card.payment img { height: 1.8rem; /* Adjusted for mobile */ }
+    .option-card.payment img { height: 2rem; /* Adjusted payment image on mobile */ }
     .option-card.payment .label { font-size: 0.65rem; }
 
     .input-group input, .input-group select {
