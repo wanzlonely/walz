@@ -22,8 +22,8 @@
     --border-radius-sm: 4px;
     --bg-gradient: linear-gradient(135deg, #f0f4f8 0%, #d9e2ea 100%);
     --container-bg-color: rgba(255, 255, 255, 0.85);
-    /* New: Layout Variables */
-    --desktop-max-width: 1100px; /* Sedikit dikecilkan agar terlihat padat */
+    /* Layout Variables */
+    --desktop-max-width: 1100px; 
     --column-gap: 2rem;
 }
 
@@ -34,7 +34,7 @@
     --card-bg: #2d2d2d;
     --text-color: #f0f0f0;
     --text-light: #b0b0b0;
-    --accent-color: #8a2be2; /* Ungu untuk Dark Mode */
+    --accent-color: #8a2be2; 
     --accent-light: #a745ff;
     --price-color: #ff3b30;
     --selected-border: #00e69b;
@@ -61,11 +61,13 @@ body {
     flex-direction: column;
     min-height: 100vh;
     transition: background 0.5s ease, color 0.5s ease;
+    /* FIX: HILANGKAN HORIZONTAL SCROLL */
+    overflow-x: hidden; 
 }
 
 .main-container {
-    padding: 1.5rem; /* DIKEMBALIKAN KE AWAL */
-    max-width: 800px; /* Default untuk mobile/tablet */
+    padding: 1.5rem;
+    max-width: 800px;
     margin: 0 auto;
     background-color: var(--container-bg-color);
     backdrop-filter: blur(10px) saturate(180%);
@@ -93,11 +95,11 @@ a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 1.5rem; /* DIKEMBALIKAN KE AWAL */
+    padding: 1rem 1.5rem; 
     background-color: var(--bg-secondary);
     border-radius: var(--border-radius-xl);
     box-shadow: var(--box-shadow-light);
-    margin-bottom: 1.5rem; /* DIKEMBALIKAN KE AWAL */
+    margin-bottom: 1.5rem;
     transition: background-color 0.5s ease;
     max-width: var(--desktop-max-width); 
     margin-left: auto;
@@ -113,7 +115,7 @@ a {
 .logo-icon {
     width: 2.5rem;
     height: 2.5rem;
-    border-radius: 50%; /* DIKEMBALIKAN KE AWAL */
+    border-radius: 50%; 
     object-fit: cover;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
@@ -220,7 +222,7 @@ a {
 
 .game-grid-custom {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr)); /* Sedikit lebih besar dari awal */
+    grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr)); 
     gap: 1rem;
     margin-top: 1.5rem;
 }
@@ -359,11 +361,11 @@ a {
     border-radius: var(--border-radius-lg);
     margin-bottom: 1.5rem;
     box-shadow: var(--box-shadow-dark);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.5s ease;
+    transition: box-shadow 0.2s ease, background-color 0.5s ease;
 }
 
 .section-card:hover {
-    transform: none; /* Hilangkan efek translateY pada hover section card */
+    transform: none; 
     box-shadow: var(--box-shadow-dark);
 }
 
@@ -379,7 +381,7 @@ a {
     height: 2.25rem;
     background: var(--accent-color);
     color: #fff;
-    border-radius: 50%; /* DIKEMBALIKAN KE AWAL */
+    border-radius: 50%; 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -397,7 +399,7 @@ a {
     font-size: 0.8rem;
     color: var(--text-light);
     margin-bottom: 0.75rem;
-    border-left: none; /* Hilangkan border left */
+    border-left: none; 
     padding-left: 0;
 }
 
@@ -439,7 +441,7 @@ a {
 
 .options-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); /* Disesuaikan agar lebih baik dari awal */
+    grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); 
     gap: 1rem;
 }
 
@@ -456,14 +458,14 @@ a {
 }
 
 .option-card:hover {
-    transform: translateY(-3px) scale(1.02); /* Efek hover lebih halus */
+    transform: translateY(-3px) scale(1.02); 
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .option-card.selected {
     border-color: var(--accent-color);
     box-shadow: 0 0 15px rgba(192, 54, 44, 0.7);
-    transform: scale(1.05); /* Skala sedikit lebih besar saat dipilih */
+    transform: scale(1.05); 
     animation: pulse-border 1s infinite alternate;
 }
 
@@ -504,11 +506,11 @@ a {
     color: var(--selected-border);
 }
 
-/* FIX: Ikon Voucher - Disesuaikan agar pas di tengah */
+/* FIX: Perbaikan Posisi Ikon Voucher */
 .option-card .icon {
-    font-size: 1.8rem; /* Sedikit dikecilkan */
+    font-size: 1.8rem; 
     color: var(--accent-color);
-    margin-bottom: 0.1rem; /* Disesuaikan agar lebih center */
+    margin-bottom: 0.1rem; 
 }
 
 .option-card.payment {
@@ -532,7 +534,7 @@ a {
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
-    background-color: var(--accent-color); /* Menggunakan accent-color */
+    background-color: var(--accent-color); 
     color: white;
     font-size: 0.6rem;
     padding: 2px 6px;
@@ -574,11 +576,11 @@ a {
 }
 
 /* ======================== */
-/* SUMMARY CARD (FIXED/STICKY) */
+/* SUMMARY CARD (FLOATING/STICKY) */
 /* ======================== */
 .summary-card {
     background: var(--bg-secondary);
-    padding: 1.25rem; /* Sedikit dikecilkan agar kompak */
+    padding: 1.25rem; 
     margin-top: 1.5rem;
     box-shadow: var(--box-shadow-dark);
     z-index: 100;
@@ -592,14 +594,14 @@ a {
     width: 95%; 
     max-width: 450px; 
     border-radius: var(--border-radius-lg);
-    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.25); /* Shadow di atas */
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.25); 
 }
 
 .summary-product {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.95rem; /* Sedikit dikecilkan */
+    font-size: 0.95rem; 
     font-weight: 600;
     margin-bottom: 0.5rem;
     color: var(--text-color);
@@ -613,7 +615,7 @@ a {
 
 .confirm-button {
     width: 100%;
-    padding: 0.9rem; /* Sedikit dikecilkan */
+    padding: 0.9rem; 
     background-color: var(--accent-color);
     color: white;
     border: none;
@@ -622,7 +624,7 @@ a {
     font-weight: bold;
     cursor: pointer;
     transition: all 0.2s ease;
-    margin-top: 0.75rem; /* Sedikit dikecilkan */
+    margin-top: 0.75rem; 
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -641,7 +643,6 @@ a {
 /* ======================== */
 /* Cart Page Styles */
 /* ======================== */
-/* Mempertahankan tampilan yang lebih baik untuk Cart */
 .cart-page-wrapper {
     display: block; /* Default untuk mobile */
 }
@@ -667,12 +668,62 @@ a {
 }
 
 .payment-info-section {
+    background: var(--bg-secondary);
     padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    width: 100%;
     max-width: 450px;
+    margin: 1.5rem auto;
+    text-align: center;
+    color: var(--text-color);
+    box-shadow: var(--box-shadow-dark);
+    transition: background-color 0.5s ease;
+}
+
+.payment-info-section .payment-image {
+    height: 3rem;
+    margin-bottom: 1rem;
+}
+
+/* FIX: Ukuran QR Code Disesuaikan untuk Scan */
+.payment-info-section .qr-code-image {
+    width: 12rem; /* Ukuran yang ideal untuk di-scan */
+    height: 12rem;
+    object-fit: contain;
+    border-radius: var(--border-radius-sm);
+    margin-bottom: 1rem;
+    border: 3px solid var(--bg-primary);
+    box-shadow: var(--box-shadow-dark);
+}
+
+.payment-info-section h4 {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
 }
 
 .payment-info-section .payment-number {
     font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    color: var(--accent-color);
+}
+
+.payment-info-section .copy-button {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s, transform 0.2s;
+    box-shadow: var(--box-shadow-light);
+}
+
+.payment-info-section .copy-button:hover {
+    background-color: var(--accent-light);
+    transform: translateY(-2px);
 }
 
 /* ======================== */
@@ -722,42 +773,161 @@ a {
     font-size: 1.25rem;
 }
 
+/* --- Pop-up Notifikasi --- */
+.notification-container {
+    position: fixed;
+    top: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.notification-popup {
+    background-color: var(--bg-secondary);
+    color: var(--text-color);
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--box-shadow-dark);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0;
+    transform: translateY(-1rem);
+    animation: fade-in-up 0.5s forwards;
+    min-width: 18rem;
+    text-align: center;
+    justify-content: center;
+    transition: background-color 0.5s ease;
+}
+
+.notification-popup.fade-out {
+    animation: fade-out-down 0.5s forwards;
+}
+
+@keyframes fade-in-up {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-out-down {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(1rem); }
+}
+
+.notification-popup .icon {
+    font-size: 1.5rem;
+}
+
+.notification-popup .message {
+    font-weight: 600;
+}
 
 /* ======================== */
 /* Media Queries (Responsive) */
 /* ======================== */
-
-/* --- Tablet / Mobile Lanskap (501px - 1023px) --- */
-@media (min-width: 501px) and (max-width: 1023px) {
+@media (max-width: 500px) {
     .main-container {
-        max-width: 768px;
-        padding: 1.25rem;
+        padding: 1rem 0.75rem;
+        margin-bottom: 4rem;
+    }
+    
+    .header {
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+    }
+
+    .header-right {
+        width: auto;
+        justify-content: flex-end;
+        margin-top: 0;
+    }
+
+    .website-name {
+        font-size: 1.2rem;
+    }
+
+    .search-box {
+        width: 80%;
+    }
+
+    .search-box:focus-within {
+        width: 90%;
     }
 
     .game-grid-custom {
-        grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
         gap: 0.75rem;
     }
-    
+
     .game-card-img {
-        height: 7rem;
+        height: 6.5rem;
+    }
+
+    .game-info-header {
+        padding: 1.25rem;
+    }
+
+    .game-info-header .game-img {
+        width: 6rem;
+        height: 6rem;
+    }
+
+    .game-info-header h2 {
+        font-size: 1.25rem;
+    }
+
+    .game-detail-item {
+        font-size: 0.7rem;
+    }
+    
+    .game-detail-item i {
+        font-size: 1rem;
+    }
+
+    .section-card {
+        padding: 1.25rem;
     }
 
     .options-grid {
-        grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
+    .option-card .label {
+        font-size: 0.8rem;
+    }
+
+    .option-card .price {
+        font-size: 0.9rem;
+    }
+
+    .confirm-button {
+        padding: 0.8rem;
+        font-size: 0.95rem;
     }
 
     .summary-card {
         bottom: 4rem;
-        max-width: 700px;
+        padding: 1rem;
+    }
+
+    .main-footer {
+        padding: 0.5rem 0;
+    }
+
+    .footer-links-group a {
+        font-size: 0.7rem;
     }
 }
-
 
 /* --- Desktop & Lanskap Besar (>= 1024px) --- */
 @media (min-width: 1024px) {
     body {
-        padding-top: 1.5rem; /* Ruang di atas untuk header */
+        padding-top: 1.5rem; 
     }
 
     .main-container {
@@ -770,7 +940,7 @@ a {
     /* Simetri 2 Kolom untuk Halaman Detail */
     .page-content-wrapper {
         display: grid;
-        grid-template-columns: 2fr 1.25fr; /* Rasio 60/40 */
+        grid-template-columns: 2fr 1.25fr; /* Rasio 60/40 untuk simetri yang bagus */
         gap: var(--column-gap);
         align-items: start; 
     }
@@ -778,7 +948,7 @@ a {
     /* Simetri 2 Kolom untuk Halaman Cart */
     .cart-page-wrapper {
         display: grid;
-        grid-template-columns: 1fr 1fr; /* 50/50 untuk cart */
+        grid-template-columns: 1fr 1fr; 
         gap: var(--column-gap);
         align-items: start;
     }
@@ -786,15 +956,16 @@ a {
     /* Summary Card STICKY di SISI KANAN DESKTOP */
     .summary-card {
         position: sticky; /* Kembalikan ke sticky untuk desktop */
-        top: 2rem; /* Menempel di bawah ruang header */
-        bottom: unset; /* Reset properti mobile */
+        top: 2rem; 
+        bottom: unset; 
         left: unset;
         transform: none;
-        width: 100%; /* Mengisi kolom grid */
+        width: 100%; 
         max-width: none; 
         margin-top: 0;
         border-radius: var(--border-radius-lg);
         box-shadow: var(--box-shadow-dark);
+        /* Tombol confirm di desktop ada di dalam summary-card */
     }
     
     .game-info-header {
@@ -823,7 +994,7 @@ a {
     }
     
     .main-footer {
-        position: static; /* Footer statis di desktop */
+        position: static; 
         margin-top: 2rem;
         border-top: 1px solid var(--bg-primary);
         box-shadow: none;
@@ -842,66 +1013,5 @@ a {
     
     .footer-links-group i {
         display: none;
-    }
-}
-
-
-/* --- Mobile Portrait (<= 500px) --- */
-@media (max-width: 500px) {
-    .main-container {
-        padding: 1rem 0.75rem;
-        margin-bottom: 4rem;
-    }
-    
-    .header {
-        padding: 0.75rem 1rem;
-    }
-
-    .search-box {
-        width: 80%;
-    }
-
-    .search-box:focus-within {
-        width: 90%;
-    }
-
-    .game-grid-custom {
-        grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
-        gap: 0.75rem;
-    }
-
-    .game-card-img {
-        height: 6.5rem;
-    }
-
-    .game-info-header .game-img {
-        width: 6rem;
-        height: 6rem;
-    }
-
-    .game-info-header h2 {
-        font-size: 1.25rem;
-    }
-
-    .section-card {
-        padding: 1.25rem;
-    }
-
-    .options-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-    
-    .summary-card {
-        bottom: 4rem;
-        padding: 1rem;
-    }
-
-    .confirm-button {
-        padding: 0.8rem;
-        font-size: 0.95rem;
-    }
-
-    .main-footer {
-        padding: 0.5rem 0;
     }
 }
