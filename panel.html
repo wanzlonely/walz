@@ -1,63 +1,81 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel Hosting - WALZSHOP</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WALZSHOP - Beli Panel</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-
 <body>
-  <header class="header">
-    <a href="index.html" class="logo-link">
-      <img src="https://files.catbox.moe/hrtpys.jpg" alt="Logo" class="logo-icon">
-      <h1 class="website-name">WALZSHOP</h1>
-    </a>
-  </header>
 
-  <main class="main-container">
-    <section class="guidance-card">
-      <h3>Panel Hosting</h3>
-      <p>Dapatkan server premium untuk bot, website, dan project kamu. Panel aman, cepat, dan 99% uptime!</p>
-    </section>
+    <div class="main-container">
+        <header class="header">
+            <a href="index.html" class="logo-link">
+                <img src="https://files.catbox.moe/hrtpys.jpg" alt="WALZSHOP Icon" class="logo-icon">
+                <h1 class="website-name">WALZSHOP</h1>
+            </a>
+            <div class="header-right">
+                <button id="theme-toggle" class="theme-toggle-btn">
+                    <i class="fas fa-sun"></i>
+                </button>
+            </div>
+        </header>
 
-    <h2 class="section-title"><i class="fa-solid fa-server"></i> Pilih Paket Panel</h2>
+        <a href="index.html" class="back-button-top">
+            <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+        </a>
 
-    <div class="game-grid-custom">
-      <div class="game-card-custom">
-        <img src="https://files.catbox.moe/1h5s5p.jpg" alt="Panel Starter" class="game-card-img">
-        <div class="game-card-content-custom">
-          <h3>Starter</h3>
-          <p>1 GB RAM - 1 Core</p>
-        </div>
-      </div>
+        <main id="panel-form">
+            <section class="section-card">
+                <div class="section-header">
+                    <span class="section-number">1</span>
+                    <h3>Masukkan Data Anda</h3>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="user-name" placeholder="Nama Lengkap">
+                </div>
+                <div class="input-group">
+                    <i class="fab fa-whatsapp input-icon"></i>
+                    <input type="number" id="user-whatsapp" placeholder="Nomor WhatsApp">
+                </div>
+            </section>
 
-      <div class="game-card-custom">
-        <img src="https://files.catbox.moe/6xgbo0.jpg" alt="Panel Pro" class="game-card-img">
-        <div class="game-card-content-custom">
-          <h3>Pro</h3>
-          <p>3 GB RAM - 2 Core</p>
-        </div>
-      </div>
+            <section class="section-card">
+                <div class="section-header">
+                    <span class="section-number">2</span>
+                    <h3>Pilih Paket Panel</h3>
+                </div>
+                <div id="panel-product-list" class="options-grid">
+                    </div>
+            </section>
 
-      <div class="game-card-custom">
-        <img src="https://files.catbox.moe/fik1s9.jpg" alt="Panel Elite" class="game-card-img">
-        <div class="game-card-content-custom">
-          <h3>Elite</h3>
-          <p>6 GB RAM - 4 Core</p>
-        </div>
-      </div>
+            <button id="panel-order-button" class="confirm-button" disabled>Pesan Sekarang</button>
+        </main>
     </div>
-  </main>
 
-  <footer class="main-footer">
-    <div class="footer-links-group">
-      <a href="index.html"><i class="fas fa-gem"></i><span>Top Up</span></a>
-      <a href="pulsa.html"><i class="fas fa-mobile-alt"></i><span>Pulsa</span></a>
-      <a href="panel.html"><i class="fas fa-server"></i><span>Panel</span></a>
-      <a href="cart.html"><i class="fas fa-shopping-cart"></i><span>Keranjang</span></a>
-    </div>
-  </footer>
+    <footer class="main-footer">
+        <div class="footer-links-group">
+            <a href="index.html">
+                <i class="fas fa-gem"></i>
+                <span>Top Up</span>
+            </a>
+            <a href="pulsa.html">
+                <i class="fas fa-mobile-alt"></i>
+                <span>Pulsa</span>
+            </a>
+            <a href="panel.html">
+                <i class="fas fa-server"></i>
+                <span>Panel</span>
+            </a>
+        </div>
+    </footer>
+
+    <div class="notification-container"></div>
+    
+    <script src="data.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
