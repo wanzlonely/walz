@@ -23,7 +23,7 @@
     --bg-gradient: linear-gradient(135deg, #f0f4f8 0%, #d9e2ea 100%);
     --container-bg-color: rgba(255, 255, 255, 0.85);
     /* Layout Variables */
-    --desktop-max-width: 1100px; /* Batasan Desktop */
+    --desktop-max-width: 1100px; 
     --column-gap: 2rem;
 }
 
@@ -61,7 +61,6 @@ body {
     flex-direction: column;
     min-height: 100vh;
     transition: background 0.5s ease, color 0.5s ease;
-    /* FIX: HILANGKAN HORIZONTAL SCROLL */
     overflow-x: hidden; 
 }
 
