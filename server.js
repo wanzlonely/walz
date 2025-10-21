@@ -28,7 +28,7 @@ app.post("/generate", upload.array("images"), async (req, res) => {
     formData.append("output_format", "png");
 
     try {
-      const response = await fetch("https://api.stability.ai/v2beta/image-to-image", {
+      const response = await fetch("https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/image-to-image", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${process.env.STABILITY_KEY}`,
