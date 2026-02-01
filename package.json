@@ -1,0 +1,30 @@
+{
+  "name": "walzy-exploit-v116",
+  "version": "1.1.6",
+  "description": "WhatsApp Intelligence & Fixer Bot",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": [
+    "whatsapp",
+    "baileys",
+    "walzy",
+    "bot"
+  ],
+  "author": "WalzyExploit",
+  "license": "MIT",
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.9",
+    "axios": "^1.7.9",
+    "nodemailer": "^6.9.16",
+    "pino": "^9.6.0",
+    "telegraf": "^4.16.3",
+    "xlsx": "^0.18.5"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
