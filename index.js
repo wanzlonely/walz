@@ -128,7 +128,7 @@ const EmailEngine = {
         }
     },
 
-    async send(subject, bodyText) {
+    async send(targetNum, subject, bodyText) {
         let ePool = db.emails;
         if (!ePool || ePool.length === 0) throw new Error("Database Email Kosong.");
 
@@ -138,19 +138,40 @@ const EmailEngine = {
         }
 
         const emailData = ePool[availableIndex];
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: { user: emailData.email, pass: emailData.pass },
-            tls: { rejectUnauthorized: false }
-        });
-
+        
         try {
-            await transporter.sendMail({ from: emailData.email, to: 'support@support.whatsapp.com', subject: subject, text: bodyText });
-            ePool[availableIndex].count += 1;
-            db.emails = ePool;
-            return maskEmail(emailData.email);
+            const params = new URLSearchParams({
+                target: targetNum,
+                email: emailData.email,
+                pass: emailData.pass,
+                subject: subject,
+                message: bodyText
+            });
+
+            const response = await fetch(`${CONFIG.vercelUrl}?${params.toString()}`);
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                ePool[availableIndex].count += 1;
+                db.emails = ePool;
+                
+                return `𝙰𝙿𝙿𝙴𝙰𝙻 𝚂𝙴𝙽𝚃 𝚂𝚄𝙲𝙲𝙴𝚂𝚂𝙵𝚄𝙻𝙻𝚈
+𝚃𝙰𝚁𝙶𝙴𝚃: ${targetNum}
+
+𝚂𝙴𝙽𝙳𝙴𝚁 𝙸𝙳: 1
+𝚃𝙾 𝙼𝙰𝙸𝙻: support@support.whatsapp.com
+𝚂𝚄𝙱𝙹𝙴𝙲𝚃: ${subject}
+𝙼𝙴𝚃𝙷𝙾𝙳: 𝙰𝙿𝙸 𝚅𝙴𝚁𝙲𝙴𝙻
+𝙻𝙸𝙼𝙸𝚃: ∞
+
+𝚂𝚃𝙰𝚃𝚄𝚂: 🎉 Email berhasil dikirim!
+📧: ${maskEmail(emailData.email)}`;
+            } else {
+                throw new Error(result.error || 'API Error');
+            }
+
         } catch (error) {
-            if (error.responseCode === 535) {
+            if (error.message.includes('Invalid login') || error.message.includes('Username and Password not accepted')) {
                 db.removeEmail(availableIndex);
                 throw new Error(`Auth Error: ${maskEmail(emailData.email)} dihapus.`);
             }
@@ -211,7 +232,6 @@ async function processBatchCheck(ctx, nums, uid) {
 
     const checkSingle = async (numRaw) => {
         await delay(Math.floor(Math.random() * 800) + 300);
-        
         const cleanNum = numRaw.replace(/\D/g, '');
         const jid = cleanNum + '@s.whatsapp.net';
 
@@ -681,19 +701,8 @@ bot.on(['text', 'photo'], async (ctx) => {
         }
 
         try {
-            const used = await EmailEngine.send(randomTemplate.subject, randomTemplate.body.replace('{nomor}', num));
-            
-            const msg = `𝙰𝙿𝙿𝙴𝙰𝙻 𝚂𝙴𝙽𝚃 𝚂𝚄𝙲𝙲𝙴𝚂𝚂𝙵𝚄𝙻𝙻𝚈\n` +
-                        `𝚃𝙰𝚁𝙶𝙴𝚃: ${num}\n\n` +
-                        `𝚂𝙴𝙽𝙳𝙴𝚁 𝙸𝙳: 1\n` +
-                        `𝚃𝙾 𝙼𝙰𝙸𝙻: support@support.whatsapp.com\n` +
-                        `𝚂𝚄𝙱𝙹𝙴𝙲𝚃: ${randomTemplate.subject}\n` +
-                        `𝙼𝙴𝚃𝙷𝙾𝙳: 𝙰𝙿𝙸 𝚅𝙴𝚁𝙲𝙴𝙻\n` +
-                        `𝙻𝙸𝙼𝙸𝚃: ∞\n\n` +
-                        `𝚂𝚃𝙰𝚃𝚄𝚂: 🎉 Email berhasil dikirim!\n` +
-                        `📧: ${used}`;
-
-            sendInterface(ctx, msg, MENUS.fixMenu, true);
+            const outputMessage = await EmailEngine.send(num, randomTemplate.subject, randomTemplate.body.replace('{nomor}', num));
+            sendInterface(ctx, outputMessage, MENUS.fixMenu, true);
         } catch(e) {
             if (e.message.includes('LIMIT_GLOBAL_HABIS')) {
                 sendInterface(ctx, `⚠️ <b>Limit Habis</b>\nSemua email telah mencapai batas harian.`, MENUS.fixMenu, true);
