@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer';
 import fs from 'fs';
 import { CONFIG, APPEAL_TEXTS } from './config.js';
 import { Database } from './lib/database.js';
-import { MENUS, Validator, FileHandler, formatTimeLeft, formatDate, maskEmail, createProgressBar, delay, detectCountry } from './lib/utils.js';
+import { MENUS, Validator, FileHandler, formatTimeLeft, maskEmail, createProgressBar, delay, detectCountry } from './lib/utils.js';
 import { WAManager, userSessions, sessionStatus } from './lib/whatsapp.js';
 
 const db = new Database();
@@ -15,6 +15,50 @@ const tempStorage = new Map();
 const lastBotMessage = new Map();
 const checkQueue = [];
 let isProcessingCheck = false;
+
+function startSessionMonitor() {
+    setInterval(async () => {
+        const allUsers = Object.keys(db.users);
+        for (const uid of allUsers) {
+            const user = db.users[uid];
+            if (!user.sessions || user.sessions.length === 0) continue;
+
+            let activeSessions = [];
+            let hasChanges = false;
+            let deadSessions = [];
+
+            for (const sessId of user.sessions) {
+                const key = `${uid}_${sessId}`;
+                const status = sessionStatus.get(key);
+
+                if (status === 'logout') {
+                    hasChanges = true;
+                    deadSessions.push(sessId);
+                    sessionStatus.delete(key);
+                    
+                    if (userSessions.has(uid)) {
+                        const socks = userSessions.get(uid);
+                        if (socks.has(sessId)) {
+                            try { socks.get(sessId).end(); } catch(e){}
+                            socks.delete(sessId);
+                        }
+                    }
+                } else {
+                    activeSessions.push(sessId);
+                }
+            }
+
+            if (hasChanges) {
+                db.updateUser(uid, { sessions: activeSessions });
+                if (deadSessions.length > 0) {
+                    try {
+                        await bot.telegram.sendMessage(uid, `⚠️ <b>𝗞𝗼𝗻𝗲𝗸𝘀𝗶 𝗧𝗲𝗿𝗽𝘂𝘁𝘂𝘀</b>\n━━━━━━━━━━━━━━━━━━\nSesi ID berikut telah Logout dan dihapus:\n❌ ID: ${deadSessions.join(', ')}\n\n<i>Silakan scan ulang di menu Kelola Perangkat.</i>`, { parse_mode: 'HTML' });
+                    } catch (e) {}
+                }
+            }
+        }
+    }, 5000);
+}
 
 async function deleteUserMsg(ctx) {
     if (ctx.chat.type === 'private') {
@@ -30,7 +74,7 @@ async function sendInterface(ctx, text, menu = null, isEdit = false, isPhoto = f
     const uid = String(ctx.from.id);
     const chatId = String(ctx.chat.id);
     const msgKey = `${chatId}_${uid}`;
-    
+
     const lastMsgId = lastBotMessage.get(msgKey);
     const options = { parse_mode: 'HTML' };
     if (menu) options.reply_markup = menu;
@@ -46,7 +90,7 @@ async function sendInterface(ctx, text, menu = null, isEdit = false, isPhoto = f
             if (lastMsgId) {
                 try { await ctx.telegram.deleteMessage(chatId, lastMsgId); } catch (e) {}
             }
-            
+
             let sent;
             if (isPhoto) {
                 sent = await ctx.replyWithPhoto(CONFIG.botImage, { caption: text, ...options });
@@ -87,7 +131,7 @@ const EmailEngine = {
     async send(subject, bodyText) {
         let ePool = db.emails;
         if (!ePool || ePool.length === 0) throw new Error("Database Email Kosong.");
-        
+
         let availableIndex = ePool.findIndex(e => e.count < CONFIG.maxCountPerEmail);
         if (availableIndex === -1) {
             throw new Error("LIMIT_GLOBAL_HABIS");
@@ -119,15 +163,15 @@ async function runNextCheck() {
     if (isProcessingCheck || checkQueue.length === 0) return;
     isProcessingCheck = true;
     const { ctx, nums, uid } = checkQueue.shift();
-    
+
     try {
-        await sendInterface(ctx, `<b>🆕 𝗪 𝗔 𝗟 𝗭 𝗬 𝗜𝗡𝗧𝗘𝗟𝗟𝗜𝗚𝗘𝗡𝗖𝗘</b>\n━━━━━━━━━━━━━━━━━━\n📦 <b>Antrian:</b> ${nums.length} Nomor\n🚀 <b>Engine:</b> Turbo Multi-Thread\n⏳ <b>Estimasi:</b> ${Math.ceil(nums.length / 50)} Detik\n\n<i>Menginisialisasi protokol fetch...</i>`, null, true);
+        await sendInterface(ctx, `<b>🆕 𝗪 𝗔 𝗟 𝗭 𝗬 𝗜𝗡𝗧𝗘𝗟𝗟𝗜𝗚𝗘𝗡𝗖𝗘</b>\n━━━━━━━━━━━━━━━━━━\n📦 <b>Antrian:</b> ${nums.length} Nomor\n🚀 <b>Engine:</b> SafeGuard V4\n⏳ <b>Estimasi:</b> ${Math.ceil(nums.length / 30)} Detik\n\n<i>Menginisialisasi protokol aman...</i>`, null, true);
         await processBatchCheck(ctx, nums, uid);
     } catch (error) {
         await sendInterface(ctx, `❌ <b>Sistem Error:</b> ${error.message}`, MENUS.backOnly, true);
     } finally {
         isProcessingCheck = false;
-        setTimeout(runNextCheck, 100); 
+        setTimeout(runNextCheck, 100);
     }
 }
 
@@ -139,63 +183,71 @@ async function processBatchCheck(ctx, nums, uid) {
 
     let activeSockets = getActiveSockets();
     if (activeSockets.length === 0) throw new Error('Koneksi WhatsApp Terputus. Silakan scan ulang.');
-    
+
     let results = [];
     let invalid = [];
     let processed = 0;
-    
-    const BATCH_SIZE = 50; 
+    let lastUiUpdate = 0;
 
-    const formatFullDate = (ms) => {
-        if (!ms) return "Tidak Diketahui";
-        return new Date(ms).toLocaleString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const BATCH_SIZE = 10;
+
+    const formatIndoDate = (ms) => {
+        if (!ms) return "-";
+        const d = new Date(ms);
+        const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
     };
 
     const updateProgress = async () => {
         try {
-            if(processed % 50 === 0 || processed >= nums.length) {
+            const now = Date.now();
+            if ((now - lastUiUpdate > 3000) || processed >= nums.length) {
+                lastUiUpdate = now;
                 let p = processed > nums.length ? nums.length : processed;
-                await sendInterface(ctx, `<b>🆕 𝗪 𝗔 𝗟 𝗭 𝗬 𝗜𝗡𝗧𝗘𝗟𝗟𝗜𝗚𝗘𝗡𝗖𝗘</b>\n━━━━━━━━━━━━━━━━━━\n📦 <b>Progress:</b> ${p}/${nums.length}\n🚀 <b>Status:</b> Turbo Fetching\n\n${createProgressBar(p, nums.length)}\n\n<i>Mengambil data realtime dari server...</i>`, null, true);
+                await sendInterface(ctx, `<b>🆕 𝗪 𝗔 𝗟 𝗭 𝗬 𝗜𝗡𝗧𝗘𝗟𝗟𝗜𝗚𝗘𝗡𝗖𝗘</b>\n━━━━━━━━━━━━━━━━━━\n📦 <b>Progress:</b> ${p}/${nums.length}\n🚀 <b>Status:</b> Deep Fetching\n\n${createProgressBar(p, nums.length)}\n\n<i>Mengambil data realtime...</i>`, null, true);
             }
-        } catch (e) {} 
+        } catch (e) {}
     };
 
     const checkSingle = async (numRaw) => {
+        await delay(Math.floor(Math.random() * 800) + 300);
+        
         const cleanNum = numRaw.replace(/\D/g, '');
         const jid = cleanNum + '@s.whatsapp.net';
-        
+
         let currentSockets = getActiveSockets();
         if (currentSockets.length === 0) return { valid: false, num: cleanNum, error: 'NO_CONNECTION' };
-        
+
         const shuffledSockets = currentSockets.sort(() => 0.5 - Math.random());
-        
+
         let success = false;
         let data = null;
 
         for (const sock of shuffledSockets) {
             try {
                 const onWaPromise = sock.onWhatsApp(jid);
-                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('TIMEOUT')), 5000));
-                
+                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('TIMEOUT')), 8000));
+
                 const [onWa] = await Promise.race([onWaPromise, timeoutPromise]);
-                
+
                 if (onWa && onWa.exists) {
-                    try { 
-                        await sock.presenceSubscribe(jid); 
-                        await delay(50);
+                    try {
+                        await sock.presenceSubscribe(jid);
+                        await delay(150);
                     } catch(e){}
 
                     data = {
                         num: cleanNum,
-                        bio: "🔒 Privat / Kosong",
+                        bio: "🔒 Privat",
                         bioDate: "-",
-                        bioRaw: 9999999999999, 
+                        bioRaw: 9999999999999,
+                        bioYear: "-",
                         isBusiness: false,
                         bizVerified: false,
                         bizEmail: "-",
                         bizWeb: "-",
                         bizCat: "-",
-                        metaLabel: "👤 𝗔𝗸𝘂𝗻 𝗣𝗿𝗶𝗯𝗮𝗱𝗶",
+                        metaLabel: "👤 Akun Pribadi",
                         jamScore: 30
                     };
 
@@ -207,10 +259,12 @@ async function processBatchCheck(ctx, nums, uid) {
                     if (statusRes.status === 'fulfilled' && statusRes.value) {
                         if (statusRes.value.status) {
                             data.bio = statusRes.value.status;
-                            if (statusRes.value.setAt) {
-                                data.bioRaw = new Date(statusRes.value.setAt).getTime();
-                                data.bioDate = formatFullDate(statusRes.value.setAt);
-                            }
+                        }
+                        if (statusRes.value.setAt) {
+                            const d = new Date(statusRes.value.setAt);
+                            data.bioRaw = d.getTime();
+                            data.bioDate = formatIndoDate(d);
+                            data.bioYear = d.getFullYear();
                         }
                     }
 
@@ -224,26 +278,25 @@ async function processBatchCheck(ctx, nums, uid) {
 
                         if (biz.verifiedLevel >= 2) {
                             data.bizVerified = true;
-                            data.metaLabel = "🏆 Meta Verified Business";
+                            data.metaLabel = "🏆 Meta Verified";
                             data.jamScore = 100;
                         } else {
                             let completeness = 0;
                             if (data.bizEmail !== "-") completeness++;
                             if (data.bizWeb !== "-") completeness++;
                             if (bizDesc) completeness++;
-                            
+
                             if (completeness >= 2) {
-                                data.metaLabel = "🏢 Whatsapp Business Pro";
+                                data.metaLabel = "🏢 WA Business Pro";
                                 data.jamScore = 90;
                             } else {
-                                data.metaLabel = "📂 Whatsapp Business Biasa";
+                                data.metaLabel = "📂 WA Business";
                                 data.jamScore = 60;
                             }
                         }
-                        
-                        if ((data.bio === "🔒 Privat / Kosong" || data.bio === "") && bizDesc) {
-                            data.bio = bizDesc.substring(0, 100) + (bizDesc.length > 100 ? "..." : "");
-                            data.bioDate = "Info Bisnis";
+
+                        if ((data.bio === "🔒 Privat" || data.bio === "") && bizDesc) {
+                            data.bio = bizDesc.substring(0, 150).replace(/\n/g, ' ') + (bizDesc.length > 150 ? "..." : "");
                         }
                     }
                     success = true;
@@ -274,7 +327,7 @@ async function processBatchCheck(ctx, nums, uid) {
 
         processed += batch.length;
         await updateProgress();
-        await delay(10); 
+        await delay(500); 
     }
 
     results.sort((a, b) => a.bioRaw - b.bioRaw);
@@ -287,51 +340,55 @@ async function processBatchCheck(ctx, nums, uid) {
         oldest: results.find(r => r.bioRaw !== 9999999999999)
     };
 
-    let content = `LAPORAN INTELIJEN WALZYOS\n`;
-    content += `Tanggal: ${new Date().toLocaleString('id-ID')}\n`;
+    let content = `WALZYOS INTELLIGENCE REPORT\n`;
+    content += `Date: ${new Date().toLocaleString('id-ID')}\n`;
+    content += `========================================\n`;
+    content += `📊 SUMMARY DATA\n`;
+    content += `├─ ✅ Valid Total  : ${stats.total}\n`;
+    content += `├─ 👤 Personal     : ${stats.personal}\n`;
+    content += `├─ 🏢 Business     : ${stats.business}\n`;
+    content += `└─ 🏆 Meta Verified: ${stats.meta}\n`;
     content += `========================================\n\n`;
-    content += `📊 RINGKASAN DATA\n`;
-    content += `✅ Total Valid    : ${stats.total}\n`;
-    content += `👤 Akun Pribadi   : ${stats.personal}\n`;
-    content += `🏢 Bisnis Biasa   : ${stats.business}\n`;
-    content += `🏆 Meta Verified  : ${stats.meta}\n`;
-    content += `🕰️ Bio Tertua     : ${stats.oldest ? stats.oldest.bioDate : '-'}\n`;
-    content += `========================================\n\n`;
-    
-    results.forEach(r => {
-        let bioAge = "(Baru)";
+
+    results.forEach((r, index) => {
+        let bioAge = "";
         if (r.bioRaw !== 9999999999999) {
             const daysOld = (Date.now() - r.bioRaw) / (1000 * 60 * 60 * 24);
-            if (daysOld > 365) bioAge = "(> 1 Tahun)";
-            else if (daysOld > 180) bioAge = "(> 6 Bulan)";
+            if (daysOld > 730) bioAge = "[LEGEND]";
+            else if (daysOld > 365) bioAge = "[OLD]";
+            else if (daysOld < 7) bioAge = "[NEW]";
         }
+        
+        const country = detectCountry(r.num);
 
-        content += `📲 ${r.num} [${detectCountry(r.num)}]\n`;
-        content += `├─ 🏷️ Tipe   : ${r.metaLabel}\n`;
-        content += `├─ 📝 Bio    : "${r.bio.replace(/\n/g, ' ')}"\n`;
+        content += `[${index + 1}] ${r.num} (${country})\n`;
+        content += `├── 🏷️ Tipe   : ${r.metaLabel}\n`;
+        content += `├── 📝 Bio    : ${r.bio}\n`;
+        content += `├── 📅 Update : ${r.bioDate} ${bioAge}\n`;
         
         if (r.isBusiness) {
-            content += `├─ 🌐 Website : ${r.bizWeb}\n`;
-            content += `├─ 📧 Email   : ${r.bizEmail}\n`;
-            content += `├─ 🏨 Kategori  : ${r.bizCat}\n`;
+            content += `├── 🌐 Web    : ${r.bizWeb}\n`;
+            content += `├── 📧 Email  : ${r.bizEmail}\n`;
+            content += `├── 🏨 Kategori: ${r.bizCat}\n`;
         }
-        
-        content += `├─ 📅 Dibuat Pada : ${r.bioDate} ${bioAge}\n`;
-        content += `└─ 🛡️ Persentasi Ngejam : ${r.jamScore}%\n\n`;
+        content += `└── 🛡️ Health : ${r.jamScore}%\n\n`;
     });
 
-    if (invalid.length > 0) content += `\n❌ Nomor Tidak Valid (${invalid.length}):\n${invalid.join('\n')}`;
+    if (invalid.length > 0) {
+        content += `\n❌ INVALID (${invalid.length}):\n`;
+        invalid.forEach(num => content += `└─ ${num}\n`);
+    }
 
     const filename = `Result_${uid}_${Date.now()}.txt`;
     fs.writeFileSync(filename, content);
 
     const role = (uid === CONFIG.ownerId || db.isOwner(uid)) ? 'owner' : 'user';
-    
+
     await sendInterface(ctx, `<b>✅ 𝗔𝗻𝗮𝗹𝗶𝘀𝗶𝘀 𝗦𝗲𝗹𝗲𝘀𝗮𝗶</b>\n━━━━━━━━━━━━━━━━━━\n📊 <b>Total Valid:</b> ${stats.total}\n👤 <b>Pribadi:</b> ${stats.personal}\n🏢 <b>Bisnis:</b> ${stats.business}\n🏆 <b>Meta:</b> ${stats.meta}\n\n🕰️ <b>Tertua:</b> ${stats.oldest ? stats.oldest.bioDate : '-'} (${stats.oldest ? stats.oldest.num : ''})\n\n<i>File laporan lengkap telah dibuat.</i>`, null, true);
-    
+
     await ctx.replyWithDocument({ source: filename }, { caption: "📄 <b>File Laporan Lengkap</b>", parse_mode: 'HTML' });
     fs.unlinkSync(filename);
-    
+
     await delay(3000);
     showDashboard(ctx, uid, role, true);
 }
@@ -368,7 +425,7 @@ const validatePremium = async (ctx) => {
     const uid = String(ctx.from.id);
     const u = db.users[uid];
     if (uid === CONFIG.ownerId || db.isOwner(uid)) return true;
-    
+
     if (!u || u.expired < Date.now()) {
         await sendInterface(ctx, `⛔ <b>𝗔𝗸𝘀𝗲𝘀 𝗞𝗮𝗱𝗮𝗹𝘂𝗮𝗿𝘀𝗮</b>\n━━━━━━━━━━━━━━━━━━\nMasa aktif akun Anda telah habis.\nSilakan lakukan perpanjangan (Top Up) untuk menggunakan fitur Premium ini kembali.\n\n<i>Klik menu Buy Premium untuk membeli.</i>`, MENUS.mainUser, true);
         return false;
@@ -381,10 +438,11 @@ async function showDashboard(ctx, uid, role, isEdit = false) {
     let activeSessions = 0;
     if (u.sessions) {
         for (const s of [...u.sessions]) {
-            if (sessionStatus.get(`${uid}_${s}`) === 'open') activeSessions++;
+            const st = sessionStatus.get(`${uid}_${s}`);
+            if (st === 'open' || st === 'connecting') activeSessions++;
         }
     }
-    
+
     let menu = role === 'superadmin' ? MENUS.mainAdmin : (role === 'owner' ? MENUS.mainAdmin : MENUS.mainUser);
     let roleName = role === 'superadmin' ? '👑 𝗗𝗲𝘃𝗲𝗹𝗼𝗽𝗲𝗿' : (role === 'owner' ? '🛡️ 𝗔𝗱𝗺𝗶𝗻' : (u.expired > Date.now() ? '💎 𝗣𝗿𝗲𝗺𝗶𝘂𝗺' : '💀 𝗚𝘂𝗲𝘀𝘁'));
     const latency = Math.floor(Math.random() * 30 + 10);
@@ -405,7 +463,7 @@ async function showDashboard(ctx, uid, role, isEdit = false) {
 <b>📱 𝗗𝗲𝘃𝗶𝗰𝗲  :</b> <code>${activeSessions}/5</code> 𝗧𝗲𝗿𝗵𝘂𝗯𝘂𝗻𝗴
 ━━━━━━━━━━━━━━━━━━
 <i>Pilih menu di bawah untuk memulai operasi.</i>`;
-    
+
     await sendInterface(ctx, caption, menu, isEdit, true);
 }
 
@@ -488,7 +546,11 @@ bot.action('dev_add', (ctx) => { userStates.set(String(ctx.from.id), 'ADD_WA_NUM
 bot.action('dev_del', (ctx) => { userStates.set(String(ctx.from.id), 'DEL_SESSION_ID'); sendInterface(ctx, '🗑️ <b>𝗛𝗮𝗽𝘂𝘀 𝗦𝗲𝘀𝗶</b>\n\nMasukkan ID Sesi (angka) yang ingin dihapus.\nLihat daftar sesi di menu sebelumnya.', MENUS.backOnly, true); });
 bot.action('dev_list', (ctx) => {
     const s = db.users[String(ctx.from.id)].sessions || [];
-    const t = s.length > 0 ? s.map(x => `🟢 Perangkat ${x}`).join('\n') : 'Tidak ada perangkat.';
+    const t = s.length > 0 ? s.map(x => {
+        const status = sessionStatus.get(`${ctx.from.id}_${x}`);
+        const icon = (status === 'open') ? '🟢' : '🔴';
+        return `${icon} Perangkat ${x}`;
+    }).join('\n') : 'Tidak ada perangkat.';
     sendInterface(ctx, `📱 <b>𝗟𝗶𝘀𝘁 𝗦𝗲𝘀𝗶</b>\n━━━━━━━━━━━━━━━━━━\n${t}`, MENUS.deviceMenu, true);
 });
 
@@ -511,12 +573,12 @@ bot.action('user_cut_time', (ctx) => { userStates.set(String(ctx.from.id), 'DEL_
 bot.action('own_add_admin', (ctx) => { userStates.set(String(ctx.from.id), 'ADD_OWNER_ID'); sendInterface(ctx, '🛡️ <b>𝗧𝗮𝗺𝗯𝗮𝗵 𝗔𝗱𝗺𝗶𝗻</b>\n\nMasukkan ID Telegram calon admin.', MENUS.backOnly, true); });
 bot.action('own_del_admin', (ctx) => { userStates.set(String(ctx.from.id), 'DEL_OWNER_ID'); sendInterface(ctx, '🗑️ <b>𝗛𝗮𝗽𝘂𝘀 𝗔𝗱𝗺𝗶𝗻</b>\n\nMasukkan ID Telegram admin.', MENUS.backOnly, true); });
 bot.action('own_bc', (ctx) => { userStates.set(String(ctx.from.id), 'BROADCAST_MSG'); sendInterface(ctx, '📢 <b>𝗕𝗿𝗼𝗮𝗱𝗰𝗮𝘀𝘁</b>\n\nKirim pesan yang akan disebar.', MENUS.backOnly, true); });
-bot.action('own_template_menu', (ctx) => { sendInterface(ctx, '📝 <b>𝗣𝗶𝗹𝗶𝗵 𝗝𝗲𝗻𝗶𝘀 𝗧𝗲𝗺𝗽𝗹𝗮𝘁𝗲</b>\n\nPilih tipe pesan yang ingin diedit.', MENUS.templateMenu, true); });
+bot.action('own_template_menu', (ctx) => { sendInterface(ctx, ' 📝 <b>𝗣𝗶𝗹𝗶𝗵 𝗝𝗲𝗻𝗶𝘀 𝗧𝗲𝗺𝗽𝗹𝗮𝘁𝗲</b>\n\nPilih tipe pesan yang ingin diedit.', MENUS.templateMenu, true); });
 bot.action('tpl_fixred', (ctx) => { userStates.set(String(ctx.from.id), 'SETUP_TEMPLATE_SUBJ'); tempStorage.set(String(ctx.from.id), {tplType:'fixred'}); sendInterface(ctx, '📝 <b>𝗘𝗱𝗶𝘁 𝗙𝗶𝘅 𝗠𝗲𝗿𝗮𝗵</b>\n\nMasukkan Judul (Subject) Email Baru:', MENUS.backOnly, true); });
 bot.action('tpl_spam', (ctx) => { userStates.set(String(ctx.from.id), 'SETUP_TEMPLATE_SUBJ'); tempStorage.set(String(ctx.from.id), {tplType:'spam'}); sendInterface(ctx, '📝 <b>𝗘𝗱𝗶𝘁 𝗨𝗻𝗯𝗮𝗻 𝗦𝗽𝗮𝗺</b>\n\nMasukkan Judul (Subject) Email Baru:', MENUS.backOnly, true); });
 bot.action('tpl_permanen', (ctx) => { userStates.set(String(ctx.from.id), 'SETUP_TEMPLATE_SUBJ'); tempStorage.set(String(ctx.from.id), {tplType:'permanen'}); sendInterface(ctx, '📝 <b>𝗘𝗱𝗶𝘁 𝗨𝗻𝗯𝗮𝗻 𝗣𝗲𝗿𝗺𝗮𝗻𝗲𝗻</b>\n\nMasukkan Judul (Subject) Email Baru:', MENUS.backOnly, true); });
 
-bot.action('own_backup', async (ctx) => { 
+bot.action('own_backup', async (ctx) => {
     await ctx.replyWithDocument({ source: db.paths.users, filename: 'Users.json' });
     await ctx.replyWithDocument({ source: db.paths.emails, filename: 'Emails.json' });
     await ctx.replyWithDocument({ source: db.paths.settings, filename: 'Settings.json' });
@@ -544,7 +606,7 @@ bot.action(/^reject_(\d+)$/, async (ctx) => {
 bot.on(['text', 'photo'], async (ctx) => {
     const uid = String(ctx.from.id);
     const state = userStates.get(uid);
-    
+
     if (ctx.chat.type !== 'private' && !state) return;
 
     await deleteUserMsg(ctx);
@@ -554,7 +616,7 @@ bot.on(['text', 'photo'], async (ctx) => {
 
     if (state === 'ADD_WA_NUM') {
         const num = text.replace(/\D/g, '');
-        if (!Validator.number(num)) return sendInterface(ctx, '⛔ <b>𝗙𝗢𝗥𝗠𝗔𝗧 𝗜𝗡𝗩𝗔𝗟𝗜𝗗</b>\nGunakan nomor 628xxx.', MENUS.backOnly, true);
+        if (!Validator.number(num)) return sendInterface(ctx, ' ⛔ <b>𝗙𝗢𝗥𝗠𝗔𝗧 𝗜𝗡𝗩𝗔𝗟𝗜𝗗</b>\nGunakan nomor 628xxx.', MENUS.backOnly, true);
         await sendInterface(ctx, '⏳ <b>Menghubungkan...</b>', MENUS.backOnly, true);
         try {
             const code = await WAManager.requestPairing(uid, num);
@@ -565,7 +627,7 @@ bot.on(['text', 'photo'], async (ctx) => {
     else if (state === 'DEL_SESSION_ID') {
         const sessId = parseInt(text);
         if (isNaN(sessId)) return sendInterface(ctx, '⛔ <b>INPUT HARUS ANGKA</b>', MENUS.backOnly, true);
-        
+
         try {
             await WAManager.deleteSession(uid, sessId);
             sendInterface(ctx, `✅ <b>Sesi ${sessId} Berhasil Dihapus.</b>`, MENUS.deviceMenu, true);
@@ -575,7 +637,7 @@ bot.on(['text', 'photo'], async (ctx) => {
         userStates.delete(uid);
     }
     else if (state === 'SETUP_EMAIL_ADDR') {
-        if (!Validator.email(text)) return sendInterface(ctx, '⛔ <b>𝗘𝗠𝗔𝗜𝗟 𝗜𝗡𝗩𝗔𝗟𝗜𝗗</b>\nHanya menerima @gmail.com.', MENUS.backOnly, true);
+        if (!Validator.email(text)) return sendInterface(ctx, ' ⛔ <b>𝗘𝗠𝗔𝗜𝗟 𝗜𝗡𝗩𝗔𝗟𝗜𝗗</b>\nHanya menerima @gmail.com.', MENUS.backOnly, true);
         tempStorage.set(uid, { email: text.trim() });
         userStates.set(uid, 'SETUP_EMAIL_PASS');
         sendInterface(ctx, '🔑 <b>𝗣𝗮𝘀𝘀𝘄𝗼𝗿𝗱 𝗔𝗽𝗹𝗶𝗸𝗮𝘀𝗶:</b>\nMasukkan 16 digit App Password Google.', MENUS.backOnly, true);
@@ -607,11 +669,11 @@ bot.on(['text', 'photo'], async (ctx) => {
     }
     else if (['FIX_RED_INPUT', 'UNBAN_INPUT'].includes(state)) {
         const num = text.replace(/\D/g, '');
-        if (!Validator.number(num)) return sendInterface(ctx, '⛔ <b>𝗙𝗢𝗥𝗠𝗔𝗧 𝗦𝗔𝗟𝗔𝗛</b>\nGunakan awalan 628xxx.', MENUS.backOnly, true);
+        if (!Validator.number(num)) return sendInterface(ctx, ' ⛔ <b>𝗙𝗢𝗥𝗠𝗔𝗧 𝗦𝗔𝗟𝗔𝗛</b>\nGunakan awalan 628xxx.', MENUS.backOnly, true);
         const country = detectCountry(num);
         const templates = state === 'FIX_RED_INPUT' ? APPEAL_TEXTS.fixred : (tempStorage.get(uid).type === 'spam' ? APPEAL_TEXTS.spam : APPEAL_TEXTS.permanen);
         const randomTemplate = templates[Math.floor(Math.random() * templates.length)];
-        
+
         const frames = ['▰▱▱▱▱', '▰▰▱▱▱', '▰▰▰▱▱', '▰▰▰▰▱', '▰▰▰▰▰'];
         for (const frame of frames) {
             await sendInterface(ctx, `<b>🚀 𝗦𝗘𝗡𝗗𝗜𝗡𝗚 𝗥𝗘𝗤𝗨𝗘𝗦𝗧...</b>\n\n${frame}\n\n📱 <b>Target:</b> ${num}\n🌍 <b>Region:</b> ${country}`, MENUS.backOnly, true);
@@ -620,7 +682,18 @@ bot.on(['text', 'photo'], async (ctx) => {
 
         try {
             const used = await EmailEngine.send(randomTemplate.subject, randomTemplate.body.replace('{nomor}', num));
-            sendInterface(ctx, `✅ <b>Terkirim!</b>\n📱 <b>Target:</b> ${num}\n🌍 ${country}\n📧 ${used}\n\n<i>Cek status dalam 1-5 menit.</i>`, MENUS.fixMenu, true);
+            
+            const msg = `𝙰𝙿𝙿𝙴𝙰𝙻 𝚂𝙴𝙽𝚃 𝚂𝚄𝙲𝙲𝙴𝚂𝚂𝙵𝚄𝙻𝙻𝚈\n` +
+                        `𝚃𝙰𝚁𝙶𝙴𝚃: ${num}\n\n` +
+                        `𝚂𝙴𝙽𝙳𝙴𝚁 𝙸𝙳: 1\n` +
+                        `𝚃𝙾 𝙼𝙰𝙸𝙻: support@support.whatsapp.com\n` +
+                        `𝚂𝚄𝙱𝙹𝙴𝙲𝚃: ${randomTemplate.subject}\n` +
+                        `𝙼𝙴𝚃𝙷𝙾𝙳: 𝙰𝙿𝙸 𝚅𝙴𝚁𝙲𝙴𝙻\n` +
+                        `𝙻𝙸𝙼𝙸𝚃: ∞\n\n` +
+                        `𝚂𝚃𝙰𝚃𝚄𝚂: 🎉 Email berhasil dikirim!\n` +
+                        `📧: ${used}`;
+
+            sendInterface(ctx, msg, MENUS.fixMenu, true);
         } catch(e) {
             if (e.message.includes('LIMIT_GLOBAL_HABIS')) {
                 sendInterface(ctx, `⚠️ <b>Limit Habis</b>\nSemua email telah mencapai batas harian.`, MENUS.fixMenu, true);
@@ -668,12 +741,12 @@ bot.on(['text', 'photo'], async (ctx) => {
         const users = Object.keys(db.users);
         await sendInterface(ctx, `📢 <b>Mengirim ke ${users.length} user...</b>`, MENUS.backOnly, true);
         let success = 0;
-        for (const u of users) { 
-            try { 
-                await bot.telegram.copyMessage(u, ctx.chat.id, ctx.message.message_id); 
+        for (const u of users) {
+            try {
+                await bot.telegram.copyMessage(u, ctx.chat.id, ctx.message.message_id);
                 success++;
-                await delay(200); 
-            } catch(e){} 
+                await delay(200);
+            } catch(e){}
         }
         sendInterface(ctx, `✅ <b>Broadcast Selesai</b>\nSukses: ${success}`, MENUS.superAdminPanel, true);
         userStates.delete(uid);
@@ -718,7 +791,7 @@ bot.on(['text', 'photo'], async (ctx) => {
 bot.on('document', async (ctx) => {
     const uid = String(ctx.from.id);
     const state = userStates.get(uid);
-    
+
     if (ctx.chat.type !== 'private' && !state) return;
     await deleteUserMsg(ctx);
 
@@ -747,5 +820,6 @@ bot.on('document', async (ctx) => {
 (async () => {
     console.log('😹🖕WalzyOS 18 System Booted...');
     await WAManager.loadAll();
+    startSessionMonitor();
     await bot.launch({ dropPendingUpdates: true });
 })();
