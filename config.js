@@ -1,14 +1,14 @@
 export const CONFIG = {
-    botToken: '8182701764:AAFZnFZQwn4aAV3Gowh5eGZ43ogG2V4swJk',
-    ownerId: '7650101390',
-    groupId: '-1003675929763',
-    groupLink: 'https://t.me/stockwalzyy',
-    botImage: 'https://files.catbox.moe/kjfe0d.jpg',
+    botToken: '8228167242:AAH8tGPdLUdiNGCG4EYG21s5twEy8M-xfXA',
+    ownerId: '8062935882',
+    groupId: '-1003806004438',
+    groupLink: 'https://t.me/infospyx',
+    botImage: 'https://i.postimg.cc/R0WNr0Wy/file-00000000de7071fda45ab3115935cf0d.png',
     dbPath: './database',
     batchSize: 50,
     maxEmails: 20,
     maxCountPerEmail: 15,
-    scriptLink: 'https://t.me/walzyexploit',
+    scriptLink: 'https://t.me/numberspyx',
     vercelUrl: 'https://email-api-walzy.vercel.app/api/send'
 };
 
@@ -16,7 +16,7 @@ export const APPEAL_TEXTS = {
     fixred: [
         {
             subject: "Login Indisponível",
-            body: "Prezada Equipe de Suporte do WhatsApp, Estou com problemas para registrar meu número. Sempre que tento, recebo a mensagem \"login indisponível\". Este número é muito importante porque o utilizo para fins educacionais e de comunicação como estudante. Espero sinceramente que a equipe do WhatsApp possa ajudar a resolver este problema o mais rápido possível para que eu possa usá-lo novamente no WhatsApp. Meu número é {nomor} Agradeço a atenção e o apoio de todos."
+            body: "Prezada Equipe de Suporte do WhatsApp, Estou com problemas para registrar meu número. Sempre que tento, recebo a mensagem login indisponível. Este número é muito importante porque o utilizo para fins educacionais e de comunicação como estudante. Espero sinceramente que a equipe do WhatsApp possa ajudar a resolver este problema o mais rápido possível para que eu possa usá-lo novamente no WhatsApp. Meu número é {nomor} Agradeço a atenção e o apoio de todos."
         },
         {
             subject: "Verification Problem",
