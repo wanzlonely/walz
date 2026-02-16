@@ -1,8 +1,8 @@
 export const CONFIG = {
     botToken: '8228167242:AAH8tGPdLUdiNGCG4EYG21s5twEy8M-xfXA',
     ownerId: '8062935882',
-    groupId: '-1003806004438',
-    groupLink: 'https://t.me/infospyx',
+    groupId: '-1003887790861',
+    groupLink: 'https://t.me/otpspyx',
     botImage: 'https://i.postimg.cc/R0WNr0Wy/file-00000000de7071fda45ab3115935cf0d.png',
     dbPath: './database',
     batchSize: 50,
