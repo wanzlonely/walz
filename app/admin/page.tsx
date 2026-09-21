@@ -98,6 +98,17 @@ function IcoSend() {
   );
 }
 
+function formatChatListTime(iso: string) {
+  const d = new Date(iso);
+  const now = new Date();
+  if (d.toDateString() === now.toDateString()) {
+    return d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  }
+  const y = new Date(now); y.setDate(now.getDate() - 1);
+  if (d.toDateString() === y.toDateString()) return 'Kemarin';
+  return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
+}
+
 export default function AdminPage() {
   const [auth, setAuth] = useState<boolean | null>(null);
   const [password, setPassword] = useState('');
@@ -127,17 +138,44 @@ export default function AdminPage() {
   const [flashHoursInput, setFlashHoursInput] = useState('24');
 
   // --- Customer Support Chat state (Owner side) ---
+  type ChatFilter = 'all' | 'unread' | 'open' | 'closed';
   const [conversations, setConversations] = useState<any[]>([]);
   const [conversationsLoading, setConversationsLoading] = useState(false);
   const [conversationsError, setConversationsError] = useState<string | null>(null);
+  const [convHasMore, setConvHasMore] = useState(false);
+  const [convCursor, setConvCursor] = useState<string | null>(null);
+  const [convLoadingMore, setConvLoadingMore] = useState(false);
+  const [chatFilter, setChatFilter] = useState<ChatFilter>('all');
+  const [chatSearch, setChatSearch] = useState('');
+  const [chatSearchDebounced, setChatSearchDebounced] = useState('');
+  const [chatStats, setChatStats] = useState({ total: 0, unread: 0, open: 0, closed: 0 });
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
+  const [activeConversation, setActiveConversation] = useState<any>(null);
   const [chatMessages, setChatMessages] = useState<any[]>([]);
   const [chatMessagesLoading, setChatMessagesLoading] = useState(false);
+  const [msgHasMore, setMsgHasMore] = useState(false);
   const [chatReplyInput, setChatReplyInput] = useState('');
   const [chatReplySending, setChatReplySending] = useState(false);
-  const [chatSearch, setChatSearch] = useState('');
+  const [chatToast, setChatToast] = useState<string | null>(null);
+  const [selectMode, setSelectMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const [bulkText, setBulkText] = useState('');
+  const [quickReplies, setQuickReplies] = useState<string[]>([
+    'Halo kak 👋 Terima kasih sudah menghubungi WALZSHOP. Ada yang bisa kami bantu?',
+    'Baik kak, mohon ditunggu ya, sedang kami cek 🙏',
+    'Pembayaran sudah kami terima ✅ Paket akan aktif dalam beberapa menit.',
+    'Mohon kirimkan bukti transfer & Telegram ID kakak ya 🙏',
+    'Sudah selesai kak ✅ Jika masih ada kendala silakan chat lagi. Terima kasih!',
+  ]);
+  const [quickOpen, setQuickOpen] = useState(false);
+  const [newQuick, setNewQuick] = useState('');
   const chatScrollRef = useRef<HTMLDivElement>(null);
   const chatUserNearBottomRef = useRef(true);
+  const replyRef = useRef<HTMLTextAreaElement>(null);
+  const activeIdRef = useRef<string | null>(null);
+  const filterRef = useRef<ChatFilter>('all');
+  const searchRef = useRef('');
 
   const fetchCore = useCallback(async () => {
     setRefreshing(true);
@@ -178,6 +216,11 @@ export default function AdminPage() {
   };
 
   // --- Customer Support Chat logic (Owner side) ---
+  const showChatToast = (msg: string) => {
+    setChatToast(msg);
+    setTimeout(() => setChatToast(null), 2200);
+  };
+
   const scrollChatToBottom = (smooth = true) => {
     const el = chatScrollRef.current;
     if (!el) return;
@@ -191,52 +234,122 @@ export default function AdminPage() {
     chatUserNearBottomRef.current = distanceFromBottom < 120;
   };
 
-  const fetchConversations = useCallback(async () => {
-    setConversationsLoading(true);
-    setConversationsError(null);
+  const handleSessionExpired = () => {
+    setAuth(false);
+  };
+
+  useEffect(() => { activeIdRef.current = activeConversationId; }, [activeConversationId]);
+  useEffect(() => { filterRef.current = chatFilter; }, [chatFilter]);
+  useEffect(() => { searchRef.current = chatSearchDebounced; }, [chatSearchDebounced]);
+
+  // Debounce pencarian agar tidak query tiap ketikan
+  useEffect(() => {
+    const t = setTimeout(() => setChatSearchDebounced(chatSearch.trim()), 350);
+    return () => clearTimeout(t);
+  }, [chatSearch]);
+
+  const fetchChatStats = useCallback(async () => {
     try {
-      const res = await fetch(`/api/admin/chat?t=${Date.now()}`, { cache: 'no-store' });
+      const res = await fetch(`/api/admin/chat?stats=1&t=${Date.now()}`, { cache: 'no-store' });
+      if (res.status === 401) return handleSessionExpired();
+      if (res.ok) setChatStats(await res.json());
+    } catch {}
+  }, []);
+
+  const fetchConversations = useCallback(async (opts?: { append?: boolean; cursor?: string | null }) => {
+    const append = !!opts?.append;
+    if (append) setConvLoadingMore(true);
+    else { setConversationsLoading(true); setConversationsError(null); }
+    try {
+      const params = new URLSearchParams({ filter: filterRef.current, t: String(Date.now()) });
+      if (searchRef.current) params.set('search', searchRef.current);
+      if (append && opts?.cursor) params.set('cursor', opts.cursor);
+      const res = await fetch(`/api/admin/chat?${params.toString()}`, { cache: 'no-store' });
       const d = await res.json();
+      if (res.status === 401) return handleSessionExpired();
       if (!res.ok) throw new Error(d.error || 'Gagal memuat daftar chat');
-      setConversations(Array.isArray(d.conversations) ? d.conversations : []);
+      const list = Array.isArray(d.conversations) ? d.conversations : [];
+      setConversations((prev) => {
+        if (!append) return list;
+        const seen = new Set(prev.map((c) => c.id));
+        return [...prev, ...list.filter((c: any) => !seen.has(c.id))];
+      });
+      setConvHasMore(!!d.hasMore);
+      setConvCursor(d.nextCursor || null);
     } catch (err: any) {
-      setConversationsError(err?.message || 'Gagal memuat daftar chat');
+      if (!append) setConversationsError(err?.message || 'Gagal memuat daftar chat');
     } finally {
       setConversationsLoading(false);
+      setConvLoadingMore(false);
     }
   }, []);
 
+  const markConversationRead = async (conversationId: string) => {
+    try {
+      await fetch('/api/admin/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'mark_read', conversationId }),
+      });
+    } catch {}
+    setConversations((prev) => prev.map((c) => (c.id === conversationId ? { ...c, unread_by_owner: 0 } : c)));
+    fetchChatStats();
+  };
+
   const openConversation = async (conversationId: string) => {
+    const preview = conversations.find((c) => c.id === conversationId) || null;
     setActiveConversationId(conversationId);
+    setActiveConversation(preview);
+    setChatMessages([]);
+    setMsgHasMore(false);
     setChatMessagesLoading(true);
     try {
       const res = await fetch(`/api/admin/chat?conversationId=${conversationId}&t=${Date.now()}`, { cache: 'no-store' });
       const d = await res.json();
+      if (res.status === 401) return handleSessionExpired();
       if (!res.ok) throw new Error(d.error || 'Gagal memuat pesan');
       setChatMessages(d.messages || []);
-      setTimeout(() => scrollChatToBottom(false), 50);
-
-      const conv = conversations.find((c) => c.id === conversationId);
-      if (conv && conv.unread_by_owner > 0) {
-        await fetch('/api/admin/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'mark_read', conversationId }),
-        });
-        setConversations((prev) => prev.map((c) => (c.id === conversationId ? { ...c, unread_by_owner: 0 } : c)));
+      setMsgHasMore(!!d.hasMore);
+      if (d.conversation) setActiveConversation(d.conversation);
+      chatUserNearBottomRef.current = true;
+      setTimeout(() => scrollChatToBottom(false), 60);
+      if ((preview?.unread_by_owner || d.conversation?.unread_by_owner || 0) > 0) {
+        await markConversationRead(conversationId);
       }
     } catch (err: any) {
-      alert(err?.message || 'Gagal memuat pesan');
+      showChatToast(err?.message || 'Gagal memuat pesan');
     } finally {
       setChatMessagesLoading(false);
     }
   };
 
-  const sendChatReply = async () => {
-    const text = chatReplyInput.trim();
+  const loadOlderMessages = async () => {
+    if (!activeConversationId || chatMessages.length === 0) return;
+    const el = chatScrollRef.current;
+    const prevHeight = el?.scrollHeight || 0;
+    try {
+      const before = encodeURIComponent(chatMessages[0].created_at);
+      const res = await fetch(`/api/admin/chat?conversationId=${activeConversationId}&before=${before}&t=${Date.now()}`, { cache: 'no-store' });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error || 'Gagal memuat');
+      setChatMessages((prev) => [...(d.messages || []), ...prev]);
+      setMsgHasMore(!!d.hasMore);
+      setTimeout(() => {
+        if (el) el.scrollTop = el.scrollHeight - prevHeight;
+      }, 30);
+    } catch (err: any) {
+      showChatToast(err?.message || 'Gagal memuat pesan lama');
+    }
+  };
+
+  const sendChatReply = async (overrideText?: string) => {
+    const text = (overrideText ?? chatReplyInput).trim();
     if (!text || chatReplySending || !activeConversationId) return;
     setChatReplySending(true);
-    setChatReplyInput('');
+    if (overrideText === undefined) {
+      setChatReplyInput('');
+      if (replyRef.current) replyRef.current.style.height = 'auto';
+    }
     try {
       const res = await fetch('/api/admin/chat', {
         method: 'POST',
@@ -244,11 +357,18 @@ export default function AdminPage() {
         body: JSON.stringify({ conversationId: activeConversationId, text }),
       });
       const d = await res.json();
+      if (res.status === 401) { handleSessionExpired(); throw new Error('Sesi admin habis. Silakan login ulang.'); }
       if (!res.ok) throw new Error(d.error || 'Gagal mengirim balasan');
       chatUserNearBottomRef.current = true;
+      // Tampilkan langsung tanpa menunggu realtime (dedupe by id)
+      if (d.message) {
+        setChatMessages((prev) => (prev.some((m) => m.id === d.message.id) ? prev : [...prev, d.message]));
+        setTimeout(() => scrollChatToBottom(true), 30);
+      }
+      setQuickOpen(false);
     } catch (err: any) {
-      alert(err?.message || 'Gagal mengirim balasan');
-      setChatReplyInput(text);
+      showChatToast(err?.message || 'Gagal mengirim balasan');
+      if (overrideText === undefined) setChatReplyInput(text);
     } finally {
       setChatReplySending(false);
     }
@@ -256,102 +376,178 @@ export default function AdminPage() {
 
   const toggleConversationStatus = async () => {
     if (!activeConversationId) return;
-    const current = conversations.find((c) => c.id === activeConversationId);
-    const nextStatus = current?.status === 'closed' ? 'open' : 'closed';
+    const nextStatus = activeConversation?.status === 'closed' ? 'open' : 'closed';
     try {
-      await fetch('/api/admin/chat', {
+      const res = await fetch('/api/admin/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'set_status', conversationId: activeConversationId, status: nextStatus }),
       });
+      if (!res.ok) throw new Error();
+      setActiveConversation((p: any) => (p ? { ...p, status: nextStatus } : p));
       setConversations((prev) => prev.map((c) => (c.id === activeConversationId ? { ...c, status: nextStatus } : c)));
-    } catch {}
+      showChatToast(nextStatus === 'closed' ? 'Percakapan ditandai selesai' : 'Percakapan dibuka lagi');
+      fetchChatStats();
+    } catch {
+      showChatToast('Gagal mengubah status');
+    }
   };
 
-  // Load conversation list when chat tab opened
-  useEffect(() => {
-    if (activeTab === 'chat' && auth) fetchConversations();
-  }, [activeTab, auth, fetchConversations]);
+  const toggleSelect = (id: string) =>
+    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
 
-  // Realtime: listen for any new message / conversation update to refresh the sidebar list
+  const exitSelectMode = () => { setSelectMode(false); setSelectedIds([]); setBulkOpen(false); setBulkText(''); };
+
+  const sendBulkReply = async () => {
+    const text = bulkText.trim();
+    if (!text || selectedIds.length === 0) return;
+    setChatReplySending(true);
+    try {
+      const res = await fetch('/api/admin/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'bulk_reply', conversationIds: selectedIds, text }),
+      });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error || 'Gagal mengirim');
+      showChatToast(`Terkirim ke ${d.sent} percakapan`);
+      exitSelectMode();
+      fetchConversations();
+      fetchChatStats();
+    } catch (err: any) {
+      showChatToast(err?.message || 'Gagal mengirim');
+    } finally {
+      setChatReplySending(false);
+    }
+  };
+
+  const bulkSetStatus = async (status: 'open' | 'closed') => {
+    if (selectedIds.length === 0) return;
+    try {
+      const res = await fetch('/api/admin/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'bulk_status', conversationIds: selectedIds, status }),
+      });
+      if (!res.ok) throw new Error();
+      showChatToast(status === 'closed' ? `${selectedIds.length} percakapan diselesaikan` : `${selectedIds.length} percakapan dibuka`);
+      exitSelectMode();
+      fetchConversations();
+      fetchChatStats();
+    } catch {
+      showChatToast('Gagal memproses');
+    }
+  };
+
+  const markAllRead = async () => {
+    try {
+      const res = await fetch('/api/admin/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'mark_all_read' }),
+      });
+      const d = await res.json();
+      if (!res.ok) throw new Error();
+      showChatToast(`${d.count} percakapan ditandai dibaca`);
+      fetchConversations();
+      fetchChatStats();
+    } catch {
+      showChatToast('Gagal menandai dibaca');
+    }
+  };
+
+  const addQuickReply = () => {
+    const t = newQuick.trim();
+    if (!t) return;
+    const next = [t, ...quickReplies.filter((q) => q !== t)].slice(0, 15);
+    setQuickReplies(next);
+    setNewQuick('');
+    try { localStorage.setItem('walz_quick_replies', JSON.stringify(next)); } catch {}
+  };
+
+  const removeQuickReply = (t: string) => {
+    const next = quickReplies.filter((q) => q !== t);
+    setQuickReplies(next);
+    try { localStorage.setItem('walz_quick_replies', JSON.stringify(next)); } catch {}
+  };
+
+  // Muat quick replies tersimpan
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('walz_quick_replies');
+      if (raw) {
+        const arr = JSON.parse(raw);
+        if (Array.isArray(arr) && arr.length) setQuickReplies(arr);
+      }
+    } catch {}
+  }, []);
+
+  // Muat daftar saat tab dibuka / filter / search berubah
+  useEffect(() => {
+    if (activeTab === 'chat' && auth) {
+      fetchConversations();
+      fetchChatStats();
+    }
+  }, [activeTab, auth, chatFilter, chatSearchDebounced, fetchConversations, fetchChatStats]);
+
+  // Badge merah di nav ikut jalan walau tab chat belum dibuka
+  useEffect(() => {
+    if (auth) fetchChatStats();
+  }, [auth, fetchChatStats]);
+
+  // Realtime: pesan baru dari user mana pun -> refresh daftar/badge; pesan di chat terbuka -> append
   useEffect(() => {
     if (!auth) return;
 
     const channel = supabase
-      .channel('owner-chat-conversations')
-      .on(
-        'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'chat_conversations' },
-        (payload: any) => {
-          setConversations((prev) => {
-            const exists = prev.some((c) => c.id === payload.new.id);
-            const updated = exists
-              ? prev.map((c) => (c.id === payload.new.id ? { ...c, ...payload.new } : c))
-              : [payload.new, ...prev];
-            return [...updated].sort((a, b) => {
-              const ta = a.last_message_at ? new Date(a.last_message_at).getTime() : 0;
-              const tb = b.last_message_at ? new Date(b.last_message_at).getTime() : 0;
-              return tb - ta;
-            });
+      .channel('owner-chat-inbox')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages' }, (payload: any) => {
+        const m = payload.new;
+        if (m.conversation_id === activeIdRef.current) {
+          setChatMessages((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m]));
+          if (m.sender_type === 'user') {
+            markConversationRead(m.conversation_id);
+          }
+          if (chatUserNearBottomRef.current) setTimeout(() => scrollChatToBottom(true), 30);
+        }
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_conversations' }, (payload: any) => {
+        const row = payload.new;
+        if (!row?.id) return;
+        // Percakapan yang sedang dibuka dianggap sudah dibaca
+        const isOpenNow = row.id === activeIdRef.current;
+        const merged = isOpenNow ? { ...row, unread_by_owner: 0 } : row;
+        if (isOpenNow) setActiveConversation((p: any) => ({ ...(p || {}), ...merged }));
+
+        setConversations((prev) => {
+          const f = filterRef.current;
+          const q = searchRef.current.toLowerCase();
+          const matches =
+            (f === 'all' || (f === 'unread' && merged.unread_by_owner > 0) || f === merged.status) &&
+            (!q || (merged.user_name || '').toLowerCase().includes(q) || String(merged.telegram_id || '').includes(q));
+          const exists = prev.some((c) => c.id === row.id);
+          if (!matches) return exists ? prev.filter((c) => c.id !== row.id) : prev;
+          const next = exists
+            ? prev.map((c) => (c.id === row.id ? { ...c, ...merged, user_name: merged.user_name || c.user_name } : c))
+            : [{ ...merged, user_name: merged.user_name || `User ${merged.telegram_id}` }, ...prev];
+          return next.sort((a, b) => {
+            const ta = new Date(a.last_message_at || a.updated_at || 0).getTime();
+            const tb = new Date(b.last_message_at || b.updated_at || 0).getTime();
+            return tb - ta;
           });
-        }
-      )
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'chat_conversations' },
-        (payload: any) => {
-          setConversations((prev) => (prev.some((c) => c.id === payload.new.id) ? prev : [payload.new, ...prev]));
-        }
-      )
+        });
+        fetchChatStats();
+      })
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth]);
 
-  // Realtime: messages for the currently open conversation
-  useEffect(() => {
-    if (!activeConversationId) return;
-
-    const channel = supabase
-      .channel(`owner-chat-messages-${activeConversationId}`)
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `conversation_id=eq.${activeConversationId}` },
-        (payload: any) => {
-          const newMsg = payload.new;
-          setChatMessages((prev) => (prev.some((m) => m.id === newMsg.id) ? prev : [...prev, newMsg]));
-
-          if (newMsg.sender_type === 'user') {
-            if (chatUserNearBottomRef.current) {
-              setTimeout(() => scrollChatToBottom(true), 30);
-            }
-            fetch('/api/admin/chat', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ action: 'mark_read', conversationId: activeConversationId }),
-            }).catch(() => {});
-            setConversations((prev) => prev.map((c) => (c.id === activeConversationId ? { ...c, unread_by_owner: 0 } : c)));
-          } else if (chatUserNearBottomRef.current) {
-            setTimeout(() => scrollChatToBottom(true), 30);
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [activeConversationId]);
-
-  const totalUnreadChats = conversations.reduce((sum, c) => sum + (c.unread_by_owner || 0), 0);
-  const activeConversation = conversations.find((c) => c.id === activeConversationId) || null;
-  const filteredConversations = conversations.filter((c) => {
-    if (!chatSearch.trim()) return true;
-    const q = chatSearch.toLowerCase();
-    return (c.user_name || '').toLowerCase().includes(q) || (c.telegram_id || '').toString().includes(q);
-  });
+  const totalUnreadChats = chatStats.unread;
+  const filteredConversations = conversations;
 
   const requestProtectedAction = (payload: any) => {
     setPendingActionPayload(payload);
@@ -1075,36 +1271,83 @@ export default function AdminPage() {
 
         {/* TAB: CUSTOMER SUPPORT CHAT */}
         {activeTab === 'chat' && (
-          <div className="animate-[fadeIn_0.25s_ease-out] h-[calc(100dvh-190px)] min-h-[420px] flex flex-col bg-[#0D121F] border border-white/10 rounded-3xl overflow-hidden shadow-xl">
+          <div className="animate-[fadeIn_0.25s_ease-out] relative h-[calc(100dvh-210px)] min-h-[420px] flex flex-col bg-[#0D121F] border border-white/10 rounded-3xl overflow-hidden shadow-xl">
+            {chatToast && (
+              <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 px-3.5 py-2 rounded-full bg-slate-900/95 border border-white/15 text-[10.5px] font-bold text-white shadow-xl max-w-[90%] text-center">
+                {chatToast}
+              </div>
+            )}
+
             {!activeConversationId ? (
-              // --- Conversation List ---
-              <div className="flex flex-col h-full">
-                <div className="p-4 border-b border-white/10 space-y-3 shrink-0">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h2 className="text-xs font-black uppercase tracking-widest text-slate-200">Customer Support</h2>
-                      <p className="text-[10px] text-slate-400">{conversations.length} percakapan{totalUnreadChats > 0 ? ` · ${totalUnreadChats} belum dibaca` : ''}</p>
+              // ================= INBOX =================
+              <div className="flex flex-col h-full min-h-0">
+                <div className="p-3.5 border-b border-white/10 space-y-2.5 shrink-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <h2 className="text-xs font-black uppercase tracking-widest text-slate-200">Inbox Support</h2>
+                      <p className="text-[10px] text-slate-400 truncate">
+                        {chatStats.total.toLocaleString('id-ID')} percakapan
+                        {chatStats.unread > 0 ? ` · ${chatStats.unread.toLocaleString('id-ID')} belum dibaca` : ''}
+                      </p>
                     </div>
-                    <button
-                      onClick={fetchConversations}
-                      className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 active:scale-95 transition-all"
-                    >
-                      <div className={`w-3.5 h-3.5 ${conversationsLoading ? 'animate-spin' : ''}`}><IcoRefresh/></div>
-                    </button>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {chatStats.unread > 0 && !selectMode && (
+                        <button onClick={markAllRead} className="h-8 px-2.5 rounded-xl bg-white/5 border border-white/10 text-[9.5px] font-black uppercase tracking-wide text-slate-300 active:scale-95 transition-all">
+                          Baca semua
+                        </button>
+                      )}
+                      <button
+                        onClick={() => (selectMode ? exitSelectMode() : setSelectMode(true))}
+                        className={`h-8 px-2.5 rounded-xl border text-[9.5px] font-black uppercase tracking-wide active:scale-95 transition-all ${selectMode ? 'bg-violet-500/20 border-violet-400/40 text-violet-200' : 'bg-white/5 border-white/10 text-slate-300'}`}
+                      >
+                        {selectMode ? 'Batal' : 'Pilih'}
+                      </button>
+                      <button
+                        onClick={() => { fetchConversations(); fetchChatStats(); }}
+                        className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 active:scale-95 transition-all"
+                      >
+                        <div className={`w-3.5 h-3.5 ${conversationsLoading ? 'animate-spin' : ''}`}><IcoRefresh/></div>
+                      </button>
+                    </div>
                   </div>
+
                   <div className="relative">
                     <div className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500"><IcoSearch/></div>
                     <input
                       type="text"
-                      placeholder="Cari nama atau Telegram ID..."
+                      placeholder="Cari nama, @username, atau Telegram ID..."
                       value={chatSearch}
                       onChange={(e) => setChatSearch(e.target.value)}
                       className="w-full bg-[#070A12] border border-white/10 text-white placeholder-slate-600 pl-9 pr-3 py-2 rounded-xl text-[11px] focus:outline-none focus:border-violet-500/50 transition-all"
                     />
                   </div>
+
+                  <div className="flex gap-1.5 overflow-x-auto no-scrollbar -mx-0.5 px-0.5">
+                    {([
+                      { id: 'all', label: 'Semua', n: chatStats.total },
+                      { id: 'unread', label: 'Belum dibaca', n: chatStats.unread },
+                      { id: 'open', label: 'Aktif', n: chatStats.open },
+                      { id: 'closed', label: 'Selesai', n: chatStats.closed },
+                    ] as { id: ChatFilter; label: string; n: number }[]).map((f) => (
+                      <button
+                        key={f.id}
+                        onClick={() => setChatFilter(f.id)}
+                        className={`shrink-0 px-3 py-1.5 rounded-full text-[10px] font-black border transition-all active:scale-95 ${
+                          chatFilter === f.id
+                            ? 'bg-white text-slate-950 border-white'
+                            : 'bg-white/5 border-white/10 text-slate-400'
+                        }`}
+                      >
+                        {f.label}
+                        <span className={`ml-1.5 ${chatFilter === f.id ? 'text-slate-600' : 'text-slate-500'}`}>
+                          {f.n > 999 ? '999+' : f.n}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto">
+                <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
                   {conversationsLoading && conversations.length === 0 ? (
                     <div className="h-full flex flex-col items-center justify-center gap-2 text-slate-500">
                       <div className="w-6 h-6 border-2 border-violet-500/30 border-t-violet-500 rounded-full animate-spin" />
@@ -1113,7 +1356,7 @@ export default function AdminPage() {
                   ) : conversationsError ? (
                     <div className="h-full flex flex-col items-center justify-center gap-3 text-center px-6">
                       <p className="text-xs text-rose-300 font-semibold">{conversationsError}</p>
-                      <button onClick={fetchConversations} className="px-4 py-2 bg-white/5 border border-white/10 text-slate-200 text-[11px] font-bold rounded-xl active:scale-95 transition-all">
+                      <button onClick={() => fetchConversations()} className="px-4 py-2 bg-white/5 border border-white/10 text-slate-200 text-[11px] font-bold rounded-xl active:scale-95 transition-all">
                         Coba Lagi
                       </button>
                     </div>
@@ -1122,61 +1365,130 @@ export default function AdminPage() {
                       <div className="w-12 h-12 rounded-2xl bg-violet-500/10 border border-violet-500/30 text-violet-400 flex items-center justify-center">
                         <div className="w-6 h-6"><IcoChat/></div>
                       </div>
-                      <p className="text-xs text-slate-300 font-bold">Belum ada percakapan</p>
-                      <p className="text-[10px] text-slate-500">Percakapan user akan muncul di sini secara realtime.</p>
+                      <p className="text-xs text-slate-300 font-bold">
+                        {chatSearchDebounced || chatFilter !== 'all' ? 'Tidak ada hasil' : 'Belum ada percakapan'}
+                      </p>
+                      <p className="text-[10px] text-slate-500">
+                        {chatSearchDebounced || chatFilter !== 'all' ? 'Coba ubah filter atau kata kunci.' : 'Pesan dari user akan muncul di sini secara realtime.'}
+                      </p>
                     </div>
                   ) : (
                     <div className="divide-y divide-white/5">
-                      {filteredConversations.map((c) => (
-                        <button
-                          key={c.id}
-                          onClick={() => openConversation(c.id)}
-                          className="w-full p-3.5 flex items-center gap-3 hover:bg-white/5 active:bg-white/10 transition-all text-left"
-                        >
-                          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-violet-500 to-fuchsia-500 flex items-center justify-center text-white text-xs font-black shrink-0 shadow-md relative">
-                            {(c.user_name || '?')[0]?.toUpperCase()}
-                            {c.status === 'closed' && (
-                              <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-slate-700 border-2 border-[#0D121F] flex items-center justify-center text-[7px]">✓</span>
+                      {filteredConversations.map((c) => {
+                        const selected = selectedIds.includes(c.id);
+                        const unread = c.unread_by_owner > 0;
+                        return (
+                          <button
+                            key={c.id}
+                            onClick={() => (selectMode ? toggleSelect(c.id) : openConversation(c.id))}
+                            className={`w-full px-3.5 py-3 flex items-center gap-3 active:bg-white/10 transition-all text-left ${selected ? 'bg-violet-500/10' : unread ? 'bg-white/[0.03]' : ''}`}
+                          >
+                            {selectMode && (
+                              <span className={`w-5 h-5 rounded-md border shrink-0 flex items-center justify-center text-[11px] font-black ${selected ? 'bg-violet-500 border-violet-400 text-white' : 'border-white/20 text-transparent'}`}>✓</span>
                             )}
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center justify-between gap-2">
-                              <p className="text-xs font-bold text-slate-100 truncate">{c.user_name || `User ${c.telegram_id}`}</p>
-                              {c.last_message_at && (
-                                <span className="text-[9px] text-slate-500 shrink-0">
-                                  {new Date(c.last_message_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
-                                </span>
+                            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-violet-500 to-fuchsia-500 flex items-center justify-center text-white text-xs font-black shrink-0 shadow-md relative">
+                              {(c.user_name || '?').replace('@', '')[0]?.toUpperCase()}
+                              {c.status === 'closed' && (
+                                <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-600 border-2 border-[#0D121F] flex items-center justify-center text-[8px]">✓</span>
                               )}
                             </div>
-                            <p className="text-[10.5px] text-slate-400 truncate mt-0.5">{c.last_message || 'Belum ada pesan'}</p>
-                          </div>
-                          {c.unread_by_owner > 0 && (
-                            <span className="shrink-0 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-[9px] font-black flex items-center justify-center shadow-[0_0_8px_rgba(244,63,94,0.6)]">
-                              {c.unread_by_owner > 9 ? '9+' : c.unread_by_owner}
-                            </span>
-                          )}
-                        </button>
-                      ))}
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center justify-between gap-2">
+                                <p className={`text-xs truncate ${unread ? 'font-black text-white' : 'font-bold text-slate-200'}`}>{c.user_name || `User ${c.telegram_id}`}</p>
+                                {c.last_message_at && (
+                                  <span className={`text-[9px] shrink-0 ${unread ? 'text-violet-300 font-bold' : 'text-slate-500'}`}>
+                                    {formatChatListTime(c.last_message_at)}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-1.5 mt-0.5">
+                                <p className={`text-[10.5px] truncate flex-1 ${unread ? 'text-slate-200' : 'text-slate-400'}`}>
+                                  {c.last_sender_type === 'owner' && <span className="text-violet-300">Anda: </span>}
+                                  {c.last_message || 'Belum ada pesan'}
+                                </p>
+                                {unread && (
+                                  <span className="shrink-0 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-[9px] font-black flex items-center justify-center shadow-[0_0_8px_rgba(244,63,94,0.6)]">
+                                    {c.unread_by_owner > 99 ? '99+' : c.unread_by_owner}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                      {convHasMore && (
+                        <div className="p-3">
+                          <button
+                            onClick={() => fetchConversations({ append: true, cursor: convCursor })}
+                            disabled={convLoadingMore}
+                            className="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 text-[11px] font-bold text-slate-300 active:scale-95 disabled:opacity-50 transition-all"
+                          >
+                            {convLoadingMore ? 'Memuat...' : 'Muat lebih banyak'}
+                          </button>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
+
+                {/* Aksi massal */}
+                {selectMode && (
+                  <div className="shrink-0 border-t border-white/10 bg-[#0D121F] p-3 space-y-2">
+                    {bulkOpen ? (
+                      <>
+                        <textarea
+                          value={bulkText}
+                          onChange={(e) => setBulkText(e.target.value)}
+                          placeholder={`Pesan untuk ${selectedIds.length} percakapan...`}
+                          rows={3}
+                          maxLength={2000}
+                          className="w-full bg-[#070A12] border border-white/10 text-white placeholder-slate-600 px-3 py-2 rounded-xl text-xs focus:outline-none focus:border-violet-500/50 resize-none"
+                        />
+                        <div className="flex gap-2">
+                          <button onClick={() => setBulkOpen(false)} className="flex-1 py-2.5 rounded-xl bg-white/5 border border-white/10 text-[11px] font-black text-slate-300 active:scale-95">Kembali</button>
+                          <button onClick={sendBulkReply} disabled={!bulkText.trim() || chatReplySending} className="flex-[1.5] py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white text-[11px] font-black active:scale-95 disabled:opacity-40">
+                            {chatReplySending ? 'Mengirim...' : `Kirim ke ${selectedIds.length}`}
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10.5px] font-bold text-slate-300 mr-auto">{selectedIds.length} dipilih</span>
+                        <button
+                          onClick={() => setSelectedIds(filteredConversations.map((c) => c.id))}
+                          className="px-2.5 py-2 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black text-slate-300 active:scale-95"
+                        >Semua</button>
+                        <button
+                          onClick={() => bulkSetStatus('closed')}
+                          disabled={selectedIds.length === 0}
+                          className="px-2.5 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-[10px] font-black text-emerald-300 active:scale-95 disabled:opacity-40"
+                        >Selesaikan</button>
+                        <button
+                          onClick={() => setBulkOpen(true)}
+                          disabled={selectedIds.length === 0}
+                          className="px-3 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 text-[10px] font-black text-white active:scale-95 disabled:opacity-40"
+                        >Balas</button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             ) : (
-              // --- Active Conversation ---
-              <div className="flex flex-col h-full">
-                <div className="p-3.5 border-b border-white/10 flex items-center gap-3 shrink-0">
+              // ================= PERCAKAPAN AKTIF =================
+              <div className="flex flex-col h-full min-h-0">
+                <div className="px-3 py-3 border-b border-white/10 flex items-center gap-2.5 shrink-0">
                   <button
-                    onClick={() => setActiveConversationId(null)}
+                    onClick={() => { setActiveConversationId(null); setActiveConversation(null); setQuickOpen(false); fetchConversations(); fetchChatStats(); }}
                     className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 active:scale-95 transition-all shrink-0"
                   >
                     ←
                   </button>
                   <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-violet-500 to-fuchsia-500 flex items-center justify-center text-white text-[10px] font-black shrink-0">
-                    {(activeConversation?.user_name || '?')[0]?.toUpperCase()}
+                    {(activeConversation?.user_name || '?').replace('@', '')[0]?.toUpperCase()}
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-xs font-bold text-white truncate">{activeConversation?.user_name || `User ${activeConversation?.telegram_id}`}</p>
-                    <p className="text-[9.5px] text-slate-500 font-mono">ID: {activeConversation?.telegram_id}</p>
+                    <p className="text-[9.5px] text-slate-500 font-mono truncate">ID: {activeConversation?.telegram_id}</p>
                   </div>
                   <button
                     onClick={toggleConversationStatus}
@@ -1186,15 +1498,22 @@ export default function AdminPage() {
                         : 'bg-white/5 border-white/10 text-slate-300'
                     }`}
                   >
-                    {activeConversation?.status === 'closed' ? 'Buka Lagi' : 'Tutup Chat'}
+                    {activeConversation?.status === 'closed' ? 'Buka Lagi' : 'Selesai ✓'}
                   </button>
                 </div>
 
                 <div
                   ref={chatScrollRef}
                   onScroll={handleChatScroll}
-                  className="flex-1 overflow-y-auto px-3.5 py-3.5 space-y-2.5"
+                  className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-3.5 py-3.5 space-y-2"
                 >
+                  {msgHasMore && (
+                    <div className="flex justify-center pb-1">
+                      <button onClick={loadOlderMessages} className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold text-slate-300 active:scale-95">
+                        Muat pesan sebelumnya
+                      </button>
+                    </div>
+                  )}
                   {chatMessagesLoading && chatMessages.length === 0 ? (
                     <div className="h-full flex flex-col items-center justify-center gap-2 text-slate-500">
                       <div className="w-6 h-6 border-2 border-violet-500/30 border-t-violet-500 rounded-full animate-spin" />
@@ -1205,32 +1524,92 @@ export default function AdminPage() {
                       <p className="text-xs text-slate-500">Belum ada pesan di percakapan ini.</p>
                     </div>
                   ) : (
-                    chatMessages.map((m: any) => {
+                    chatMessages.map((m: any, i: number) => {
                       const isOwner = m.sender_type === 'owner';
+                      const prev = chatMessages[i - 1];
+                      const newDay = !prev || new Date(prev.created_at).toDateString() !== new Date(m.created_at).toDateString();
                       return (
-                        <div key={m.id} className={`flex ${isOwner ? 'justify-end' : 'justify-start'}`}>
-                          <div className={`max-w-[78%] px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed shadow-md ${
-                            isOwner
-                              ? 'bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white rounded-br-md'
-                              : 'bg-[#070A12] border border-white/10 text-slate-200 rounded-bl-md'
-                          }`}>
-                            <p className="whitespace-pre-wrap break-words">{m.message}</p>
-                            <p className={`text-[9px] mt-1 font-medium ${isOwner ? 'text-violet-200/80' : 'text-slate-500'}`}>
-                              {new Date(m.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
-                            </p>
+                        <React.Fragment key={m.id}>
+                          {newDay && (
+                            <div className="flex justify-center py-1">
+                              <span className="px-2.5 py-0.5 rounded-full bg-white/5 text-[9px] font-bold text-slate-500">
+                                {new Date(m.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                              </span>
+                            </div>
+                          )}
+                          <div className={`flex ${isOwner ? 'justify-end' : 'justify-start'}`}>
+                            <div className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed shadow-md ${
+                              isOwner
+                                ? 'bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white rounded-br-md'
+                                : 'bg-[#070A12] border border-white/10 text-slate-200 rounded-bl-md'
+                            }`}>
+                              <p className="whitespace-pre-wrap break-words">{m.message}</p>
+                              <p className={`text-[9px] mt-1 font-medium text-right ${isOwner ? 'text-violet-200/80' : 'text-slate-500'}`}>
+                                {new Date(m.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                              </p>
+                            </div>
                           </div>
-                        </div>
+                        </React.Fragment>
                       );
                     })
                   )}
                 </div>
 
-                <div className="shrink-0 p-3 border-t border-white/10 flex items-end gap-2">
+                {/* Quick replies */}
+                {quickOpen && (
+                  <div className="shrink-0 border-t border-white/10 bg-[#0A0F1A] max-h-[42%] overflow-y-auto overscroll-contain p-2.5 space-y-1.5">
+                    {quickReplies.map((q) => (
+                      <div key={q} className="flex items-stretch gap-1.5">
+                        <button
+                          onClick={() => sendChatReply(q)}
+                          disabled={chatReplySending}
+                          className="flex-1 text-left px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[11px] text-slate-200 leading-snug active:scale-[0.98] disabled:opacity-50"
+                        >
+                          {q}
+                        </button>
+                        <button
+                          onClick={() => { setChatReplyInput(q); setQuickOpen(false); setTimeout(() => replyRef.current?.focus(), 30); }}
+                          className="w-9 rounded-xl bg-white/5 border border-white/10 text-[10px] text-slate-400 active:scale-95"
+                          title="Edit sebelum kirim"
+                        >✎</button>
+                        <button
+                          onClick={() => removeQuickReply(q)}
+                          className="w-8 rounded-xl bg-rose-500/10 border border-rose-500/20 text-[10px] text-rose-300 active:scale-95"
+                          title="Hapus"
+                        >✕</button>
+                      </div>
+                    ))}
+                    <div className="flex gap-1.5 pt-1">
+                      <input
+                        value={newQuick}
+                        onChange={(e) => setNewQuick(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === 'Enter') addQuickReply(); }}
+                        placeholder="Tambah template balasan..."
+                        className="flex-1 bg-[#070A12] border border-white/10 text-white placeholder-slate-600 px-3 py-2 rounded-xl text-[11px] focus:outline-none focus:border-violet-500/50"
+                      />
+                      <button onClick={addQuickReply} disabled={!newQuick.trim()} className="px-3 rounded-xl bg-white text-slate-950 text-[10px] font-black active:scale-95 disabled:opacity-40">Simpan</button>
+                    </div>
+                  </div>
+                )}
+
+                <div className="shrink-0 p-2.5 border-t border-white/10 flex items-end gap-2">
+                  <button
+                    onClick={() => setQuickOpen((v) => !v)}
+                    aria-label="Balasan cepat"
+                    className={`w-10 h-10 shrink-0 rounded-2xl border flex items-center justify-center text-base active:scale-95 transition-all ${quickOpen ? 'bg-violet-500/20 border-violet-400/40' : 'bg-white/5 border-white/10'}`}
+                  >
+                    ⚡
+                  </button>
                   <textarea
+                    ref={replyRef}
                     value={chatReplyInput}
-                    onChange={(e) => setChatReplyInput(e.target.value)}
+                    onChange={(e) => {
+                      setChatReplyInput(e.target.value);
+                      e.target.style.height = 'auto';
+                      e.target.style.height = Math.min(e.target.scrollHeight, 96) + 'px';
+                    }}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
+                      if (e.key === 'Enter' && !e.shiftKey && window.matchMedia('(min-width: 768px)').matches) {
                         e.preventDefault();
                         sendChatReply();
                       }
@@ -1239,10 +1618,10 @@ export default function AdminPage() {
                     rows={1}
                     maxLength={2000}
                     disabled={chatReplySending}
-                    className="flex-1 bg-[#070A12] border border-white/10 text-white placeholder-slate-600 px-3.5 py-2.5 rounded-2xl text-xs focus:outline-none focus:border-violet-500/50 transition-all shadow-inner resize-none max-h-24 disabled:opacity-60"
+                    className="flex-1 min-w-0 bg-[#070A12] border border-white/10 text-white placeholder-slate-600 px-3.5 py-2.5 rounded-2xl text-xs focus:outline-none focus:border-violet-500/50 transition-all shadow-inner resize-none max-h-24 disabled:opacity-60"
                   />
                   <button
-                    onClick={sendChatReply}
+                    onClick={() => sendChatReply()}
                     disabled={chatReplySending || !chatReplyInput.trim()}
                     className="w-10 h-10 shrink-0 rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white flex items-center justify-center active:scale-95 disabled:opacity-40 transition-all shadow-lg shadow-violet-500/20"
                   >
