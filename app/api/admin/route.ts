@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { redis } from '@/lib/utils';
+import { cookies } from 'next/headers';
 
 async function addAuditLog(action: string, detail: string, telegramId: string) {
   try {
@@ -63,12 +64,25 @@ export async function POST(req: Request) {
 
     if (action === 'login') {
       if (password === adminPass && (adminId ? telegramId === adminId : true)) {
+        // Set cookie sesi admin agar /api/admin/chat (inbox owner) bisa diverifikasi.
+        // Nilai token = ADMIN_SECRET_KEY (fallback ke ADMIN_PASSWORD bila belum diset).
+        const token = process.env.ADMIN_SECRET_KEY || adminPass;
+        const cookieStore = await cookies();
+        cookieStore.set('admin_token', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          path: '/',
+          maxAge: 60 * 60 * 24 * 7,
+        });
         return NextResponse.json({ success: true });
       }
       return NextResponse.json({ error: 'Password atau Telegram ID salah' }, { status: 401 });
     }
 
     if (action === 'logout') {
+      const cookieStore = await cookies();
+      cookieStore.delete('admin_token');
       return NextResponse.json({ success: true });
     }
 
