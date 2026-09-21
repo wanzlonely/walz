@@ -2,13 +2,22 @@ import { NextResponse } from 'next/server';
 import { verifyTelegramInitData } from '@/lib/utils';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 
-type TgUser = { id: number | string; first_name?: string; username?: string };
+type TgUser = {
+  id: number | string;
+  first_name?: string;
+  username?: string;
+};
 
 function displayNameFrom(tgUser: TgUser, telegramId: string) {
-  return tgUser.username ? `@${tgUser.username}` : tgUser.first_name || `User ${telegramId}`;
+  return tgUser.username
+    ? `@${tgUser.username}`
+    : tgUser.first_name || `User ${telegramId}`;
 }
 
-async function getOrCreateConversation(telegramId: string) {
+async function getOrCreateConversation(
+  telegramId: string,
+  userName: string
+) {
   const { data: existing, error: findErr } = await supabaseAdmin
     .from('chat_conversations')
     .select('*')
@@ -16,18 +25,41 @@ async function getOrCreateConversation(telegramId: string) {
     .maybeSingle();
 
   if (findErr) throw findErr;
-  if (existing) return existing;
+
+  if (existing) {
+    if (existing.user_name !== userName) {
+      await supabaseAdmin
+        .from('chat_conversations')
+        .update({ user_name: userName })
+        .eq('id', existing.id);
+
+      existing.user_name = userName;
+    }
+
+    return existing;
+  }
 
   const { data: created, error: createErr } = await supabaseAdmin
     .from('chat_conversations')
     .insert({
       telegram_id: telegramId,
       status: 'open',
+      user_name: userName,
     })
     .select('*')
     .single();
 
-  if (createErr) throw createErr;
+  if (createErr) {
+    const { data: again } = await supabaseAdmin
+      .from('chat_conversations')
+      .select('*')
+      .eq('telegram_id', telegramId)
+      .maybeSingle();
+
+    if (again) return again;
+    throw createErr;
+  }
+
   return created;
 }
 
@@ -37,34 +69,49 @@ export async function GET(req: Request) {
     const initData = searchParams.get('initData') || '';
 
     const tgUser = verifyTelegramInitData(initData);
+
     if (!tgUser || !tgUser.id) {
-      return NextResponse.json({ error: 'Akses tidak sah. Buka melalui Telegram.' }, { status: 401 });
+      return NextResponse.json(
+        { error: 'Akses tidak sah. Buka melalui Telegram.' },
+        { status: 401 }
+      );
     }
 
     const telegramId = tgUser.id.toString();
-    const conversation = await getOrCreateConversation(telegramId);
+    const userName = displayNameFrom(tgUser, telegramId);
+    const conversation = await getOrCreateConversation(
+      telegramId,
+      userName
+    );
 
     const { data: messages, error: msgErr } = await supabaseAdmin
       .from('chat_messages')
       .select('*')
       .eq('conversation_id', conversation.id)
-      .order('created_at', { ascending: true })
+      .order('created_at', { ascending: false })
       .limit(200);
 
     if (msgErr) throw msgErr;
 
-    const unreadCount = (messages || []).filter((m) => m.sender_type === 'owner' && !m.read_at).length;
+    const ordered = (messages || []).slice().reverse();
+
+    const unreadCount = ordered.filter(
+      (m) => m.sender_type === 'owner' && !m.read_at
+    ).length;
 
     return NextResponse.json({
       conversation: {
         ...conversation,
-        user_name: displayNameFrom(tgUser, telegramId),
+        user_name: userName,
         unread_by_user: unreadCount,
       },
-      messages: messages || [],
+      messages: ordered,
     });
   } catch (err: any) {
-    return NextResponse.json({ error: err?.message || 'Gagal memuat chat' }, { status: 500 });
+    return NextResponse.json(
+      { error: err?.message || 'Gagal memuat chat' },
+      { status: 500 }
+    );
   }
 }
 
@@ -74,31 +121,55 @@ export async function POST(req: Request) {
     const { initData, action, text } = body;
 
     const tgUser = verifyTelegramInitData(initData);
+
     if (!tgUser || !tgUser.id) {
-      return NextResponse.json({ error: 'Akses tidak sah. Buka melalui Telegram.' }, { status: 401 });
+      return NextResponse.json(
+        { error: 'Akses tidak sah. Buka melalui Telegram.' },
+        { status: 401 }
+      );
     }
 
     const telegramId = tgUser.id.toString();
-    const conversation = await getOrCreateConversation(telegramId);
+    const userName = displayNameFrom(tgUser, telegramId);
+    const conversation = await getOrCreateConversation(
+      telegramId,
+      userName
+    );
 
     if (action === 'mark_read') {
       const { error } = await supabaseAdmin
         .from('chat_messages')
-        .update({ read_at: new Date().toISOString() })
+        .update({
+          read_at: new Date().toISOString(),
+        })
         .eq('conversation_id', conversation.id)
         .eq('sender_type', 'owner')
         .is('read_at', null);
+
       if (error) throw error;
+
+      await supabaseAdmin
+        .from('chat_conversations')
+        .update({ unread_by_user: 0 })
+        .eq('id', conversation.id);
+
       return NextResponse.json({ success: true });
     }
 
-    // default action: send message
     const trimmed = typeof text === 'string' ? text.trim() : '';
+
     if (!trimmed) {
-      return NextResponse.json({ error: 'Pesan tidak boleh kosong' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Pesan tidak boleh kosong' },
+        { status: 400 }
+      );
     }
+
     if (trimmed.length > 2000) {
-      return NextResponse.json({ error: 'Pesan terlalu panjang (maks 2000 karakter)' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Pesan terlalu panjang (maks 2000 karakter)' },
+        { status: 400 }
+      );
     }
 
     const { data: message, error: sendErr } = await supabaseAdmin
@@ -114,18 +185,14 @@ export async function POST(req: Request) {
 
     if (sendErr) throw sendErr;
 
-    const { error: updateErr } = await supabaseAdmin
-      .from('chat_conversations')
-      .update({
-        status: 'open',
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', conversation.id);
-
-    if (updateErr) throw updateErr;
-
-    return NextResponse.json({ success: true, message });
+    return NextResponse.json({
+      success: true,
+      message,
+    });
   } catch (err: any) {
-    return NextResponse.json({ error: err?.message || 'Gagal mengirim pesan' }, { status: 500 });
+    return NextResponse.json(
+      { error: err?.message || 'Gagal mengirim pesan' },
+      { status: 500 }
+    );
   }
 }
