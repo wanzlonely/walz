@@ -4,9 +4,11 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 
 type TgUser = { id: number | string; first_name?: string; username?: string };
 
-async function getOrCreateConversation(tgUser: TgUser) {
-  const telegramId = tgUser.id.toString();
+function displayNameFrom(tgUser: TgUser, telegramId: string) {
+  return tgUser.username ? `@${tgUser.username}` : tgUser.first_name || `User ${telegramId}`;
+}
 
+async function getOrCreateConversation(telegramId: string) {
   const { data: existing, error: findErr } = await supabaseAdmin
     .from('chat_conversations')
     .select('*')
@@ -16,18 +18,11 @@ async function getOrCreateConversation(tgUser: TgUser) {
   if (findErr) throw findErr;
   if (existing) return existing;
 
-  const displayName = tgUser.username
-    ? `@${tgUser.username}`
-    : tgUser.first_name || `User ${telegramId}`;
-
   const { data: created, error: createErr } = await supabaseAdmin
     .from('chat_conversations')
     .insert({
       telegram_id: telegramId,
-      user_name: displayName,
       status: 'open',
-      unread_by_owner: 0,
-      unread_by_user: 0,
     })
     .select('*')
     .single();
@@ -46,7 +41,8 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'Akses tidak sah. Buka melalui Telegram.' }, { status: 401 });
     }
 
-    const conversation = await getOrCreateConversation(tgUser);
+    const telegramId = tgUser.id.toString();
+    const conversation = await getOrCreateConversation(telegramId);
 
     const { data: messages, error: msgErr } = await supabaseAdmin
       .from('chat_messages')
@@ -57,7 +53,16 @@ export async function GET(req: Request) {
 
     if (msgErr) throw msgErr;
 
-    return NextResponse.json({ conversation, messages: messages || [] });
+    const unreadCount = (messages || []).filter((m) => m.sender_type === 'owner' && !m.read_at).length;
+
+    return NextResponse.json({
+      conversation: {
+        ...conversation,
+        user_name: displayNameFrom(tgUser, telegramId),
+        unread_by_user: unreadCount,
+      },
+      messages: messages || [],
+    });
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || 'Gagal memuat chat' }, { status: 500 });
   }
@@ -73,17 +78,21 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Akses tidak sah. Buka melalui Telegram.' }, { status: 401 });
     }
 
-    const conversation = await getOrCreateConversation(tgUser);
+    const telegramId = tgUser.id.toString();
+    const conversation = await getOrCreateConversation(telegramId);
 
     if (action === 'mark_read') {
       const { error } = await supabaseAdmin
-        .from('chat_conversations')
-        .update({ unread_by_user: 0 })
-        .eq('id', conversation.id);
+        .from('chat_messages')
+        .update({ read_at: new Date().toISOString() })
+        .eq('conversation_id', conversation.id)
+        .eq('sender_type', 'owner')
+        .is('read_at', null);
       if (error) throw error;
       return NextResponse.json({ success: true });
     }
 
+    // default action: send message
     const trimmed = typeof text === 'string' ? text.trim() : '';
     if (!trimmed) {
       return NextResponse.json({ error: 'Pesan tidak boleh kosong' }, { status: 400 });
@@ -96,8 +105,9 @@ export async function POST(req: Request) {
       .from('chat_messages')
       .insert({
         conversation_id: conversation.id,
-        sender: 'user',
-        text: trimmed,
+        sender_type: 'user',
+        sender_id: telegramId,
+        message: trimmed,
       })
       .select('*')
       .single();
@@ -107,10 +117,8 @@ export async function POST(req: Request) {
     const { error: updateErr } = await supabaseAdmin
       .from('chat_conversations')
       .update({
-        last_message: trimmed,
-        last_message_at: new Date().toISOString(),
         status: 'open',
-        unread_by_owner: (conversation.unread_by_owner || 0) + 1,
+        updated_at: new Date().toISOString(),
       })
       .eq('id', conversation.id);
 
