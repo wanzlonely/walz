@@ -323,7 +323,7 @@ export default function AdminPage() {
           const newMsg = payload.new;
           setChatMessages((prev) => (prev.some((m) => m.id === newMsg.id) ? prev : [...prev, newMsg]));
 
-          if (newMsg.sender === 'user') {
+          if (newMsg.sender_type === 'user') {
             if (chatUserNearBottomRef.current) {
               setTimeout(() => scrollChatToBottom(true), 30);
             }
@@ -1206,7 +1206,7 @@ export default function AdminPage() {
                     </div>
                   ) : (
                     chatMessages.map((m: any) => {
-                      const isOwner = m.sender === 'owner';
+                      const isOwner = m.sender_type === 'owner';
                       return (
                         <div key={m.id} className={`flex ${isOwner ? 'justify-end' : 'justify-start'}`}>
                           <div className={`max-w-[78%] px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed shadow-md ${
@@ -1214,7 +1214,7 @@ export default function AdminPage() {
                               ? 'bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white rounded-br-md'
                               : 'bg-[#070A12] border border-white/10 text-slate-200 rounded-bl-md'
                           }`}>
-                            <p className="whitespace-pre-wrap break-words">{m.text}</p>
+                            <p className="whitespace-pre-wrap break-words">{m.message}</p>
                             <p className={`text-[9px] mt-1 font-medium ${isOwner ? 'text-violet-200/80' : 'text-slate-500'}`}>
                               {new Date(m.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
                             </p>
