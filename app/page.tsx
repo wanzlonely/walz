@@ -782,7 +782,7 @@ export default function StoreUI() {
   const userVouchers = userStatus?.vouchers || [];
 
   return (
-    <div className="min-h-screen bg-[#060810] text-slate-100 font-sans relative overflow-x-hidden pb-28 selection:bg-emerald-500/30">
+    <div className="min-h-screen bg-[#060810] text-slate-100 font-sans relative overflow-x-hidden pb-36 selection:bg-emerald-500/30">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
         * { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -1856,18 +1856,6 @@ export default function StoreUI() {
 
       </main>
 
-      {/* Floating Telegram CS Button */}
-      <a
-        href="https://t.me/wanz343"
-        target="_blank"
-        rel="noopener noreferrer"
-        title="Hubungi Admin / Support"
-        className="fixed bottom-20 right-4 z-40 w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-600 shadow-xl shadow-fuchsia-500/30 flex items-center justify-center active:scale-90 transition-all border border-white/20"
-      >
-        <div className="w-5 h-5 text-white"><IcoSend/></div>
-        <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#060810] animate-pulse" />
-      </a>
-
       {/* Bottom Floating Navigation Bar */}
       <nav className="fixed bottom-3 left-1/2 -translate-x-1/2 z-40 w-[94%] max-w-sm">
         <div className="glass bg-[#0D121F]/90 backdrop-blur-3xl rounded-3xl p-1.5 border border-white/10 flex items-center justify-around shadow-[0_20px_50px_rgba(0,0,0,0.8)] gap-1">
@@ -2006,24 +1994,26 @@ export default function StoreUI() {
       {!chatOpen && (
         <button
           onClick={() => setChatOpen(true)}
-          className="fixed bottom-24 right-4 z-40 w-[52px] h-[52px] rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white flex items-center justify-center shadow-[0_12px_30px_rgba(147,51,234,0.5)] active:scale-95 transition-all border border-white/10"
+          aria-label="Chat dengan Owner"
+          className="fixed right-3.5 z-40 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] h-11 pl-3 pr-3.5 rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white flex items-center gap-1.5 shadow-[0_8px_24px_rgba(147,51,234,0.45)] active:scale-95 transition-all border border-white/15"
         >
-          <div className="w-6 h-6 relative">
+          <span className="relative w-[18px] h-[18px] block">
             <IcoChat />
             {chatUnread > 0 && (
-              <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 border-2 border-[#0D121F] text-[9px] font-black flex items-center justify-center shadow-[0_0_8px_rgba(244,63,94,0.8)]">
+              <span className="absolute -top-2 -right-2.5 min-w-[16px] h-4 px-1 rounded-full bg-rose-500 border-2 border-[#0D121F] text-[8px] font-black flex items-center justify-center leading-none">
                 {chatUnread > 9 ? '9+' : chatUnread}
               </span>
             )}
-          </div>
+          </span>
+          <span className="text-[11px] font-black tracking-wide">Chat</span>
         </button>
       )}
 
       {/* Customer Support Chat: Full-screen Panel */}
       {chatOpen && (
-        <div className="fixed inset-0 z-50 bg-[#060810] flex flex-col animate-[fadeIn_0.15s_ease-out]">
+        <div className="fixed inset-0 z-50 bg-[#060810] flex flex-col h-[100dvh] animate-[fadeIn_0.15s_ease-out]">
           {/* Header */}
-          <div className="shrink-0 flex items-center gap-3 p-4 pt-[max(16px,env(safe-area-inset-top))] border-b border-white/10 bg-[#0D121F]">
+          <div className="shrink-0 flex items-center gap-3 px-4 pb-3 pt-[max(56px,calc(env(safe-area-inset-top)+44px))] border-b border-white/10 bg-[#0D121F]">
             <button
               onClick={() => setChatOpen(false)}
               className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 active:scale-95 transition-all shrink-0"
@@ -2051,7 +2041,7 @@ export default function StoreUI() {
           <div
             ref={chatScrollRef}
             onScroll={handleChatScroll}
-            className="flex-1 overflow-y-auto px-4 py-4 space-y-3"
+            className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 py-4 space-y-2.5"
           >
             {chatLoading && chatMessages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center gap-2 text-slate-500">
@@ -2110,7 +2100,11 @@ export default function StoreUI() {
             <div className="flex items-end gap-2">
               <textarea
                 value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
+                onChange={(e) => {
+                  setChatInput(e.target.value);
+                  e.target.style.height = 'auto';
+                  e.target.style.height = Math.min(e.target.scrollHeight, 96) + 'px';
+                }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
