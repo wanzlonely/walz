@@ -22,18 +22,57 @@ export async function GET(req: Request) {
       return NextResponse.json({ messages: messages || [] });
     }
 
-    const { data: conversations, error } = await supabaseAdmin
+    const { data: conversations, error: convErr } = await supabaseAdmin
       .from('chat_conversations')
-      .select('*')
-      .order('last_message_at', { ascending: false, nullsFirst: false });
+      .select('*');
+    if (convErr) throw convErr;
 
-    if (error) throw error;
-    return NextResponse.json({ conversations: conversations || [] });
+    const list = conversations || [];
+    if (list.length === 0) {
+      return NextResponse.json({ conversations: [] });
+    }
+
+    const ids = list.map((c) => c.id);
+    const { data: allMessages, error: msgErr } = await supabaseAdmin
+      .from('chat_messages')
+      .select('*')
+      .in('conversation_id', ids)
+      .order('created_at', { ascending: true });
+    if (msgErr) throw msgErr;
+
+    const byConversation = new Map<string, any[]>();
+    for (const m of allMessages || []) {
+      const arr = byConversation.get(m.conversation_id) || [];
+      arr.push(m);
+      byConversation.set(m.conversation_id, arr);
+    }
+
+    const enriched = list.map((c) => {
+      const msgs = byConversation.get(c.id) || [];
+      const last = msgs[msgs.length - 1];
+      const unreadByOwner = msgs.filter((m) => m.sender_type === 'user' && !m.read_at).length;
+      return {
+        ...c,
+        user_name: `User ${c.telegram_id}`,
+        last_message: last ? last.message : null,
+        last_message_at: last ? last.created_at : c.updated_at,
+        unread_by_owner: unreadByOwner,
+      };
+    });
+
+    enriched.sort((a, b) => {
+      const ta = a.last_message_at ? new Date(a.last_message_at).getTime() : 0;
+      const tb = b.last_message_at ? new Date(b.last_message_at).getTime() : 0;
+      return tb - ta;
+    });
+
+    return NextResponse.json({ conversations: enriched });
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || 'Gagal memuat chat' }, { status: 500 });
   }
 }
 
+// POST: kirim balasan owner, tandai read, atau ubah status conversation
 export async function POST(req: Request) {
   const ok = await verifyAdminSession();
   if (!ok) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -48,9 +87,11 @@ export async function POST(req: Request) {
 
     if (action === 'mark_read') {
       const { error } = await supabaseAdmin
-        .from('chat_conversations')
-        .update({ unread_by_owner: 0 })
-        .eq('id', conversationId);
+        .from('chat_messages')
+        .update({ read_at: new Date().toISOString() })
+        .eq('conversation_id', conversationId)
+        .eq('sender_type', 'user')
+        .is('read_at', null);
       if (error) throw error;
       return NextResponse.json({ success: true });
     }
@@ -61,12 +102,13 @@ export async function POST(req: Request) {
       }
       const { error } = await supabaseAdmin
         .from('chat_conversations')
-        .update({ status })
+        .update({ status, updated_at: new Date().toISOString() })
         .eq('id', conversationId);
       if (error) throw error;
       return NextResponse.json({ success: true });
     }
 
+    // default action: send reply
     const trimmed = typeof text === 'string' ? text.trim() : '';
     if (!trimmed) {
       return NextResponse.json({ error: 'Pesan tidak boleh kosong' }, { status: 400 });
@@ -77,7 +119,7 @@ export async function POST(req: Request) {
 
     const { data: conversation, error: convErr } = await supabaseAdmin
       .from('chat_conversations')
-      .select('unread_by_user')
+      .select('id')
       .eq('id', conversationId)
       .maybeSingle();
     if (convErr) throw convErr;
@@ -89,8 +131,9 @@ export async function POST(req: Request) {
       .from('chat_messages')
       .insert({
         conversation_id: conversationId,
-        sender: 'owner',
-        text: trimmed,
+        sender_type: 'owner',
+        sender_id: 'owner',
+        message: trimmed,
       })
       .select('*')
       .single();
@@ -100,10 +143,8 @@ export async function POST(req: Request) {
     const { error: updateErr } = await supabaseAdmin
       .from('chat_conversations')
       .update({
-        last_message: trimmed,
-        last_message_at: new Date().toISOString(),
         status: 'open',
-        unread_by_user: (conversation.unread_by_user || 0) + 1,
+        updated_at: new Date().toISOString(),
       })
       .eq('id', conversationId);
 
