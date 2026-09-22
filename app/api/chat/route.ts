@@ -1,6 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { verifyTelegramInitData } from '@/lib/utils';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { handleAiSupport } from '@/lib/ai-support';
+
+export const maxDuration = 60;
 
 type TgUser = {
   id: number | string;
@@ -57,6 +60,7 @@ async function getOrCreateConversation(
       .maybeSingle();
 
     if (again) return again;
+
     throw createErr;
   }
 
@@ -79,6 +83,7 @@ export async function GET(req: Request) {
 
     const telegramId = tgUser.id.toString();
     const userName = displayNameFrom(tgUser, telegramId);
+
     const conversation = await getOrCreateConversation(
       telegramId,
       userName
@@ -96,7 +101,10 @@ export async function GET(req: Request) {
     const ordered = (messages || []).slice().reverse();
 
     const unreadCount = ordered.filter(
-      (m) => m.sender_type === 'owner' && !m.read_at
+      (m) =>
+        (m.sender_type === 'owner' ||
+          m.sender_type === 'ai') &&
+        !m.read_at
     ).length;
 
     return NextResponse.json({
@@ -131,6 +139,7 @@ export async function POST(req: Request) {
 
     const telegramId = tgUser.id.toString();
     const userName = displayNameFrom(tgUser, telegramId);
+
     const conversation = await getOrCreateConversation(
       telegramId,
       userName
@@ -143,20 +152,27 @@ export async function POST(req: Request) {
           read_at: new Date().toISOString(),
         })
         .eq('conversation_id', conversation.id)
-        .eq('sender_type', 'owner')
+        .in('sender_type', ['owner', 'ai'])
         .is('read_at', null);
 
       if (error) throw error;
 
       await supabaseAdmin
         .from('chat_conversations')
-        .update({ unread_by_user: 0 })
+        .update({
+          unread_by_user: 0,
+        })
         .eq('id', conversation.id);
 
-      return NextResponse.json({ success: true });
+      return NextResponse.json({
+        success: true,
+      });
     }
 
-    const trimmed = typeof text === 'string' ? text.trim() : '';
+    const trimmed =
+      typeof text === 'string'
+        ? text.trim()
+        : '';
 
     if (!trimmed) {
       return NextResponse.json(
@@ -167,23 +183,49 @@ export async function POST(req: Request) {
 
     if (trimmed.length > 2000) {
       return NextResponse.json(
-        { error: 'Pesan terlalu panjang (maks 2000 karakter)' },
+        {
+          error:
+            'Pesan terlalu panjang (maks 2000 karakter)',
+        },
         { status: 400 }
       );
     }
 
-    const { data: message, error: sendErr } = await supabaseAdmin
-      .from('chat_messages')
-      .insert({
-        conversation_id: conversation.id,
-        sender_type: 'user',
-        sender_id: telegramId,
-        message: trimmed,
-      })
-      .select('*')
-      .single();
+    const { data: message, error: sendErr } =
+      await supabaseAdmin
+        .from('chat_messages')
+        .insert({
+          conversation_id: conversation.id,
+          sender_type: 'user',
+          sender_id: telegramId,
+          message: trimmed,
+        })
+        .select('*')
+        .single();
 
     if (sendErr) throw sendErr;
+
+    if (conversation.status === 'closed') {
+      await supabaseAdmin
+        .from('chat_conversations')
+        .update({
+          handled_by: 'ai',
+          needs_owner: false,
+          ai_reason: null,
+          ai_paused_at: null,
+          ai_turns: 0,
+        })
+        .eq('id', conversation.id);
+    }
+
+    after(async () => {
+      try {
+        await handleAiSupport(
+          conversation.id,
+          message.id
+        );
+      } catch {}
+    });
 
     return NextResponse.json({
       success: true,
@@ -191,7 +233,10 @@ export async function POST(req: Request) {
     });
   } catch (err: any) {
     return NextResponse.json(
-      { error: err?.message || 'Gagal mengirim pesan' },
+      {
+        error:
+          err?.message || 'Gagal mengirim pesan',
+      },
       { status: 500 }
     );
   }
