@@ -428,7 +428,7 @@ export default function StoreUI() {
           const newMsg = payload.new;
           setChatMessages((prev) => (prev.some((m) => m.id === newMsg.id) ? prev : [...prev, newMsg]));
 
-          if (newMsg.sender_type === 'owner') {
+          if (newMsg.sender_type === 'owner' || newMsg.sender_type === 'ai') {
             if (chatOpen && chatUserNearBottomRef.current) {
               setTimeout(() => scrollChatToBottom(true), 30);
               markChatRead(initData);
@@ -2072,13 +2072,17 @@ export default function StoreUI() {
             ) : (
               chatMessages.map((m: any) => {
                 const isUser = m.sender_type === 'user';
+                const isAi = m.sender_type === 'ai';
                 return (
                   <div key={m.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[78%] px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed shadow-md ${
                       isUser
                         ? 'bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white rounded-br-md'
+                        : isAi
+                        ? 'bg-[#0D121F] border border-cyan-500/25 text-slate-200 rounded-bl-md'
                         : 'bg-[#0D121F] border border-white/10 text-slate-200 rounded-bl-md'
                     }`}>
+                      {isAi && <p className="text-[8.5px] font-black uppercase tracking-widest text-cyan-300 mb-0.5">Asisten AI</p>}
                       <p className="whitespace-pre-wrap break-words">{m.message}</p>
                       <p className={`text-[9px] mt-1 font-medium ${isUser ? 'text-violet-200/80' : 'text-slate-500'}`}>
                         {new Date(m.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
