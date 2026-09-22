@@ -10,7 +10,7 @@ const API_TIMEOUT_MS = 25000;
 
 const ESCALATE_PATTERNS: RegExp[] = [
   /refund|pengembalian dana|uang (saya )?(kembali|hilang)|balikin (uang|saldo)/i,
-  /saldo (saya |ku )?(hilang|berkurang|kepotong|terpotong|nggak masuk|gak masuk|tidak masuk)/i,
+  /saldo (saya |ku )?(hilang|berkurang|kepotong|terpotong|kepotong|nggak masuk|gak masuk|tidak masuk)/i,
   /(sudah|udah) (bayar|transfer|tf).*(belum|gak|nggak|tidak) (masuk|aktif|diproses)/i,
   /(tertipu|penipuan|scam|penipu|nipu)/i,
   /(lapor|laporin|polisi|konsumen|viralkan|viral)/i,
@@ -72,7 +72,6 @@ type Verdict = {
 
 const parseJson = (v: any) => {
   if (!v) return null;
-
   if (typeof v === 'string') {
     try {
       return JSON.parse(v);
@@ -80,85 +79,51 @@ const parseJson = (v: any) => {
       return null;
     }
   }
-
   return v;
 };
 
 async function buildUserContext(telegramId: string) {
   const lines: string[] = [];
-
   try {
     const user: any = parseJson(await redis.get(`user:${telegramId}`));
-
     if (user) {
       const active =
-        user.status === 'ACTIVE' &&
-        user.expiredAt &&
-        new Date(user.expiredAt).getTime() > Date.now();
-
+        user.status === 'ACTIVE' && user.expiredAt && new Date(user.expiredAt).getTime() > Date.now();
       lines.push(
-        `Status akun: ${
-          active
-            ? `Premium aktif sampai ${new Date(user.expiredAt).toLocaleDateString('id-ID')}`
-            : user.status === 'BANNED'
-              ? 'Diblokir'
-              : 'Free / belum aktif'
-        }`
+        `Status akun: ${active ? `Premium aktif sampai ${new Date(user.expiredAt).toLocaleDateString('id-ID')}` : user.status === 'BANNED' ? 'Diblokir' : 'Free / belum aktif'}`
       );
-
       lines.push(`Poin: ${user.points || 0}`);
     } else {
       lines.push('Status akun: belum terdaftar di sistem');
     }
 
     const pendingId = await redis.get(`pending_trx:${telegramId}`);
-
     if (pendingId) {
       const trx: any = parseJson(await redis.get(`trx:${pendingId}`));
-
       if (trx) {
         const pkg = PACKAGES.find((p) => p.id === trx.packageId);
-        const mins = Math.max(
-          0,
-          Math.round(
-            (Date.now() - new Date(trx.createdAt).getTime()) / 60000
-          )
-        );
-
+        const mins = Math.max(0, Math.round((Date.now() - new Date(trx.createdAt).getTime()) / 60000));
         lines.push(
-          `Pesanan menunggu verifikasi: ${trx.orderId}, paket ${
-            pkg?.label || trx.packageId
-          }, Rp ${Number(trx.amount).toLocaleString(
-            'id-ID'
-          )}, dibuat ${mins} menit lalu.`
+          `Pesanan menunggu verifikasi: ${trx.orderId}, paket ${pkg?.label || trx.packageId}, Rp ${Number(trx.amount).toLocaleString('id-ID')}, dibuat ${mins} menit lalu.`
         );
       }
     } else {
       lines.push('Tidak ada pesanan yang sedang menunggu verifikasi.');
     }
 
-    const hist: any = parseJson(
-      await redis.get(`history:${telegramId}`)
-    );
-
+    const hist: any = parseJson(await redis.get(`history:${telegramId}`));
     if (Array.isArray(hist) && hist.length) {
       lines.push(
         'Riwayat terbaru: ' +
           hist
             .slice(0, 4)
-            .map(
-              (h: any) =>
-                `${h.label} (${new Date(h.timestamp).toLocaleDateString(
-                  'id-ID'
-                )})`
-            )
+            .map((h: any) => `${h.label} (${new Date(h.timestamp).toLocaleDateString('id-ID')})`)
             .join('; ')
       );
     }
   } catch {
     lines.push('Data akun tidak dapat dimuat saat ini.');
   }
-
   return lines.join('\n');
 }
 
@@ -170,121 +135,64 @@ function extractVerdict(raw: string): Verdict | null {
   const cleaned = raw.replace(/```json|```/g, '').trim();
   const start = cleaned.indexOf('{');
   const end = cleaned.lastIndexOf('}');
-
   if (start === -1 || end === -1) return null;
-
   try {
     const p = JSON.parse(cleaned.slice(start, end + 1));
-
-    if (typeof p.reply !== 'string' || !p.reply.trim()) {
-      return null;
-    }
-
+    if (typeof p.reply !== 'string' || !p.reply.trim()) return null;
     return {
       reply: p.reply.trim().slice(0, 1500),
       escalate: p.escalate === true,
-      reason:
-        typeof p.reason === 'string'
-          ? p.reason.trim().slice(0, 200)
-          : '',
-      urgency:
-        p.urgency === 'high' || p.urgency === 'low'
-          ? p.urgency
-          : 'normal',
+      reason: typeof p.reason === 'string' ? p.reason.trim().slice(0, 200) : '',
+      urgency: p.urgency === 'high' || p.urgency === 'low' ? p.urgency : 'normal',
     };
   } catch {
     return null;
   }
 }
 
-async function askGroq(
-  system: string,
-  history: { role: 'user' | 'assistant'; content: string }[]
-) {
+async function askGroq(system: string, history: { role: 'user' | 'assistant'; content: string }[]) {
   const key = process.env.GROQ_API_KEY;
-
-  if (!key) {
-    throw new Error('GROQ_API_KEY belum diatur');
-  }
-
+  if (!key) throw new Error('GROQ_API_KEY belum diatur');
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), API_TIMEOUT_MS);
-
   try {
-    const res = await fetch(
-      'https://api.groq.com/openai/v1/chat/completions',
-      {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          authorization: `Bearer ${key}`,
-        },
-        body: JSON.stringify({
-          model: MODEL,
-          max_tokens: 600,
-          temperature: 0.4,
-          messages: [
-            {
-              role: 'system',
-              content: system,
-            },
-            ...history,
-          ],
-          response_format: {
-            type: 'json_object',
-          },
-        }),
-        signal: ctrl.signal,
-      }
-    );
-
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        authorization: `Bearer ${key}`,
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: 600,
+        temperature: 0.4,
+        messages: [{ role: 'system', content: system }, ...history],
+        response_format: { type: 'json_object' },
+      }),
+      signal: ctrl.signal,
+    });
     if (!res.ok) {
       const errBody = await res.text().catch(() => '');
-      throw new Error(
-        `Groq API ${res.status}: ${errBody.slice(0, 200)}`
-      );
+      throw new Error(`Groq API ${res.status}: ${errBody.slice(0, 200)}`);
     }
-
     const data = await res.json();
-
-    return String(
-      data?.choices?.[0]?.message?.content || ''
-    ).trim();
+    return String(data?.choices?.[0]?.message?.content || '').trim();
   } finally {
     clearTimeout(timer);
   }
 }
 
 function normalizeHistory(rows: any[]) {
-  const out: {
-    role: 'user' | 'assistant';
-    content: string;
-  }[] = [];
-
+  const out: { role: 'user' | 'assistant'; content: string }[] = [];
   for (const r of rows) {
-    const role =
-      r.sender_type === 'user' ? 'user' : 'assistant';
-
+    const role = r.sender_type === 'user' ? 'user' : 'assistant';
     const content = String(r.message || '').slice(0, 1500);
-
     if (!content) continue;
-
     const last = out[out.length - 1];
-
-    if (last && last.role === role) {
-      last.content += `\n${content}`;
-    } else {
-      out.push({
-        role,
-        content,
-      });
-    }
+    if (last && last.role === role) last.content += `\n${content}`;
+    else out.push({ role, content });
   }
-
-  while (out.length && out[0].role !== 'user') {
-    out.shift();
-  }
-
+  while (out.length && out[0].role !== 'user') out.shift();
   return out;
 }
 
@@ -296,81 +204,35 @@ async function notifyOwner(params: {
   urgency: string;
   lastUserMessage: string;
 }) {
-  const botToken =
-    process.env.BOT_TOKEN ||
-    process.env.TELEGRAM_BOT_TOKEN ||
-    '';
-
+  const botToken = process.env.BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN || '';
   const adminId = process.env.ADMIN_TELEGRAM_ID || '';
-
   if (!botToken || !adminId) return;
-
-  const appUrl =
-    process.env.NEXT_PUBLIC_APP_URL ||
-    (process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : '');
-
-  const icon =
-    params.urgency === 'high' ? '🚨' : '🔔';
-
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '');
+  const icon = params.urgency === 'high' ? '🚨' : '🔔';
   const text =
     `${icon} *BUTUH OWNER — CHAT SUPPORT*\n\n` +
     `User: ${params.userName}\n` +
     `ID Telegram: \`${params.telegramId}\`\n` +
     `Prioritas: *${params.urgency.toUpperCase()}*\n` +
-    `Masalah: ${
-      params.reason || 'Perlu penanganan langsung'
-    }\n\n` +
-    `Pesan terakhir:\n_${params.lastUserMessage
-      .slice(0, 300)
-      .replace(/[_*`\[]/g, ' ')}_`;
-
-  const body: any = {
-    chat_id: adminId,
-    text,
-    parse_mode: 'Markdown',
-  };
-
+    `Masalah: ${params.reason || 'Perlu penanganan langsung'}\n\n` +
+    `Pesan terakhir:\n_${params.lastUserMessage.slice(0, 300).replace(/[_*`\[]/g, ' ')}_`;
+  const body: any = { chat_id: adminId, text, parse_mode: 'Markdown' };
   if (appUrl) {
-    body.reply_markup = {
-      inline_keyboard: [
-        [
-          {
-            text: 'Buka Panel Admin',
-            url: `${appUrl}/admin`,
-          },
-        ],
-      ],
-    };
+    body.reply_markup = { inline_keyboard: [[{ text: 'Buka Panel Admin', url: `${appUrl}/admin` }]] };
   }
-
   try {
-    await fetch(
-      `https://api.telegram.org/bot${botToken}/sendMessage`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-      }
-    );
+    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
   } catch {}
 }
 
-async function insertAiMessage(
-  conversationId: string,
-  message: string
-) {
+async function insertAiMessage(conversationId: string, message: string) {
   await supabaseAdmin
     .from('chat_messages')
-    .insert({
-      conversation_id: conversationId,
-      sender_type: 'ai',
-      sender_id: 'ai',
-      message,
-    });
+    .insert({ conversation_id: conversationId, sender_type: 'ai', sender_id: 'ai', message });
 }
 
 async function escalate(
@@ -381,7 +243,6 @@ async function escalate(
   userFacingReply?: string
 ) {
   const alreadyFlagged = conv.needs_owner === true;
-
   await supabaseAdmin
     .from('chat_conversations')
     .update({
@@ -391,21 +252,12 @@ async function escalate(
       ai_paused_at: new Date().toISOString(),
     })
     .eq('id', conv.id);
-
-  if (userFacingReply) {
-    await insertAiMessage(
-      conv.id,
-      userFacingReply
-    );
-  }
-
+  if (userFacingReply) await insertAiMessage(conv.id, userFacingReply);
   if (!alreadyFlagged) {
     await notifyOwner({
       conversationId: conv.id,
       telegramId: String(conv.telegram_id),
-      userName:
-        conv.user_name ||
-        `User ${conv.telegram_id}`,
+      userName: conv.user_name || `User ${conv.telegram_id}`,
       reason,
       urgency,
       lastUserMessage,
@@ -413,48 +265,33 @@ async function escalate(
   }
 }
 
-export async function handleAiSupport(
-  conversationId: string,
-  triggerMessageId: string
-) {
-  if (process.env.AI_SUPPORT_ENABLED === 'false') {
-    return;
-  }
+export async function handleAiSupport(conversationId: string, triggerMessageId: string) {
+  if (process.env.AI_SUPPORT_ENABLED === 'false') return;
+
+  await new Promise((r) => setTimeout(r, 1800));
 
   const { data: conv } = await supabaseAdmin
     .from('chat_conversations')
     .select('*')
     .eq('id', conversationId)
     .maybeSingle();
-
   if (!conv) return;
   if (conv.handled_by === 'owner') return;
 
   const { data: rows } = await supabaseAdmin
     .from('chat_messages')
-    .select(
-      'id, sender_type, message, created_at'
-    )
+    .select('id, sender_type, message, created_at')
     .eq('conversation_id', conversationId)
-    .order('created_at', {
-      ascending: false,
-    })
+    .order('created_at', { ascending: false })
     .limit(MAX_HISTORY);
 
   const ordered = (rows || []).slice().reverse();
   const latest = ordered[ordered.length - 1];
 
-  if (
-    !latest ||
-    latest.sender_type !== 'user' ||
-    latest.id !== triggerMessageId
-  ) {
-    return;
-  }
+  if (!latest || latest.sender_type !== 'user') return;
+  if (latest.id !== triggerMessageId) return;
 
-  const lastText = String(
-    latest.message || ''
-  );
+  const lastText = String(latest.message || '');
 
   if (matchesEscalation(lastText)) {
     await escalate(
@@ -464,7 +301,6 @@ export async function handleAiSupport(
       lastText,
       'Terima kasih sudah menghubungi kami. Masalah ini perlu dicek langsung oleh Owner, jadi sudah aku teruskan. Mohon tunggu ya, Owner akan menindaklanjuti di chat ini.'
     );
-
     return;
   }
 
@@ -476,90 +312,44 @@ export async function handleAiSupport(
       lastText,
       'Aku teruskan percakapan ini ke Owner supaya bisa dibantu lebih tuntas. Mohon tunggu sebentar ya.'
     );
-
     return;
   }
 
   let verdict: Verdict | null = null;
-
   try {
-    const context = await buildUserContext(
-      String(conv.telegram_id)
-    );
-
-    const system = SYSTEM_PROMPT
-      .replace(
-        '{{PACKAGES}}',
-        PACKAGES.map(
-          (p) =>
-            `${p.label} (Rp ${p.price.toLocaleString(
-              'id-ID'
-            )})`
-        ).join(', ')
-      )
-      .replace('{{CONTEXT}}', context);
-
+    const context = await buildUserContext(String(conv.telegram_id));
+    const system = SYSTEM_PROMPT.replace(
+      '{{PACKAGES}}',
+      PACKAGES.map((p) => `${p.label} (Rp ${p.price.toLocaleString('id-ID')})`).join(', ')
+    ).replace('{{CONTEXT}}', context);
     const history = normalizeHistory(ordered);
-
     if (!history.length) return;
-
-    const raw = await askGroq(
-      system,
-      history
-    );
-
+    const raw = await askGroq(system, history);
     verdict = extractVerdict(raw);
   } catch {
     verdict = null;
   }
 
   if (!verdict) {
-    await escalate(
-      conv,
-      'Asisten AI gagal memproses pesan',
-      'normal',
-      lastText
-    );
-
+    await escalate(conv, 'Asisten AI gagal memproses pesan', 'normal', lastText);
     return;
   }
 
   if (verdict.escalate) {
-    await escalate(
-      conv,
-      verdict.reason,
-      verdict.urgency,
-      lastText,
-      verdict.reply
-    );
-
+    await escalate(conv, verdict.reason, verdict.urgency, lastText, verdict.reply);
     return;
   }
 
-  await insertAiMessage(
-    conversationId,
-    verdict.reply
-  );
-
+  await insertAiMessage(conversationId, verdict.reply);
   await supabaseAdmin
     .from('chat_conversations')
-    .update({
-      ai_turns: (conv.ai_turns || 0) + 1,
-    })
+    .update({ ai_turns: (conv.ai_turns || 0) + 1 })
     .eq('id', conversationId);
 }
 
-export async function resetAiForConversation(
-  conversationId: string
-) {
+export async function resetAiForConversation(conversationId: string) {
   await supabaseAdmin
     .from('chat_conversations')
-    .update({
-      handled_by: 'ai',
-      needs_owner: false,
-      ai_reason: null,
-      ai_paused_at: null,
-      ai_turns: 0,
-    })
+    .update({ handled_by: 'ai', needs_owner: false, ai_reason: null, ai_paused_at: null, ai_turns: 0 })
     .eq('id', conversationId);
 }
