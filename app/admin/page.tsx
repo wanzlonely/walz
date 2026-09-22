@@ -138,7 +138,7 @@ export default function AdminPage() {
   const [flashHoursInput, setFlashHoursInput] = useState('24');
 
   // --- Customer Support Chat state (Owner side) ---
-  type ChatFilter = 'all' | 'unread' | 'open' | 'closed';
+  type ChatFilter = 'all' | 'needs' | 'unread' | 'open' | 'closed';
   const [conversations, setConversations] = useState<any[]>([]);
   const [conversationsLoading, setConversationsLoading] = useState(false);
   const [conversationsError, setConversationsError] = useState<string | null>(null);
@@ -148,7 +148,7 @@ export default function AdminPage() {
   const [chatFilter, setChatFilter] = useState<ChatFilter>('all');
   const [chatSearch, setChatSearch] = useState('');
   const [chatSearchDebounced, setChatSearchDebounced] = useState('');
-  const [chatStats, setChatStats] = useState({ total: 0, unread: 0, open: 0, closed: 0 });
+  const [chatStats, setChatStats] = useState({ total: 0, unread: 0, open: 0, closed: 0, needs: 0 });
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const [activeConversation, setActiveConversation] = useState<any>(null);
   const [chatMessages, setChatMessages] = useState<any[]>([]);
@@ -374,9 +374,31 @@ export default function AdminPage() {
     }
   };
 
+  const setAiHandling = async (mode: 'takeover' | 'handback') => {
+    if (!activeConversationId) return;
+    try {
+      const res = await fetch('/api/admin/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: mode, conversationId: activeConversationId }),
+      });
+      if (!res.ok) throw new Error();
+      const patch: any = mode === 'takeover'
+        ? { handled_by: 'owner', needs_owner: false }
+        : { handled_by: 'ai', needs_owner: false, ai_reason: null };
+      setActiveConversation((p: any) => (p ? { ...p, ...patch } : p));
+      setConversations((prev) => prev.map((c) => (c.id === activeConversationId ? { ...c, ...patch } : c)));
+      showChatToast(mode === 'takeover' ? 'Anda mengambil alih percakapan' : 'Percakapan diserahkan ke AI');
+      fetchChatStats();
+    } catch {
+      showChatToast('Gagal mengubah penanganan');
+    }
+  };
+
   const toggleConversationStatus = async () => {
     if (!activeConversationId) return;
     const nextStatus = activeConversation?.status === 'closed' ? 'open' : 'closed';
+    const closing = nextStatus === 'closed';
     try {
       const res = await fetch('/api/admin/chat', {
         method: 'POST',
@@ -384,8 +406,9 @@ export default function AdminPage() {
         body: JSON.stringify({ action: 'set_status', conversationId: activeConversationId, status: nextStatus }),
       });
       if (!res.ok) throw new Error();
-      setActiveConversation((p: any) => (p ? { ...p, status: nextStatus } : p));
-      setConversations((prev) => prev.map((c) => (c.id === activeConversationId ? { ...c, status: nextStatus } : c)));
+      const extra: any = closing ? { needs_owner: false, handled_by: 'ai', ai_reason: null } : {};
+      setActiveConversation((p: any) => (p ? { ...p, status: nextStatus, ...extra } : p));
+      setConversations((prev) => prev.map((c) => (c.id === activeConversationId ? { ...c, status: nextStatus, ...extra } : c)));
       showChatToast(nextStatus === 'closed' ? 'Percakapan ditandai selesai' : 'Percakapan dibuka lagi');
       fetchChatStats();
     } catch {
@@ -523,7 +546,7 @@ export default function AdminPage() {
           const f = filterRef.current;
           const q = searchRef.current.toLowerCase();
           const matches =
-            (f === 'all' || (f === 'unread' && merged.unread_by_owner > 0) || f === merged.status) &&
+            (f === 'all' || (f === 'needs' && merged.needs_owner === true && merged.status === 'open') || (f === 'unread' && merged.unread_by_owner > 0) || f === merged.status) &&
             (!q || (merged.user_name || '').toLowerCase().includes(q) || String(merged.telegram_id || '').includes(q));
           const exists = prev.some((c) => c.id === row.id);
           if (!matches) return exists ? prev.filter((c) => c.id !== row.id) : prev;
@@ -1325,6 +1348,7 @@ export default function AdminPage() {
                   <div className="flex gap-1.5 overflow-x-auto no-scrollbar -mx-0.5 px-0.5">
                     {([
                       { id: 'all', label: 'Semua', n: chatStats.total },
+                      { id: 'needs', label: 'Butuh Owner', n: chatStats.needs || 0 },
                       { id: 'unread', label: 'Belum dibaca', n: chatStats.unread },
                       { id: 'open', label: 'Aktif', n: chatStats.open },
                       { id: 'closed', label: 'Selesai', n: chatStats.closed },
@@ -1388,6 +1412,9 @@ export default function AdminPage() {
                             )}
                             <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-violet-500 to-fuchsia-500 flex items-center justify-center text-white text-xs font-black shrink-0 shadow-md relative">
                               {(c.user_name || '?').replace('@', '')[0]?.toUpperCase()}
+                              {c.needs_owner && c.status !== 'closed' && (
+                                <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-amber-400 border-2 border-[#0D121F] animate-pulse" />
+                              )}
                               {c.status === 'closed' && (
                                 <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-600 border-2 border-[#0D121F] flex items-center justify-center text-[8px]">✓</span>
                               )}
@@ -1404,6 +1431,7 @@ export default function AdminPage() {
                               <div className="flex items-center gap-1.5 mt-0.5">
                                 <p className={`text-[10.5px] truncate flex-1 ${unread ? 'text-slate-200' : 'text-slate-400'}`}>
                                   {c.last_sender_type === 'owner' && <span className="text-violet-300">Anda: </span>}
+                                  {c.last_sender_type === 'ai' && <span className="text-cyan-300">AI: </span>}
                                   {c.last_message || 'Belum ada pesan'}
                                 </p>
                                 {unread && (
@@ -1490,6 +1518,18 @@ export default function AdminPage() {
                     <p className="text-xs font-bold text-white truncate">{activeConversation?.user_name || `User ${activeConversation?.telegram_id}`}</p>
                     <p className="text-[9.5px] text-slate-500 font-mono truncate">ID: {activeConversation?.telegram_id}</p>
                   </div>
+                  {activeConversation?.status !== 'closed' && (
+                    <button
+                      onClick={() => setAiHandling(activeConversation?.handled_by === 'owner' ? 'handback' : 'takeover')}
+                      className={`shrink-0 px-2.5 py-1.5 rounded-xl text-[9.5px] font-black uppercase tracking-wider border transition-all active:scale-95 ${
+                        activeConversation?.handled_by === 'owner'
+                          ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-300'
+                          : 'bg-amber-500/10 border-amber-500/30 text-amber-300'
+                      }`}
+                    >
+                      {activeConversation?.handled_by === 'owner' ? 'Serahkan ke AI' : 'Ambil Alih'}
+                    </button>
+                  )}
                   <button
                     onClick={toggleConversationStatus}
                     className={`shrink-0 px-2.5 py-1.5 rounded-xl text-[9.5px] font-black uppercase tracking-wider border transition-all active:scale-95 ${
@@ -1501,6 +1541,18 @@ export default function AdminPage() {
                     {activeConversation?.status === 'closed' ? 'Buka Lagi' : 'Selesai ✓'}
                   </button>
                 </div>
+
+                {activeConversation?.needs_owner && activeConversation?.status !== 'closed' && (
+                  <div className="shrink-0 px-3.5 py-2 bg-amber-500/10 border-b border-amber-500/20">
+                    <p className="text-[10px] font-black text-amber-300 uppercase tracking-wider">Butuh Owner</p>
+                    <p className="text-[10.5px] text-amber-100/90 leading-snug mt-0.5">{activeConversation?.ai_reason || 'AI meneruskan percakapan ini ke Anda.'}</p>
+                  </div>
+                )}
+                {activeConversation?.status !== 'closed' && activeConversation?.handled_by !== 'owner' && !activeConversation?.needs_owner && (
+                  <div className="shrink-0 px-3.5 py-1.5 bg-cyan-500/5 border-b border-cyan-500/10">
+                    <p className="text-[10px] font-bold text-cyan-300/90">Asisten AI sedang menangani percakapan ini</p>
+                  </div>
+                )}
 
                 <div
                   ref={chatScrollRef}
@@ -1525,7 +1577,8 @@ export default function AdminPage() {
                     </div>
                   ) : (
                     chatMessages.map((m: any, i: number) => {
-                      const isOwner = m.sender_type === 'owner';
+                      const isAi = m.sender_type === 'ai';
+                      const isOwner = m.sender_type === 'owner' || isAi;
                       const prev = chatMessages[i - 1];
                       const newDay = !prev || new Date(prev.created_at).toDateString() !== new Date(m.created_at).toDateString();
                       return (
@@ -1539,12 +1592,15 @@ export default function AdminPage() {
                           )}
                           <div className={`flex ${isOwner ? 'justify-end' : 'justify-start'}`}>
                             <div className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed shadow-md ${
-                              isOwner
+                              isAi
+                                ? 'bg-gradient-to-br from-cyan-700 to-teal-600 text-white rounded-br-md'
+                                : isOwner
                                 ? 'bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white rounded-br-md'
                                 : 'bg-[#070A12] border border-white/10 text-slate-200 rounded-bl-md'
                             }`}>
+                              {isAi && <p className="text-[8.5px] font-black uppercase tracking-widest text-cyan-100/80 mb-0.5">Asisten AI</p>}
                               <p className="whitespace-pre-wrap break-words">{m.message}</p>
-                              <p className={`text-[9px] mt-1 font-medium text-right ${isOwner ? 'text-violet-200/80' : 'text-slate-500'}`}>
+                              <p className={`text-[9px] mt-1 font-medium text-right ${isAi ? 'text-cyan-100/80' : isOwner ? 'text-violet-200/80' : 'text-slate-500'}`}>
                                 {new Date(m.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
                               </p>
                             </div>
