@@ -372,6 +372,13 @@ export default function StoreUI() {
     if (!text || chatSending || !initData) return;
     setChatSending(true);
     setChatInput('');
+    const tempId = `temp-${Date.now()}`;
+    setChatMessages((prev) => [
+      ...prev,
+      { id: tempId, sender_type: 'user', message: text, created_at: new Date().toISOString(), _pending: true },
+    ]);
+    chatUserNearBottomRef.current = true;
+    setTimeout(() => scrollChatToBottom(true), 30);
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
@@ -380,9 +387,15 @@ export default function StoreUI() {
       });
       const d = await res.json();
       if (!res.ok) throw new Error(d.error || 'Gagal mengirim pesan');
-      chatUserNearBottomRef.current = true;
+      if (d.message) {
+        setChatMessages((prev) => {
+          const withoutTemp = prev.filter((m) => m.id !== tempId);
+          return withoutTemp.some((m) => m.id === d.message.id) ? withoutTemp : [...withoutTemp, d.message];
+        });
+      }
     } catch (err: any) {
       showToast('error', err?.message || 'Gagal mengirim pesan');
+      setChatMessages((prev) => prev.map((m) => (m.id === tempId ? { ...m, _failed: true, _pending: false } : m)));
       setChatInput(text);
     } finally {
       setChatSending(false);
@@ -426,7 +439,18 @@ export default function StoreUI() {
         { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `conversation_id=eq.${chatConversation.id}` },
         (payload: any) => {
           const newMsg = payload.new;
-          setChatMessages((prev) => (prev.some((m) => m.id === newMsg.id) ? prev : [...prev, newMsg]));
+          setChatMessages((prev) => {
+            if (prev.some((m) => m.id === newMsg.id)) return prev;
+            if (newMsg.sender_type === 'user') {
+              const tempIdx = prev.findIndex((m) => m._pending && m.sender_type === 'user' && m.message === newMsg.message);
+              if (tempIdx !== -1) {
+                const next = prev.slice();
+                next[tempIdx] = newMsg;
+                return next;
+              }
+            }
+            return [...prev, newMsg];
+          });
 
           if (newMsg.sender_type === 'owner' || newMsg.sender_type === 'ai') {
             if (chatOpen && chatUserNearBottomRef.current) {
@@ -794,6 +818,11 @@ export default function StoreUI() {
           0% { transform: translateY(-100%) scale(0.9); opacity: 0; }
           60% { transform: translateY(6px) scale(1.02); opacity: 1; }
           100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(6px); }
+          to { opacity: 1; transform: translateY(0); }
         }
 
         .ticket-divider {
@@ -2074,18 +2103,29 @@ export default function StoreUI() {
                 const isUser = m.sender_type === 'user';
                 const isAi = m.sender_type === 'ai';
                 return (
-                  <div key={m.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[78%] px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed shadow-md ${
+                  <div key={m.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'} animate-[fadeIn_0.25s_ease-out]`}>
+                    <div className={`max-w-[78%] px-4 py-2.5 text-[12.5px] leading-relaxed ${
                       isUser
-                        ? 'bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white rounded-br-md'
+                        ? 'bg-gradient-to-br from-violet-600 via-fuchsia-600 to-purple-600 text-white rounded-2xl rounded-br-md shadow-[0_4px_16px_-4px_rgba(168,85,247,0.5)] ring-1 ring-fuchsia-300/20'
                         : isAi
-                        ? 'bg-[#0D121F] border border-cyan-500/25 text-slate-200 rounded-bl-md'
-                        : 'bg-[#0D121F] border border-white/10 text-slate-200 rounded-bl-md'
+                        ? 'bg-gradient-to-br from-cyan-600 via-teal-600 to-emerald-600 text-white rounded-2xl rounded-bl-md shadow-[0_4px_16px_-4px_rgba(6,182,212,0.5)] ring-1 ring-cyan-300/20'
+                        : 'bg-gradient-to-br from-[#141B2C] to-[#0C1120] text-slate-100 rounded-2xl rounded-bl-md shadow-[0_4px_14px_-6px_rgba(0,0,0,0.6)] ring-1 ring-white/[0.08]'
                     }`}>
-                      {isAi && <p className="text-[8.5px] font-black uppercase tracking-widest text-cyan-300 mb-0.5">Asisten AI</p>}
+                      {isAi && (
+                        <p className="flex items-center gap-1 text-[8.5px] font-black uppercase tracking-widest text-cyan-50/90 mb-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-200 shadow-[0_0_6px_rgba(165,243,252,0.9)]" />
+                          Asisten AI
+                        </p>
+                      )}
                       <p className="whitespace-pre-wrap break-words">{m.message}</p>
-                      <p className={`text-[9px] mt-1 font-medium ${isUser ? 'text-violet-200/80' : 'text-slate-500'}`}>
-                        {new Date(m.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                      <p className={`text-[9px] mt-1 font-medium flex items-center gap-1 ${isUser ? 'text-fuchsia-50/75 justify-end' : isAi ? 'text-cyan-50/75' : 'text-slate-500'}`}>
+                        {m._failed ? (
+                          <span className="text-rose-200">Gagal terkirim</span>
+                        ) : m._pending ? (
+                          <span>Mengirim...</span>
+                        ) : (
+                          new Date(m.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+                        )}
                       </p>
                     </div>
                   </div>
