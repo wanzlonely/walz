@@ -1590,17 +1590,22 @@ export default function AdminPage() {
                               </span>
                             </div>
                           )}
-                          <div className={`flex ${isOwner ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed shadow-md ${
+                          <div className={`flex ${isOwner ? 'justify-end' : 'justify-start'} animate-[fadeIn_0.25s_ease-out]`}>
+                            <div className={`relative max-w-[80%] px-4 py-2.5 text-[12.5px] leading-relaxed ${
                               isAi
-                                ? 'bg-gradient-to-br from-cyan-700 to-teal-600 text-white rounded-br-md'
+                                ? 'bg-gradient-to-br from-cyan-600 via-teal-600 to-emerald-600 text-white rounded-2xl rounded-br-md shadow-[0_4px_16px_-4px_rgba(6,182,212,0.5)] ring-1 ring-cyan-300/20'
                                 : isOwner
-                                ? 'bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white rounded-br-md'
-                                : 'bg-[#070A12] border border-white/10 text-slate-200 rounded-bl-md'
+                                ? 'bg-gradient-to-br from-violet-600 via-fuchsia-600 to-purple-600 text-white rounded-2xl rounded-br-md shadow-[0_4px_16px_-4px_rgba(168,85,247,0.5)] ring-1 ring-fuchsia-300/20'
+                                : 'bg-gradient-to-br from-[#141B2C] to-[#0C1120] text-slate-100 rounded-2xl rounded-bl-md shadow-[0_4px_14px_-6px_rgba(0,0,0,0.6)] ring-1 ring-white/[0.08]'
                             }`}>
-                              {isAi && <p className="text-[8.5px] font-black uppercase tracking-widest text-cyan-100/80 mb-0.5">Asisten AI</p>}
+                              {isAi && (
+                                <p className="flex items-center gap-1 text-[8.5px] font-black uppercase tracking-widest text-cyan-50/90 mb-1">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-200 shadow-[0_0_6px_rgba(165,243,252,0.9)]" />
+                                  Asisten AI
+                                </p>
+                              )}
                               <p className="whitespace-pre-wrap break-words">{m.message}</p>
-                              <p className={`text-[9px] mt-1 font-medium text-right ${isAi ? 'text-cyan-100/80' : isOwner ? 'text-violet-200/80' : 'text-slate-500'}`}>
+                              <p className={`text-[9px] mt-1 font-medium text-right ${isAi ? 'text-cyan-50/75' : isOwner ? 'text-fuchsia-50/75' : 'text-slate-500'}`}>
                                 {new Date(m.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
                               </p>
                             </div>
