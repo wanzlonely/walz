@@ -6,9 +6,9 @@ import { PACKAGES } from '@/lib/packages';
 import { supabase } from '@/lib/supabase';
 
 const METHODS = [
-  { id: 'QRIS', label: 'QRIS All Payment', badge: 'Auto' },
-  { id: 'DANA', label: 'E-Wallet DANA', badge: 'Instan' },
-  { id: 'SEABANK', label: 'Bank SeaBank', badge: 'Transfer' },
+  { id: 'QRIS', label: 'QRIS All Payment', badge: 'Auto', icon: '⚡' },
+  { id: 'DANA', label: 'E-Wallet DANA', badge: 'Instan', icon: '💙' },
+  { id: 'SEABANK', label: 'Bank SeaBank', badge: 'Transfer', icon: '🏦' },
 ];
 
 const REDEEM_OPTIONS = [
@@ -69,6 +69,7 @@ function useCountdown(targetDate: string | null) {
   return timeLeft;
 }
 
+// Inline Icon Components
 function IcoHome() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
@@ -79,8 +80,7 @@ function IcoHome() {
 function IcoStore() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
-      <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
-      <line x1="12" y1="2" x2="12" y2="22"/>
+      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
     </svg>
   );
 }
@@ -362,7 +362,7 @@ export default function StoreUI() {
       setTimeout(() => scrollChatToBottom(false), 50);
     } catch (err: any) {
       setChatError(err?.message || 'Gagal memuat chat. Coba lagi.');
-    } finally {
+    } fontally {
       setChatLoading(false);
     }
   };
@@ -414,13 +414,11 @@ export default function StoreUI() {
     } catch {}
   };
 
-  // Load chat once initData is ready
   useEffect(() => {
     if (initData) loadChat(initData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initData]);
 
-  // Mark as read when chat panel opened
   useEffect(() => {
     if (chatOpen && initData && chatUnread > 0) {
       markChatRead(initData);
@@ -428,7 +426,6 @@ export default function StoreUI() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatOpen]);
 
-  // Realtime subscription: listen for new messages & conversation updates
   useEffect(() => {
     if (!chatConversation?.id) return;
 
@@ -768,23 +765,23 @@ export default function StoreUI() {
 
   if (loading) return (
     <div className="min-h-screen bg-[#060810] flex flex-col items-center justify-center p-4">
-      <div className="flex flex-col items-center gap-3 p-6 bg-[#0D121F]/80 border border-emerald-500/20 rounded-3xl backdrop-blur-2xl shadow-[0_0_50px_rgba(16,185,129,0.1)]">
-        <div className="relative flex items-center justify-center w-12 h-12">
+      <div className="flex flex-col items-center gap-3.5 p-7 bg-[#0D121F]/90 border border-emerald-500/20 rounded-3xl backdrop-blur-2xl shadow-[0_0_60px_rgba(16,185,129,0.12)]">
+        <div className="relative flex items-center justify-center w-14 h-14">
           <div className="absolute inset-0 border-2 border-emerald-500/20 border-t-emerald-400 rounded-full animate-spin" />
-          <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-white font-black text-xs shadow-md shadow-emerald-500/30">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-400 via-teal-500 to-emerald-600 flex items-center justify-center text-slate-950 font-black text-sm shadow-md shadow-emerald-500/30">
             W
           </div>
         </div>
-        <p className="text-[10px] font-black tracking-[0.2em] text-emerald-400 uppercase">WALZSHOP STORE</p>
+        <p className="text-[10px] font-black tracking-[0.25em] text-emerald-400 uppercase">WALZSHOP STORE</p>
       </div>
     </div>
   );
 
   if (isBanned) return (
     <div className="min-h-screen bg-[#060810] text-slate-100 flex items-center justify-center p-4 font-sans">
-      <div className="bg-[#0D121F] p-6 rounded-3xl max-w-xs w-full text-center space-y-3 border border-rose-500/40 shadow-[0_0_40px_rgba(244,63,94,0.15)]">
-        <div className="w-12 h-12 rounded-2xl bg-rose-500/20 border border-rose-500/30 text-rose-400 flex items-center justify-center mx-auto">
-          <div className="w-6 h-6"><IcoLock/></div>
+      <div className="bg-[#0D121F] p-6 rounded-3xl max-w-xs w-full text-center space-y-3.5 border border-rose-500/30 shadow-[0_0_50px_rgba(244,63,94,0.15)]">
+        <div className="w-14 h-14 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-400 flex items-center justify-center mx-auto shadow-inner">
+          <div className="w-7 h-7"><IcoLock/></div>
         </div>
         <h2 className="text-sm font-black text-white uppercase tracking-wider">AKUN DIBLOKIR</h2>
         <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
@@ -821,8 +818,13 @@ export default function StoreUI() {
         }
 
         @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(6px); }
+          from { opacity: 0; transform: translateY(8px); }
           to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes scaleIn {
+          from { opacity: 0; transform: scale(0.92); }
+          to { opacity: 1; transform: scale(1); }
         }
 
         .ticket-divider {
@@ -841,19 +843,20 @@ export default function StoreUI() {
         .ticket-notch.right { right: -7px; }
       `}</style>
 
-      {/* Ambient Lighting */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[450px] h-[280px] bg-emerald-500/10 rounded-full blur-[100px]" />
-        <div className="absolute top-1/2 -right-20 w-[280px] h-[280px] bg-amber-500/5 rounded-full blur-[100px]" />
+      {/* Ambient Lighting Background */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[480px] h-[300px] bg-emerald-500/10 rounded-full blur-[120px]" />
+        <div className="absolute top-1/2 -right-24 w-[300px] h-[300px] bg-amber-500/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-1/4 -left-24 w-[300px] h-[300px] bg-violet-500/5 rounded-full blur-[120px]" />
       </div>
 
-      {/* Smooth Spring Floating Toast Notification */}
+      {/* Floating Toast Notification */}
       {toastMsg && (
         <div className="fixed top-3 left-0 right-0 z-[100] px-4 pointer-events-none flex justify-center">
-          <div className={`pointer-events-auto w-full max-w-[360px] p-3.5 rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.8)] flex items-center gap-3 border backdrop-blur-2xl animate-[toastSlide_0.4s_cubic-bezier(0.16,1,0.3,1)] ${
+          <div className={`pointer-events-auto w-full max-w-[360px] p-3.5 rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.85)] flex items-center gap-3 border backdrop-blur-2xl animate-[toastSlide_0.4s_cubic-bezier(0.16,1,0.3,1)] ${
             toastMsg.type === 'success' 
-              ? 'border-emerald-500/50 bg-[#061B14]/95 text-emerald-200 shadow-emerald-950/40' 
-              : 'border-rose-500/50 bg-[#1D090E]/95 text-rose-200 shadow-rose-950/40'
+              ? 'border-emerald-500/40 bg-[#061B14]/95 text-emerald-200 shadow-emerald-950/50' 
+              : 'border-rose-500/40 bg-[#1D090E]/95 text-rose-200 shadow-rose-950/50'
           }`}>
             <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-md ${
               toastMsg.type === 'success' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
@@ -862,7 +865,7 @@ export default function StoreUI() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[9px] font-black uppercase tracking-widest opacity-60">
-                {toastMsg.type === 'success' ? 'Sistem Berhasil' : 'Pemberitahuan'}
+                {toastMsg.type === 'success' ? 'Berhasil' : 'Pemberitahuan'}
               </p>
               <p className="text-xs font-bold leading-snug truncate mt-0.5">{toastMsg.text}</p>
             </div>
@@ -871,10 +874,10 @@ export default function StoreUI() {
       )}
 
       {/* Header */}
-      <header className="sticky top-0 z-30 glass bg-[#060810]/80 border-b border-white/10 px-4 py-3 max-w-md mx-auto flex items-center justify-between shadow-lg shadow-black/40">
+      <header className="sticky top-0 z-30 glass bg-[#060810]/80 border-b border-white/[0.08] px-4 py-3 max-w-md mx-auto flex items-center justify-between shadow-xl shadow-black/40">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-emerald-600 flex items-center justify-center text-white font-black text-sm shadow-md shadow-emerald-500/30 ring-1 ring-white/20">
+            <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-emerald-600 flex items-center justify-center text-slate-950 font-black text-sm shadow-md shadow-emerald-500/25 ring-1 ring-white/20">
               W
             </div>
             <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#060810]" />
@@ -884,14 +887,14 @@ export default function StoreUI() {
               <h1 className="text-xs font-black tracking-tight text-white leading-none">WALZSHOP</h1>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             </div>
-            <p className="text-[9px] text-emerald-400 font-bold mt-0.5">Digital Store Portal</p>
+            <p className="text-[9px] text-emerald-400 font-bold mt-0.5 tracking-wider">Digital Store Portal</p>
           </div>
         </div>
 
         <button
           onClick={() => checkStatus(initData)}
           disabled={refreshing}
-          className={`w-9 h-9 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:bg-white/10 active:scale-90 transition-all ${refreshing ? 'animate-spin text-emerald-400' : ''}`}
+          className={`w-9 h-9 rounded-2xl bg-white/[0.05] border border-white/10 flex items-center justify-center text-slate-300 hover:bg-white/10 active:scale-90 transition-all ${refreshing ? 'animate-spin text-emerald-400' : ''}`}
         >
           <div className="w-4 h-4"><IcoRefresh/></div>
         </button>
@@ -901,7 +904,7 @@ export default function StoreUI() {
       <main className="px-4 pt-3.5 max-w-md mx-auto space-y-3.5 relative z-10">
 
         {/* Live Purchase Ticker */}
-        <div className="bg-[#0D121F] border border-emerald-500/30 px-3.5 py-2 rounded-2xl flex items-center gap-2.5 text-[10px] font-bold text-emerald-300 shadow-lg shadow-black/30 overflow-hidden">
+        <div className="bg-[#0D121F]/90 backdrop-blur-md border border-emerald-500/20 px-3.5 py-2 rounded-2xl flex items-center gap-2.5 text-[10px] font-bold text-emerald-300 shadow-lg shadow-black/30 overflow-hidden">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
           <p className="truncate key={tickerIndex} animate-[fadeIn_0.3s_ease-out]">{RECENT_PURCHASES[tickerIndex]}</p>
         </div>
@@ -926,7 +929,7 @@ export default function StoreUI() {
 
         {/* Pending Order Notice */}
         {pending && (
-          <div className="bg-amber-950/20 border border-amber-500/40 p-3.5 rounded-3xl flex items-center gap-3 shadow-lg">
+          <div className="bg-amber-950/30 border border-amber-500/40 p-3.5 rounded-3xl flex items-center gap-3 shadow-lg">
             <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shrink-0" />
             <p className="text-amber-200 text-xs font-bold">Transaksi Anda sedang diverifikasi oleh Admin...</p>
           </div>
@@ -1885,9 +1888,9 @@ export default function StoreUI() {
 
       </main>
 
-      {/* Bottom Floating Navigation Bar */}
+      {/* Floating Bottom Navigation Bar */}
       <nav className="fixed bottom-3 left-1/2 -translate-x-1/2 z-40 w-[94%] max-w-sm">
-        <div className="glass bg-[#0D121F]/90 backdrop-blur-3xl rounded-3xl p-1.5 border border-white/10 flex items-center justify-around shadow-[0_20px_50px_rgba(0,0,0,0.8)] gap-1">
+        <div className="glass bg-[#0D121F]/90 backdrop-blur-3xl rounded-3xl p-1.5 border border-white/10 flex items-center justify-around shadow-[0_20px_50px_rgba(0,0,0,0.85)] gap-1">
           <button
             onClick={() => setActiveTab('dashboard')}
             className={`flex-1 py-2.5 rounded-2xl flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${
@@ -1992,7 +1995,7 @@ export default function StoreUI() {
       {/* QRIS Fullscreen Modal */}
       {qrisZoomOpen && (
         <div className="fixed inset-0 z-50 bg-[#060810]/90 backdrop-blur-2xl flex items-center justify-center p-4 animate-[fadeIn_0.15s_ease-out]" onClick={() => setQrisZoomOpen(false)}>
-          <div className="max-w-sm w-full bg-[#0D121F] p-5 rounded-[32px] space-y-4 border border-emerald-500/40 text-center shadow-2xl" onClick={e => e.stopPropagation()}>
+          <div className="max-w-sm w-full bg-[#0D121F] p-5 rounded-[32px] space-y-4 border border-emerald-500/40 text-center shadow-2xl animate-[scaleIn_0.2s_ease-out]" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-center gap-2 pb-2 border-b border-white/10">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"/>
               <span className="text-xs font-black text-white uppercase tracking-wider">QRIS FULLSCREEN SCANNER</span>
@@ -2024,7 +2027,7 @@ export default function StoreUI() {
         <button
           onClick={() => setChatOpen(true)}
           aria-label="Chat dengan Owner"
-          className="fixed right-3.5 z-40 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] h-11 pl-3 pr-3.5 rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white flex items-center gap-1.5 shadow-[0_8px_24px_rgba(147,51,234,0.45)] active:scale-95 transition-all border border-white/15"
+          className="fixed right-3.5 z-40 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] h-11 pl-3.5 pr-4 rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white flex items-center gap-2 shadow-[0_8px_25px_rgba(147,51,234,0.4)] active:scale-95 transition-all border border-white/20"
         >
           <span className="relative w-[18px] h-[18px] block">
             <IcoChat />
@@ -2034,7 +2037,7 @@ export default function StoreUI() {
               </span>
             )}
           </span>
-          <span className="text-[11px] font-black tracking-wide">Chat</span>
+          <span className="text-xs font-black tracking-wide">Support</span>
         </button>
       )}
 
@@ -2042,7 +2045,7 @@ export default function StoreUI() {
       {chatOpen && (
         <div className="fixed inset-0 z-50 bg-[#060810] flex flex-col h-[100dvh] animate-[fadeIn_0.15s_ease-out]">
           {/* Header */}
-          <div className="shrink-0 flex items-center gap-3 px-4 pb-3 pt-[max(56px,calc(env(safe-area-inset-top)+44px))] border-b border-white/10 bg-[#0D121F]">
+          <div className="shrink-0 flex items-center gap-3 px-4 pb-3.5 pt-[max(16px,calc(env(safe-area-inset-top)+12px))] border-b border-white/10 bg-[#0D121F]">
             <button
               onClick={() => setChatOpen(false)}
               className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 active:scale-95 transition-all shrink-0"
@@ -2055,7 +2058,7 @@ export default function StoreUI() {
             <div className="min-w-0 flex-1">
               <p className="text-xs font-black text-white">Customer Support</p>
               <p className="text-[10px] text-slate-400 font-medium">
-                {chatConversation?.status === 'closed' ? 'Percakapan ditutup' : 'Owner biasanya membalas cepat'}
+                {chatConversation?.status === 'closed' ? 'Percakapan ditutup' : 'Owner membalas secara real-time'}
               </p>
             </div>
             <button
@@ -2066,7 +2069,7 @@ export default function StoreUI() {
             </button>
           </div>
 
-          {/* Messages */}
+          {/* Messages Container */}
           <div
             ref={chatScrollRef}
             onScroll={handleChatScroll}
@@ -2104,23 +2107,23 @@ export default function StoreUI() {
                 const isAi = m.sender_type === 'ai';
                 return (
                   <div key={m.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'} animate-[fadeIn_0.25s_ease-out]`}>
-                    <div className={`max-w-[78%] px-4 py-2.5 text-[12.5px] leading-relaxed ${
+                    <div className={`max-w-[80%] px-4 py-2.5 text-[12.5px] leading-relaxed ${
                       isUser
-                        ? 'bg-gradient-to-br from-violet-600 via-fuchsia-600 to-purple-600 text-white rounded-2xl rounded-br-md shadow-[0_4px_16px_-4px_rgba(168,85,247,0.5)] ring-1 ring-fuchsia-300/20'
+                        ? 'bg-gradient-to-br from-violet-600 via-fuchsia-600 to-purple-600 text-white rounded-2xl rounded-br-md shadow-[0_4px_16px_-4px_rgba(168,85,247,0.4)] ring-1 ring-fuchsia-300/20'
                         : isAi
-                        ? 'bg-gradient-to-br from-cyan-600 via-teal-600 to-emerald-600 text-white rounded-2xl rounded-bl-md shadow-[0_4px_16px_-4px_rgba(6,182,212,0.5)] ring-1 ring-cyan-300/20'
-                        : 'bg-gradient-to-br from-[#141B2C] to-[#0C1120] text-slate-100 rounded-2xl rounded-bl-md shadow-[0_4px_14px_-6px_rgba(0,0,0,0.6)] ring-1 ring-white/[0.08]'
+                        ? 'bg-gradient-to-br from-cyan-600 via-teal-600 to-emerald-600 text-white rounded-2xl rounded-bl-md shadow-[0_4px_16px_-4px_rgba(6,182,212,0.4)] ring-1 ring-cyan-300/20'
+                        : 'bg-[#0D121F] text-slate-100 rounded-2xl rounded-bl-md shadow-md border border-white/10'
                     }`}>
                       {isAi && (
-                        <p className="flex items-center gap-1 text-[8.5px] font-black uppercase tracking-widest text-cyan-50/90 mb-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-200 shadow-[0_0_6px_rgba(165,243,252,0.9)]" />
+                        <p className="flex items-center gap-1 text-[8.5px] font-black uppercase tracking-widest text-cyan-100/90 mb-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-200" />
                           Asisten AI
                         </p>
                       )}
                       <p className="whitespace-pre-wrap break-words">{m.message}</p>
-                      <p className={`text-[9px] mt-1 font-medium flex items-center gap-1 ${isUser ? 'text-fuchsia-50/75 justify-end' : isAi ? 'text-cyan-50/75' : 'text-slate-500'}`}>
+                      <p className={`text-[9px] mt-1 font-medium flex items-center gap-1 ${isUser ? 'text-fuchsia-100/75 justify-end' : isAi ? 'text-cyan-100/75' : 'text-slate-500'}`}>
                         {m._failed ? (
-                          <span className="text-rose-200">Gagal terkirim</span>
+                          <span className="text-rose-300">Gagal terkirim</span>
                         ) : m._pending ? (
                           <span>Mengirim...</span>
                         ) : (
@@ -2134,11 +2137,11 @@ export default function StoreUI() {
             )}
           </div>
 
-          {/* Input */}
+          {/* Chat Input Field */}
           <div className="shrink-0 p-3 pb-[max(12px,env(safe-area-inset-bottom))] border-t border-white/10 bg-[#0D121F]">
             {chatConversation?.status === 'closed' ? (
-              <div className="text-center py-2">
-                <p className="text-[10px] text-slate-500 font-medium">Percakapan ini telah ditutup oleh Owner. Kirim pesan baru untuk membuka kembali.</p>
+              <div className="text-center py-1.5 mb-2">
+                <p className="text-[10px] text-slate-400 font-medium">Percakapan ditutup. Pesan baru akan membukanya kembali.</p>
               </div>
             ) : null}
             <div className="flex items-end gap-2">
