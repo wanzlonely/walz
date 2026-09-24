@@ -137,7 +137,6 @@ export default function AdminPage() {
   const [flashPercentInput, setFlashPercentInput] = useState('25');
   const [flashHoursInput, setFlashHoursInput] = useState('24');
 
-  // --- Customer Support Chat state (Owner side) ---
   type ChatFilter = 'all' | 'needs' | 'unread' | 'open' | 'closed';
   const [conversations, setConversations] = useState<any[]>([]);
   const [conversationsLoading, setConversationsLoading] = useState(false);
@@ -215,7 +214,6 @@ export default function AdminPage() {
     if (res.ok) { setAuth(true); fetchCore(); } else alert('Akses Ditolak');
   };
 
-  // --- Customer Support Chat logic (Owner side) ---
   const showChatToast = (msg: string) => {
     setChatToast(msg);
     setTimeout(() => setChatToast(null), 2200);
@@ -242,7 +240,6 @@ export default function AdminPage() {
   useEffect(() => { filterRef.current = chatFilter; }, [chatFilter]);
   useEffect(() => { searchRef.current = chatSearchDebounced; }, [chatSearchDebounced]);
 
-  // Debounce pencarian agar tidak query tiap ketikan
   useEffect(() => {
     const t = setTimeout(() => setChatSearchDebounced(chatSearch.trim()), 350);
     return () => clearTimeout(t);
@@ -360,7 +357,6 @@ export default function AdminPage() {
       if (res.status === 401) { handleSessionExpired(); throw new Error('Sesi admin habis. Silakan login ulang.'); }
       if (!res.ok) throw new Error(d.error || 'Gagal mengirim balasan');
       chatUserNearBottomRef.current = true;
-      // Tampilkan langsung tanpa menunggu realtime (dedupe by id)
       if (d.message) {
         setChatMessages((prev) => (prev.some((m) => m.id === d.message.id) ? prev : [...prev, d.message]));
         setTimeout(() => scrollChatToBottom(true), 30);
@@ -494,7 +490,6 @@ export default function AdminPage() {
     try { localStorage.setItem('walz_quick_replies', JSON.stringify(next)); } catch {}
   };
 
-  // Muat quick replies tersimpan
   useEffect(() => {
     try {
       const raw = localStorage.getItem('walz_quick_replies');
@@ -505,7 +500,6 @@ export default function AdminPage() {
     } catch {}
   }, []);
 
-  // Muat daftar saat tab dibuka / filter / search berubah
   useEffect(() => {
     if (activeTab === 'chat' && auth) {
       fetchConversations();
@@ -513,12 +507,10 @@ export default function AdminPage() {
     }
   }, [activeTab, auth, chatFilter, chatSearchDebounced, fetchConversations, fetchChatStats]);
 
-  // Badge merah di nav ikut jalan walau tab chat belum dibuka
   useEffect(() => {
     if (auth) fetchChatStats();
   }, [auth, fetchChatStats]);
 
-  // Realtime: pesan baru dari user mana pun -> refresh daftar/badge; pesan di chat terbuka -> append
   useEffect(() => {
     if (!auth) return;
 
@@ -537,7 +529,6 @@ export default function AdminPage() {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_conversations' }, (payload: any) => {
         const row = payload.new;
         if (!row?.id) return;
-        // Percakapan yang sedang dibuka dianggap sudah dibaca
         const isOpenNow = row.id === activeIdRef.current;
         const merged = isOpenNow ? { ...row, unread_by_owner: 0 } : row;
         if (isOpenNow) setActiveConversation((p: any) => ({ ...(p || {}), ...merged }));
@@ -566,7 +557,6 @@ export default function AdminPage() {
     return () => {
       supabase.removeChannel(channel);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth]);
 
   const totalUnreadChats = chatStats.unread;
@@ -621,11 +611,11 @@ export default function AdminPage() {
   };
 
   if (auth === null) return (
-    <div className="min-h-screen bg-[#060810] flex items-center justify-center p-4">
-      <div className="flex flex-col items-center gap-4 p-8 bg-[#0D121F]/80 border border-emerald-500/20 rounded-3xl backdrop-blur-2xl shadow-[0_0_50px_rgba(16,185,129,0.1)]">
+    <div className="min-h-screen bg-[#060810] flex items-center justify-center p-4 font-sans">
+      <div className="flex flex-col items-center gap-4 p-8 bg-[#0D121F]/90 border border-emerald-500/20 rounded-3xl backdrop-blur-2xl shadow-[0_0_60px_rgba(16,185,129,0.12)]">
         <div className="relative flex items-center justify-center w-14 h-14">
           <div className="absolute inset-0 border-2 border-emerald-500/20 border-t-emerald-400 rounded-full animate-spin" />
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-white font-black text-xs shadow-lg shadow-emerald-500/30">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-400 via-teal-500 to-emerald-600 flex items-center justify-center text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/30">
             W
           </div>
         </div>
@@ -639,18 +629,17 @@ export default function AdminPage() {
 
   if (!auth) return (
     <div className="min-h-screen bg-[#060810] text-white flex items-center justify-center p-4 relative overflow-hidden font-sans">
-      {/* Background glowing gradients */}
       <div className="absolute top-1/4 -left-32 w-80 h-80 bg-emerald-500/15 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-1/4 -right-32 w-80 h-80 bg-teal-500/10 rounded-full blur-[120px] pointer-events-none" />
 
       <form onSubmit={login} className="w-full max-w-[360px] relative z-10">
-        <div className="bg-[#0E131F]/80 backdrop-blur-3xl border border-white/10 p-8 rounded-[32px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),inset_0_1px_0_0_rgba(255,255,255,0.1)] space-y-6">
+        <div className="bg-[#0E131F]/90 backdrop-blur-3xl border border-white/10 p-8 rounded-[32px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),inset_0_1px_0_0_rgba(255,255,255,0.1)] space-y-6">
           <div className="text-center space-y-3">
-            <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 via-teal-500 to-emerald-600 rounded-2xl mx-auto flex items-center justify-center text-white font-black text-2xl shadow-[0_10px_30px_-8px_rgba(16,185,129,0.5)] ring-1 ring-white/20">
+            <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 via-teal-500 to-emerald-600 rounded-2xl mx-auto flex items-center justify-center text-slate-950 font-black text-2xl shadow-[0_10px_30px_-8px_rgba(16,185,129,0.5)] ring-1 ring-white/20">
               W
             </div>
             <div>
-              <h1 className="text-lg font-black tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">WALZSHOP</h1>
+              <h1 className="text-lg font-black tracking-tight text-white">WALZSHOP HQ</h1>
               <p className="text-[11px] text-slate-400 font-medium mt-0.5">Tactical Owner Command Center</p>
               <div className="inline-flex items-center gap-2 mt-3 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
@@ -721,8 +710,10 @@ export default function AdminPage() {
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
         * { font-family: 'Plus Jakarta Sans', sans-serif; }
         .glass { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(6px); }
+          from { opacity: 0; transform: translateY(8px); }
           to { opacity: 1; transform: translateY(0); }
         }
         @keyframes scaleIn {
@@ -731,17 +722,15 @@ export default function AdminPage() {
         }
       `}</style>
 
-      {/* Ambient Ambient Dynamic Lighting */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-emerald-500/10 rounded-full blur-[100px]" />
-        <div className="absolute top-1/3 -right-20 w-[300px] h-[300px] bg-violet-500/5 rounded-full blur-[100px]" />
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-emerald-500/10 rounded-full blur-[120px]" />
+        <div className="absolute top-1/3 -right-20 w-[300px] h-[300px] bg-violet-500/5 rounded-full blur-[120px]" />
       </div>
 
-      {/* Header */}
-      <header className="sticky top-0 z-30 glass bg-[#060810]/80 border-b border-white/10 px-4 py-3.5 max-w-[430px] mx-auto flex items-center justify-between shadow-lg shadow-black/40">
+      <header className="sticky top-0 z-30 glass bg-[#060810]/80 border-b border-white/[0.08] px-4 py-3.5 max-w-[430px] mx-auto flex items-center justify-between shadow-xl shadow-black/40">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-emerald-600 flex items-center justify-center text-white font-black text-base shadow-[0_4px_16px_-2px_rgba(16,185,129,0.6)] ring-1 ring-white/20">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-emerald-600 flex items-center justify-center text-slate-950 font-black text-base shadow-[0_4px_16px_-2px_rgba(16,185,129,0.6)] ring-1 ring-white/20">
               W
             </div>
             <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#060810] shadow-[0_0_8px_rgba(52,211,153,1)]" />
@@ -762,7 +751,7 @@ export default function AdminPage() {
             onClick={fetchCore}
             disabled={refreshing}
             title="Refresh Data"
-            className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:bg-white/10 hover:border-white/20 active:scale-90 transition-all shadow-sm"
+            className="w-10 h-10 rounded-2xl bg-white/[0.05] border border-white/10 flex items-center justify-center text-slate-300 hover:bg-white/10 active:scale-90 transition-all shadow-sm"
           >
             <div className={`w-4 h-4 ${refreshing ? 'animate-spin text-emerald-400' : ''}`}><IcoRefresh/></div>
           </button>
@@ -776,16 +765,13 @@ export default function AdminPage() {
         </div>
       </header>
 
-      {/* Main Content Area */}
       <main className="px-4 pt-4 max-w-[430px] mx-auto space-y-4 relative z-10">
 
         {activeTab === 'dashboard' && (
           <div className="space-y-4 animate-[fadeIn_0.25s_ease-out]">
 
-            {/* Metrics Dashboard Grid */}
             <div className="grid grid-cols-2 gap-3">
-              {/* Omset Card */}
-              <div className="col-span-2 group relative overflow-hidden bg-gradient-to-br from-[#0E1424] via-[#0C101B] to-[#080B12] border border-emerald-500/20 p-4 rounded-3xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)]">
+              <div className="col-span-2 group relative overflow-hidden bg-gradient-to-br from-[#0E1424] via-[#0C101B] to-[#080B12] border border-emerald-500/20 p-4.5 rounded-3xl shadow-xl">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none" />
                 <div className="flex justify-between items-start">
                   <div>
@@ -804,7 +790,6 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Total User */}
               <div className="bg-[#0D121F] border border-white/10 p-4 rounded-3xl shadow-lg relative overflow-hidden flex flex-col justify-between">
                 <div>
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total User</p>
@@ -816,7 +801,6 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* VIP Member */}
               <div className="bg-[#0D121F] border border-amber-500/20 p-4 rounded-3xl shadow-lg relative overflow-hidden flex flex-col justify-between">
                 <div className="absolute -top-6 -right-6 w-16 h-16 bg-amber-500/10 rounded-full blur-xl pointer-events-none" />
                 <div>
@@ -829,7 +813,6 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Pending Transactions */}
               <div className={`col-span-2 border p-4 rounded-3xl shadow-lg transition-all flex items-center justify-between ${
                 pending.length > 0 ? 'bg-rose-950/20 border-rose-500/40 shadow-rose-950/20' : 'bg-[#0D121F] border-white/10'
               }`}>
@@ -859,7 +842,6 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Flash Sale Banner Control */}
             <div className="relative overflow-hidden bg-gradient-to-br from-[#1C1218] via-[#140E16] to-[#0A070D] border border-rose-500/25 p-5 rounded-3xl shadow-xl">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -918,7 +900,6 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Top Referrer Board */}
             {topReferrers.length > 0 && (
               <div className="bg-[#0D121F] border border-white/10 p-5 rounded-3xl shadow-xl space-y-3.5">
                 <div className="flex items-center gap-3">
@@ -926,7 +907,7 @@ export default function AdminPage() {
                     <div className="w-4 h-4"><IcoUsers/></div>
                   </div>
                   <div>
-                    <h2 className="text-xs font-black text-white">Top Referrer Top Leaderboard</h2>
+                    <h2 className="text-xs font-black text-white">Top Referrer Leaderboard</h2>
                     <p className="text-[10px] text-slate-400">Pengguna dengan Referral Terbanyak</p>
                   </div>
                 </div>
@@ -949,7 +930,6 @@ export default function AdminPage() {
               </div>
             )}
 
-            {/* Broadcast Massal */}
             <div className="bg-[#0D121F] border border-white/10 p-5 rounded-3xl shadow-xl space-y-3.5">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
@@ -986,7 +966,6 @@ export default function AdminPage() {
               )}
             </div>
 
-            {/* Promo Voucher Codes */}
             <div className="bg-[#0D121F] border border-white/10 p-5 rounded-3xl shadow-xl space-y-4">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
@@ -1148,7 +1127,6 @@ export default function AdminPage() {
         {activeTab === 'users' && (
           <div className="space-y-4 animate-[fadeIn_0.25s_ease-out]">
 
-            {/* Filter Pills */}
             <div className="bg-[#0D121F] border border-white/10 p-1 rounded-2xl flex gap-1">
               {[
                 {k:'ALL', label:`Semua`, count:(data.users || []).length},
@@ -1167,7 +1145,6 @@ export default function AdminPage() {
               ))}
             </div>
 
-            {/* Search Input */}
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500">
                 <IcoSearch/>
@@ -1181,7 +1158,6 @@ export default function AdminPage() {
               />
             </div>
 
-            {/* User Items */}
             <div className="space-y-2.5">
               {filteredUsers.map((u: any) => {
                 const isBannedUser = u.status === 'BANNED';
@@ -1292,7 +1268,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB: CUSTOMER SUPPORT CHAT */}
         {activeTab === 'chat' && (
           <div className="animate-[fadeIn_0.25s_ease-out] relative h-[calc(100dvh-210px)] min-h-[420px] flex flex-col bg-[#0D121F] border border-white/10 rounded-3xl overflow-hidden shadow-xl">
             {chatToast && (
@@ -1302,7 +1277,6 @@ export default function AdminPage() {
             )}
 
             {!activeConversationId ? (
-              // ================= INBOX =================
               <div className="flex flex-col h-full min-h-0">
                 <div className="p-3.5 border-b border-white/10 space-y-2.5 shrink-0">
                   <div className="flex items-center justify-between gap-2">
@@ -1459,7 +1433,6 @@ export default function AdminPage() {
                   )}
                 </div>
 
-                {/* Aksi massal */}
                 {selectMode && (
                   <div className="shrink-0 border-t border-white/10 bg-[#0D121F] p-3 space-y-2">
                     {bulkOpen ? (
@@ -1502,7 +1475,6 @@ export default function AdminPage() {
                 )}
               </div>
             ) : (
-              // ================= PERCAKAPAN AKTIF =================
               <div className="flex flex-col h-full min-h-0">
                 <div className="px-3 py-3 border-b border-white/10 flex items-center gap-2.5 shrink-0">
                   <button
@@ -1616,7 +1588,6 @@ export default function AdminPage() {
                   )}
                 </div>
 
-                {/* Quick replies */}
                 {quickOpen && (
                   <div className="shrink-0 border-t border-white/10 bg-[#0A0F1A] max-h-[42%] overflow-y-auto overscroll-contain p-2.5 space-y-1.5">
                     {quickReplies.map((q) => (
@@ -1696,10 +1667,9 @@ export default function AdminPage() {
 
       </main>
 
-      {/* Floating Modern Navigation Bar */}
       <nav className="fixed bottom-0 left-0 right-0 z-40 pb-[max(14px,env(safe-area-inset-bottom))] pt-2">
         <div className="max-w-[430px] mx-auto px-4">
-          <div className="glass bg-[#0D121F]/90 backdrop-blur-3xl border border-white/10 rounded-3xl p-1.5 flex items-center justify-around shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+          <div className="glass bg-[#0D121F]/90 backdrop-blur-3xl border border-white/10 rounded-3xl p-1.5 flex items-center justify-around shadow-[0_20px_50px_rgba(0,0,0,0.85)]">
             {[
               {id:'dashboard', label:'Dashboard', Icon:IcoDashboard, dot:false},
               {id:'orders', label:'Orders', Icon:IcoReceipt, dot:pending.length>0},
@@ -1725,7 +1695,6 @@ export default function AdminPage() {
         </div>
       </nav>
 
-      {/* PIN Verification Modal */}
       {pinModalOpen && (
         <div className="fixed inset-0 z-50 bg-[#060810]/85 backdrop-blur-xl flex items-center justify-center p-4 animate-[fadeIn_0.15s_ease-out]">
           <div className="max-w-[340px] w-full bg-[#0D121F] border border-white/15 p-6 rounded-[32px] space-y-5 shadow-[0_25px_70px_rgba(0,0,0,0.9)] animate-[scaleIn_0.2s_ease-out]" onClick={e => e.stopPropagation()}>
@@ -1760,7 +1729,6 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* Image Preview Modal */}
       {previewImg && (
         <div className="fixed inset-0 z-50 bg-[#060810]/90 backdrop-blur-2xl flex items-center justify-center p-4 animate-[fadeIn_0.15s_ease-out]" onClick={() => setPreviewImg(null)}>
           <div className="max-w-[380px] w-full bg-[#0D121F] border border-white/15 p-4 rounded-3xl space-y-3 shadow-2xl" onClick={e => e.stopPropagation()}>
