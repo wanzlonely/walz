@@ -622,7 +622,7 @@ export default function AdminPage() {
 
   if (auth === null) return (
     <div className="min-h-screen bg-[#060810] flex items-center justify-center p-4">
-      <div className="flex flex-col items-center gap-4 p-8 bg-[#0D121F]/80 border border-emerald-500/20 rounded-3xl backdrop-blur-2xl shadow-[0_0_50px_rgba(16,185,129,0.1)]">
+      <div className="flex flex-col items-center gap-4 p-8 bg-gradient-to-b from-[#131A2E]/85 to-[#0A0E1A]/85 border border-emerald-500/20 rounded-3xl backdrop-blur-2xl shadow-[0_0_50px_rgba(16,185,129,0.1)] ring-1 ring-white/[0.03]">
         <div className="relative flex items-center justify-center w-14 h-14">
           <div className="absolute inset-0 border-2 border-emerald-500/20 border-t-emerald-400 rounded-full animate-spin" />
           <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-white font-black text-xs shadow-lg shadow-emerald-500/30">
@@ -644,7 +644,7 @@ export default function AdminPage() {
       <div className="absolute bottom-1/4 -right-32 w-80 h-80 bg-teal-500/10 rounded-full blur-[120px] pointer-events-none" />
 
       <form onSubmit={login} className="w-full max-w-[360px] relative z-10">
-        <div className="bg-[#0E131F]/80 backdrop-blur-3xl border border-white/10 p-8 rounded-[32px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),inset_0_1px_0_0_rgba(255,255,255,0.1)] space-y-6">
+        <div className="bg-gradient-to-b from-[#141B30]/90 to-[#0A0E1A]/90 backdrop-blur-3xl border border-white/[0.1] p-8 rounded-[32px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),inset_0_1px_0_0_rgba(255,255,255,0.1)] ring-1 ring-white/[0.04] space-y-6">
           <div className="text-center space-y-3">
             <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 via-teal-500 to-emerald-600 rounded-2xl mx-auto flex items-center justify-center text-white font-black text-2xl shadow-[0_10px_30px_-8px_rgba(16,185,129,0.5)] ring-1 ring-white/20">
               W
@@ -668,7 +668,7 @@ export default function AdminPage() {
                 placeholder="Masukkan ID Telegram"
                 value={telegramId}
                 onChange={e => setTelegramId(e.target.value)}
-                className="w-full bg-[#070A12] border border-white/10 text-white placeholder-slate-600 px-4 py-3.5 rounded-2xl text-[13px] font-medium focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/50 transition-all shadow-inner"
+                className="w-full bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 text-white placeholder-slate-600 px-4 py-3.5 rounded-2xl text-[13px] font-medium focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/50 transition-all shadow-inner"
               />
             </div>
             <div className="space-y-1.5">
@@ -679,12 +679,12 @@ export default function AdminPage() {
                 placeholder="••••••••"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                className="w-full bg-[#070A12] border border-white/10 text-white placeholder-slate-600 px-4 py-3.5 rounded-2xl text-[13px] font-medium focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/50 transition-all shadow-inner"
+                className="w-full bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 text-white placeholder-slate-600 px-4 py-3.5 rounded-2xl text-[13px] font-medium focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/50 transition-all shadow-inner"
               />
             </div>
           </div>
 
-          <button type="submit" className="w-full py-4 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-500 text-slate-950 font-black rounded-2xl text-[13px] tracking-wider uppercase active:scale-[0.98] shadow-[0_10px_25px_-5px_rgba(16,185,129,0.5)] hover:brightness-110 transition-all">
+          <button type="submit" className="w-full py-4 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-500 text-slate-950 font-black rounded-2xl text-[13px] tracking-wider uppercase active:scale-[0.98] shadow-[0_10px_25px_-5px_rgba(16,185,129,0.5)] ring-1 ring-emerald-300/30 hover:brightness-110 transition-all">
             Otorisasi Masuk
           </button>
 
@@ -731,17 +731,18 @@ export default function AdminPage() {
         }
       `}</style>
 
-      {/* Ambient Ambient Dynamic Lighting */}
+      {/* Ambient Dynamic Lighting */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-emerald-500/10 rounded-full blur-[100px]" />
-        <div className="absolute top-1/3 -right-20 w-[300px] h-[300px] bg-violet-500/5 rounded-full blur-[100px]" />
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-emerald-500/[0.08] rounded-full blur-[110px]" />
+        <div className="absolute top-1/3 -right-20 w-[300px] h-[300px] bg-violet-500/[0.05] rounded-full blur-[110px]" />
+        <div className="absolute bottom-0 left-0 w-[320px] h-[320px] bg-amber-500/[0.04] rounded-full blur-[120px]" />
       </div>
 
       {/* Header */}
-      <header className="sticky top-0 z-30 glass bg-[#060810]/80 border-b border-white/10 px-4 py-3.5 max-w-[430px] mx-auto flex items-center justify-between shadow-lg shadow-black/40">
+      <header className="sticky top-0 z-30 glass bg-[#060810]/85 border-b border-white/[0.08] px-4 py-3.5 max-w-[430px] mx-auto flex items-center justify-between shadow-[0_4px_24px_rgba(0,0,0,0.5)]">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-emerald-600 flex items-center justify-center text-white font-black text-base shadow-[0_4px_16px_-2px_rgba(16,185,129,0.6)] ring-1 ring-white/20">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-emerald-600 flex items-center justify-center text-white font-black text-base shadow-[0_4px_16px_-2px_rgba(16,185,129,0.6)] ring-1 ring-white/25">
               W
             </div>
             <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#060810] shadow-[0_0_8px_rgba(52,211,153,1)]" />
@@ -785,7 +786,7 @@ export default function AdminPage() {
             {/* Metrics Dashboard Grid */}
             <div className="grid grid-cols-2 gap-3">
               {/* Omset Card */}
-              <div className="col-span-2 group relative overflow-hidden bg-gradient-to-br from-[#0E1424] via-[#0C101B] to-[#080B12] border border-emerald-500/20 p-4 rounded-3xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)]">
+              <div className="col-span-2 group relative overflow-hidden bg-gradient-to-br from-[#0E1424] via-[#0C101B] to-[#080B12] border border-emerald-500/20 p-4 rounded-3xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] ring-1 ring-white/[0.03]">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none" />
                 <div className="flex justify-between items-start">
                   <div>
@@ -805,7 +806,7 @@ export default function AdminPage() {
               </div>
 
               {/* Total User */}
-              <div className="bg-[#0D121F] border border-white/10 p-4 rounded-3xl shadow-lg relative overflow-hidden flex flex-col justify-between">
+              <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-white/[0.08] p-4 rounded-3xl shadow-[0_8px_24px_-8px_rgba(0,0,0,0.5)] relative overflow-hidden flex flex-col justify-between">
                 <div>
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total User</p>
                   <p className="text-xl font-black text-white mt-1 font-mono">{(data.users || []).length}</p>
@@ -817,7 +818,7 @@ export default function AdminPage() {
               </div>
 
               {/* VIP Member */}
-              <div className="bg-[#0D121F] border border-amber-500/20 p-4 rounded-3xl shadow-lg relative overflow-hidden flex flex-col justify-between">
+              <div className="bg-gradient-to-b from-[#1A1608] to-[#0A0E1A] border border-amber-500/20 p-4 rounded-3xl shadow-[0_8px_24px_-8px_rgba(245,158,11,0.15)] relative overflow-hidden flex flex-col justify-between">
                 <div className="absolute -top-6 -right-6 w-16 h-16 bg-amber-500/10 rounded-full blur-xl pointer-events-none" />
                 <div>
                   <p className="text-[10px] font-black text-amber-400/90 uppercase tracking-widest">VIP Member</p>
@@ -831,7 +832,7 @@ export default function AdminPage() {
 
               {/* Pending Transactions */}
               <div className={`col-span-2 border p-4 rounded-3xl shadow-lg transition-all flex items-center justify-between ${
-                pending.length > 0 ? 'bg-rose-950/20 border-rose-500/40 shadow-rose-950/20' : 'bg-[#0D121F] border-white/10'
+                pending.length > 0 ? 'bg-gradient-to-b from-[#1D0A10] to-[#0A0E1A] border-rose-500/40 shadow-[0_8px_24px_-8px_rgba(244,63,94,0.25)]' : 'bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border-white/[0.08]'
               }`}>
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-bold text-sm ${
@@ -860,7 +861,7 @@ export default function AdminPage() {
             </div>
 
             {/* Flash Sale Banner Control */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-[#1C1218] via-[#140E16] to-[#0A070D] border border-rose-500/25 p-5 rounded-3xl shadow-xl">
+            <div className="relative overflow-hidden bg-gradient-to-br from-[#1C1218] via-[#140E16] to-[#0A070D] border border-rose-500/25 p-5 rounded-3xl shadow-[0_10px_30px_-10px_rgba(244,63,94,0.15)] ring-1 ring-white/[0.03]">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -886,7 +887,7 @@ export default function AdminPage() {
                       type="number"
                       value={flashPercentInput}
                       onChange={e => setFlashPercentInput(e.target.value)}
-                      className="w-full bg-[#070A12] border border-white/10 text-white px-3.5 py-3 rounded-2xl text-xs font-bold text-center focus:outline-none focus:border-rose-500/50 transition-all shadow-inner"
+                      className="w-full bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 text-white px-3.5 py-3 rounded-2xl text-xs font-bold text-center focus:outline-none focus:border-rose-500/50 transition-all shadow-inner"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -895,7 +896,7 @@ export default function AdminPage() {
                       type="number"
                       value={flashHoursInput}
                       onChange={e => setFlashHoursInput(e.target.value)}
-                      className="w-full bg-[#070A12] border border-white/10 text-white px-3.5 py-3 rounded-2xl text-xs font-bold text-center focus:outline-none focus:border-rose-500/50 transition-all shadow-inner"
+                      className="w-full bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 text-white px-3.5 py-3 rounded-2xl text-xs font-bold text-center focus:outline-none focus:border-rose-500/50 transition-all shadow-inner"
                     />
                   </div>
                 </div>
@@ -920,7 +921,7 @@ export default function AdminPage() {
 
             {/* Top Referrer Board */}
             {topReferrers.length > 0 && (
-              <div className="bg-[#0D121F] border border-white/10 p-5 rounded-3xl shadow-xl space-y-3.5">
+              <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-white/[0.08] p-5 rounded-3xl shadow-[0_8px_28px_-8px_rgba(0,0,0,0.55)] space-y-3.5">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400">
                     <div className="w-4 h-4"><IcoUsers/></div>
@@ -932,7 +933,7 @@ export default function AdminPage() {
                 </div>
                 <div className="space-y-2">
                   {topReferrers.map((u: any, idx: number) => (
-                    <div key={u.telegramId} className="flex items-center gap-3 p-3 bg-[#070A12] border border-white/5 rounded-2xl">
+                    <div key={u.telegramId} className="flex items-center gap-3 p-3 bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/5 rounded-2xl">
                       <span className={`text-xs font-black w-5 text-center ${idx === 0 ? 'text-amber-400' : idx === 1 ? 'text-slate-300' : idx === 2 ? 'text-amber-600' : 'text-slate-600'}`}>
                         #{idx + 1}
                       </span>
@@ -950,7 +951,7 @@ export default function AdminPage() {
             )}
 
             {/* Broadcast Massal */}
-            <div className="bg-[#0D121F] border border-white/10 p-5 rounded-3xl shadow-xl space-y-3.5">
+            <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-white/[0.08] p-5 rounded-3xl shadow-[0_8px_28px_-8px_rgba(0,0,0,0.55)] space-y-3.5">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                   <div className="w-4 h-4"><IcoBroadcast/></div>
@@ -966,13 +967,13 @@ export default function AdminPage() {
                 placeholder="Tulis pesan broadcast resmi..."
                 value={broadcastText}
                 onChange={e => setBroadcastText(e.target.value)}
-                className="w-full bg-[#070A12] border border-white/10 text-white placeholder-slate-600 p-3.5 rounded-2xl text-xs font-medium focus:outline-none focus:border-emerald-500/50 resize-none leading-relaxed transition-all shadow-inner"
+                className="w-full bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 text-white placeholder-slate-600 p-3.5 rounded-2xl text-xs font-medium focus:outline-none focus:border-emerald-500/50 resize-none leading-relaxed transition-all shadow-inner"
               />
 
               <button
                 onClick={() => requestProtectedAction({ action: 'broadcast', broadcastMessage: broadcastText })}
                 disabled={sendingBroadcast || !broadcastText.trim()}
-                className="w-full py-3.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl active:scale-[0.98] disabled:opacity-40 shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl active:scale-[0.98] disabled:opacity-40 shadow-[0_8px_24px_-6px_rgba(16,185,129,0.45)] ring-1 ring-emerald-300/30 transition-all flex items-center justify-center gap-2"
               >
                 <div className="w-4 h-4"><IcoBroadcast/></div>
                 {sendingBroadcast ? 'Mengirim...' : 'Kirim Broadcast (Konfirmasi PIN)'}
@@ -987,7 +988,7 @@ export default function AdminPage() {
             </div>
 
             {/* Promo Voucher Codes */}
-            <div className="bg-[#0D121F] border border-white/10 p-5 rounded-3xl shadow-xl space-y-4">
+            <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-white/[0.08] p-5 rounded-3xl shadow-[0_8px_28px_-8px_rgba(0,0,0,0.55)] space-y-4">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
                   <div className="w-4 h-4"><IcoTag/></div>
@@ -1001,29 +1002,29 @@ export default function AdminPage() {
               <div className="space-y-3">
                 <div className="space-y-1">
                   <label className="text-[9px] font-black tracking-widest text-slate-400 uppercase ml-1">Kode Voucher</label>
-                  <input type="text" placeholder="Contoh: VIP2026" value={newCodeName} onChange={e => setNewCodeName(e.target.value)} className="w-full bg-[#070A12] border border-white/10 text-white px-3.5 py-3 rounded-2xl text-xs font-mono font-black uppercase tracking-wider focus:outline-none focus:border-amber-500/50 transition-all shadow-inner" />
+                  <input type="text" placeholder="Contoh: VIP2026" value={newCodeName} onChange={e => setNewCodeName(e.target.value)} className="w-full bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 text-white px-3.5 py-3 rounded-2xl text-xs font-mono font-black uppercase tracking-wider focus:outline-none focus:border-amber-500/50 transition-all shadow-inner" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2.5">
                   <div className="space-y-1">
                     <label className="text-[9px] font-black tracking-widest text-slate-400 uppercase ml-1">Durasi (Hari)</label>
-                    <input type="number" placeholder="7" value={newCodeDays} onChange={e => setNewCodeDays(e.target.value)} className="w-full bg-[#070A12] border border-white/10 text-white px-3 py-3 rounded-2xl text-xs font-bold text-center focus:outline-none focus:border-amber-500/50 transition-all shadow-inner" />
+                    <input type="number" placeholder="7" value={newCodeDays} onChange={e => setNewCodeDays(e.target.value)} className="w-full bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 text-white px-3 py-3 rounded-2xl text-xs font-bold text-center focus:outline-none focus:border-amber-500/50 transition-all shadow-inner" />
                   </div>
                   <div className="space-y-1">
                     <label className="text-[9px] font-black tracking-widest text-slate-400 uppercase ml-1">Total Kuota</label>
-                    <input type="number" placeholder="10" value={newCodeUses} onChange={e => setNewCodeUses(e.target.value)} className="w-full bg-[#070A12] border border-white/10 text-white px-3 py-3 rounded-2xl text-xs font-bold text-center focus:outline-none focus:border-amber-500/50 transition-all shadow-inner" />
+                    <input type="number" placeholder="10" value={newCodeUses} onChange={e => setNewCodeUses(e.target.value)} className="w-full bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 text-white px-3 py-3 rounded-2xl text-xs font-bold text-center focus:outline-none focus:border-amber-500/50 transition-all shadow-inner" />
                   </div>
                 </div>
 
                 <div>
                   <label className="text-[9px] font-black tracking-widest text-slate-400 uppercase ml-1">Limit Harian (Opsional)</label>
-                  <input type="number" placeholder="Kosongkan jika tanpa batas harian" value={newCodeDailyLimit} onChange={e => setNewCodeDailyLimit(e.target.value)} className="w-full mt-1 bg-[#070A12] border border-white/10 text-white px-3.5 py-3 rounded-2xl text-xs font-semibold focus:outline-none focus:border-amber-500/50 transition-all shadow-inner" />
+                  <input type="number" placeholder="Kosongkan jika tanpa batas harian" value={newCodeDailyLimit} onChange={e => setNewCodeDailyLimit(e.target.value)} className="w-full mt-1 bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 text-white px-3.5 py-3 rounded-2xl text-xs font-semibold focus:outline-none focus:border-amber-500/50 transition-all shadow-inner" />
                   <p className="text-[9.5px] text-slate-500 mt-1.5 ml-1 leading-relaxed">
                     💡 <span className="text-slate-400 font-medium">Batas klaim per hari direset otomatis setiap jam 00:00 (1 user max 1x/hari).</span>
                   </p>
                 </div>
 
-                <button onClick={() => requestProtectedAction({ action: 'create_redeem_code', code: newCodeName, days: newCodeDays, usesLeft: newCodeUses, dailyLimit: newCodeDailyLimit })} disabled={!newCodeName.trim()} className="w-full py-3.5 bg-white text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl active:scale-[0.98] disabled:opacity-40 hover:bg-slate-200 transition-all shadow-lg shadow-white/10">
+                <button onClick={() => requestProtectedAction({ action: 'create_redeem_code', code: newCodeName, days: newCodeDays, usesLeft: newCodeUses, dailyLimit: newCodeDailyLimit })} disabled={!newCodeName.trim()} className="w-full py-3.5 bg-white text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl active:scale-[0.98] disabled:opacity-40 hover:bg-slate-200 transition-all shadow-[0_8px_20px_-4px_rgba(255,255,255,0.2)]">
                   + Buat Voucher Baru
                 </button>
               </div>
@@ -1037,7 +1038,7 @@ export default function AdminPage() {
                 ) : (
                   <div className="grid gap-2">
                     {(data.redeemCodes || []).map((c: any) => (
-                      <div key={c.code} className="bg-[#070A12] border border-white/10 p-3.5 rounded-2xl flex justify-between items-center group hover:border-amber-500/30 transition-colors">
+                      <div key={c.code} className="bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 p-3.5 rounded-2xl flex justify-between items-center group hover:border-amber-500/30 transition-colors">
                         <div className="space-y-0.5">
                           <p className="font-mono font-black text-amber-300 text-xs tracking-wider">{c.code}</p>
                           <p className="text-[10px] text-slate-400">+{c.days} Hari VIP • {c.usesLeft} sisa kuota</p>
@@ -1076,7 +1077,7 @@ export default function AdminPage() {
             </div>
 
             {pending.length === 0 ? (
-              <div className="bg-[#0D121F] border border-white/10 p-10 text-center rounded-3xl space-y-3">
+              <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-white/[0.08] p-10 text-center rounded-3xl space-y-3">
                 <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-xl font-black">
                   ✓
                 </div>
@@ -1086,7 +1087,7 @@ export default function AdminPage() {
                 </div>
               </div>
             ) : pending.map((o: any) => (
-              <div key={o.orderId} className="bg-[#0D121F] border border-white/10 p-4.5 rounded-3xl space-y-3.5 shadow-xl hover:border-emerald-500/30 transition-all">
+              <div key={o.orderId} className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-white/[0.08] p-4.5 rounded-3xl space-y-3.5 shadow-[0_8px_28px_-8px_rgba(0,0,0,0.55)] hover:border-emerald-500/30 transition-all">
                 <div className="flex justify-between items-center">
                   <span className="font-mono font-black text-emerald-300 text-[11px] tracking-wider bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">
                     #{o.orderId}
@@ -1096,7 +1097,7 @@ export default function AdminPage() {
                   </span>
                 </div>
 
-                <div className="bg-[#070A12] p-4 rounded-2xl border border-white/5 space-y-2">
+                <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] p-4 rounded-2xl border border-white/5 space-y-2">
                   <div className="flex justify-between items-start">
                     <div>
                       <p className="font-black text-white text-sm">{o.displayName || o.username}</p>
@@ -1122,7 +1123,7 @@ export default function AdminPage() {
                 </div>
 
                 {o.proofImage && (
-                  <div className="relative group w-full h-40 bg-[#070A12] rounded-2xl overflow-hidden cursor-pointer border border-white/10 hover:border-emerald-500/50 transition-all" onClick={() => setPreviewImg(o.proofImage)}>
+                  <div className="relative group w-full h-40 bg-gradient-to-b from-[#0D1322] to-[#080B14] rounded-2xl overflow-hidden cursor-pointer border border-white/10 hover:border-emerald-500/50 transition-all" onClick={() => setPreviewImg(o.proofImage)}>
                     <img src={o.proofImage} alt="Bukti Transfer" className="w-full h-full object-contain p-2" />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                       <span className="text-[10px] font-black uppercase tracking-wider text-white bg-black/60 px-3 py-1.5 rounded-full border border-white/20">
@@ -1133,7 +1134,7 @@ export default function AdminPage() {
                 )}
 
                 <div className="grid grid-cols-2 gap-2.5 pt-1">
-                  <button onClick={() => directAction({ action: 'order_action', orderId: o.orderId, decision: 'approve' })} className="py-3.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl active:scale-[0.98] shadow-lg shadow-emerald-500/20 hover:brightness-110 transition-all">
+                  <button onClick={() => directAction({ action: 'order_action', orderId: o.orderId, decision: 'approve' })} className="py-3.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl active:scale-[0.98] shadow-[0_8px_24px_-6px_rgba(16,185,129,0.45)] ring-1 ring-emerald-300/30 hover:brightness-110 transition-all">
                     Approve
                   </button>
                   <button onClick={() => directAction({ action: 'order_action', orderId: o.orderId, decision: 'reject' })} className="py-3.5 bg-white/5 border border-white/10 text-slate-300 font-extrabold text-xs uppercase tracking-wider rounded-2xl active:scale-[0.98] hover:bg-rose-500/10 hover:text-rose-400 hover:border-rose-500/20 transition-all">
@@ -1149,7 +1150,7 @@ export default function AdminPage() {
           <div className="space-y-4 animate-[fadeIn_0.25s_ease-out]">
 
             {/* Filter Pills */}
-            <div className="bg-[#0D121F] border border-white/10 p-1 rounded-2xl flex gap-1">
+            <div className="bg-[#0A0E1A] border border-white/[0.08] p-1 rounded-2xl flex gap-1 shadow-inner">
               {[
                 {k:'ALL', label:`Semua`, count:(data.users || []).length},
                 {k:'FREE', label:`Free`, count:freeUsers.length},
@@ -1177,7 +1178,7 @@ export default function AdminPage() {
                 placeholder="Cari Telegram ID, username, nama..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="w-full bg-[#0D121F] border border-white/10 text-white pl-11 pr-4 py-3.5 rounded-2xl text-xs font-medium placeholder-slate-500 focus:outline-none focus:border-white/20 transition-all shadow-inner"
+                className="w-full bg-[#0A0E1A] border border-white/10 text-white pl-11 pr-4 py-3.5 rounded-2xl text-xs font-medium placeholder-slate-500 focus:outline-none focus:border-white/20 transition-all shadow-inner"
               />
             </div>
 
@@ -1191,7 +1192,7 @@ export default function AdminPage() {
                 const risk = u.riskScore || 0;
 
                 return (
-                  <div key={u.telegramId} className="bg-[#0D121F] border border-white/10 p-4 rounded-3xl space-y-3 shadow-lg hover:border-white/20 transition-all">
+                  <div key={u.telegramId} className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-white/[0.08] p-4 rounded-3xl space-y-3 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.5)] hover:border-white/20 transition-all">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex gap-3 min-w-0">
                         <div className={`w-10 h-10 rounded-2xl flex items-center justify-center text-xs font-black shrink-0 shadow-md ${
@@ -1219,7 +1220,7 @@ export default function AdminPage() {
                     </div>
 
                     <div className="flex items-center gap-2 pt-1">
-                      <div className="flex items-center gap-1 bg-[#070A12] border border-white/10 rounded-xl px-2.5 py-2">
+                      <div className="flex items-center gap-1 bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 rounded-xl px-2.5 py-2">
                         <input type="text" value={currentVal} onChange={e => setGrantDays(prev => ({ ...prev, [u.telegramId]: e.target.value }))} className="w-8 bg-transparent text-center font-bold text-xs text-white focus:outline-none" />
                         <span className="text-[9px] text-slate-500 font-extrabold">HARI</span>
                       </div>
@@ -1241,7 +1242,7 @@ export default function AdminPage() {
                 );
               })}
               {filteredUsers.length === 0 && (
-                <div className="py-12 text-center bg-[#0D121F] border border-white/10 rounded-3xl">
+                <div className="py-12 text-center bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-white/[0.08] rounded-3xl">
                   <p className="text-xs text-slate-500 font-medium">Tidak ada pengguna ditemukan</p>
                 </div>
               )}
@@ -1265,16 +1266,16 @@ export default function AdminPage() {
               <div className="absolute left-[13px] top-3 bottom-3 w-[2px] bg-white/10" />
               <div className="space-y-3">
                 {(data.auditLogs || []).length === 0 ? (
-                  <div className="bg-[#0D121F] border border-white/10 p-8 text-center rounded-3xl">
+                  <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-white/[0.08] p-8 text-center rounded-3xl">
                     <p className="text-xs text-slate-500 italic">Belum ada catatan aktivitas keamanan</p>
                   </div>
                 ) : (
                   (data.auditLogs || []).map((l: any) => (
                     <div key={l.id} className="relative pl-8">
-                      <div className="absolute left-0 top-3.5 w-7 h-7 rounded-full bg-[#0D121F] border border-white/20 flex items-center justify-center shadow-md">
+                      <div className="absolute left-0 top-3.5 w-7 h-7 rounded-full bg-gradient-to-b from-[#151C30] to-[#0A0E1A] border border-white/20 flex items-center justify-center shadow-md">
                         <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
                       </div>
-                      <div className="bg-[#0D121F] border border-white/10 p-3.5 rounded-2xl space-y-1.5 shadow-md hover:border-white/20 transition-all">
+                      <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-white/[0.08] p-3.5 rounded-2xl space-y-1.5 shadow-md hover:border-white/20 transition-all">
                         <div className="flex justify-between items-center">
                           <span className="font-mono font-bold text-emerald-300 text-[10px] tracking-wider bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
                             {l.action}
@@ -1294,7 +1295,7 @@ export default function AdminPage() {
 
         {/* TAB: CUSTOMER SUPPORT CHAT */}
         {activeTab === 'chat' && (
-          <div className="animate-[fadeIn_0.25s_ease-out] relative h-[calc(100dvh-210px)] min-h-[420px] flex flex-col bg-[#0D121F] border border-white/10 rounded-3xl overflow-hidden shadow-xl">
+          <div className="animate-[fadeIn_0.25s_ease-out] relative h-[calc(100dvh-210px)] min-h-[420px] flex flex-col bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-white/[0.08] rounded-3xl overflow-hidden shadow-[0_8px_28px_-8px_rgba(0,0,0,0.55)]">
             {chatToast && (
               <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 px-3.5 py-2 rounded-full bg-slate-900/95 border border-white/15 text-[10.5px] font-bold text-white shadow-xl max-w-[90%] text-center">
                 {chatToast}
@@ -1341,7 +1342,7 @@ export default function AdminPage() {
                       placeholder="Cari nama, @username, atau Telegram ID..."
                       value={chatSearch}
                       onChange={(e) => setChatSearch(e.target.value)}
-                      className="w-full bg-[#070A12] border border-white/10 text-white placeholder-slate-600 pl-9 pr-3 py-2 rounded-xl text-[11px] focus:outline-none focus:border-violet-500/50 transition-all"
+                      className="w-full bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 text-white placeholder-slate-600 pl-9 pr-3 py-2 rounded-xl text-[11px] focus:outline-none focus:border-violet-500/50 transition-all"
                     />
                   </div>
 
@@ -1461,7 +1462,7 @@ export default function AdminPage() {
 
                 {/* Aksi massal */}
                 {selectMode && (
-                  <div className="shrink-0 border-t border-white/10 bg-[#0D121F] p-3 space-y-2">
+                  <div className="shrink-0 border-t border-white/[0.08] bg-[#0A0E1A] p-3 space-y-2">
                     {bulkOpen ? (
                       <>
                         <textarea
@@ -1470,7 +1471,7 @@ export default function AdminPage() {
                           placeholder={`Pesan untuk ${selectedIds.length} percakapan...`}
                           rows={3}
                           maxLength={2000}
-                          className="w-full bg-[#070A12] border border-white/10 text-white placeholder-slate-600 px-3 py-2 rounded-xl text-xs focus:outline-none focus:border-violet-500/50 resize-none"
+                          className="w-full bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 text-white placeholder-slate-600 px-3 py-2 rounded-xl text-xs focus:outline-none focus:border-violet-500/50 resize-none"
                         />
                         <div className="flex gap-2">
                           <button onClick={() => setBulkOpen(false)} className="flex-1 py-2.5 rounded-xl bg-white/5 border border-white/10 text-[11px] font-black text-slate-300 active:scale-95">Kembali</button>
@@ -1646,7 +1647,7 @@ export default function AdminPage() {
                         onChange={(e) => setNewQuick(e.target.value)}
                         onKeyDown={(e) => { if (e.key === 'Enter') addQuickReply(); }}
                         placeholder="Tambah template balasan..."
-                        className="flex-1 bg-[#070A12] border border-white/10 text-white placeholder-slate-600 px-3 py-2 rounded-xl text-[11px] focus:outline-none focus:border-violet-500/50"
+                        className="flex-1 bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 text-white placeholder-slate-600 px-3 py-2 rounded-xl text-[11px] focus:outline-none focus:border-violet-500/50"
                       />
                       <button onClick={addQuickReply} disabled={!newQuick.trim()} className="px-3 rounded-xl bg-white text-slate-950 text-[10px] font-black active:scale-95 disabled:opacity-40">Simpan</button>
                     </div>
@@ -1679,7 +1680,7 @@ export default function AdminPage() {
                     rows={1}
                     maxLength={2000}
                     disabled={chatReplySending}
-                    className="flex-1 min-w-0 bg-[#070A12] border border-white/10 text-white placeholder-slate-600 px-3.5 py-2.5 rounded-2xl text-xs focus:outline-none focus:border-violet-500/50 transition-all shadow-inner resize-none max-h-24 disabled:opacity-60"
+                    className="flex-1 min-w-0 bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 text-white placeholder-slate-600 px-3.5 py-2.5 rounded-2xl text-xs focus:outline-none focus:border-violet-500/50 transition-all shadow-inner resize-none max-h-24 disabled:opacity-60"
                   />
                   <button
                     onClick={() => sendChatReply()}
@@ -1699,7 +1700,7 @@ export default function AdminPage() {
       {/* Floating Modern Navigation Bar */}
       <nav className="fixed bottom-0 left-0 right-0 z-40 pb-[max(14px,env(safe-area-inset-bottom))] pt-2">
         <div className="max-w-[430px] mx-auto px-4">
-          <div className="glass bg-[#0D121F]/90 backdrop-blur-3xl border border-white/10 rounded-3xl p-1.5 flex items-center justify-around shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+          <div className="glass bg-[#0D121F]/90 backdrop-blur-3xl border border-white/[0.08] rounded-[28px] p-1.5 flex items-center justify-around shadow-[0_20px_50px_rgba(0,0,0,0.8)] ring-1 ring-white/[0.03]">
             {[
               {id:'dashboard', label:'Dashboard', Icon:IcoDashboard, dot:false},
               {id:'orders', label:'Orders', Icon:IcoReceipt, dot:pending.length>0},
@@ -1728,7 +1729,7 @@ export default function AdminPage() {
       {/* PIN Verification Modal */}
       {pinModalOpen && (
         <div className="fixed inset-0 z-50 bg-[#060810]/85 backdrop-blur-xl flex items-center justify-center p-4 animate-[fadeIn_0.15s_ease-out]">
-          <div className="max-w-[340px] w-full bg-[#0D121F] border border-white/15 p-6 rounded-[32px] space-y-5 shadow-[0_25px_70px_rgba(0,0,0,0.9)] animate-[scaleIn_0.2s_ease-out]" onClick={e => e.stopPropagation()}>
+          <div className="max-w-[340px] w-full bg-gradient-to-b from-[#151C30] to-[#0A0E1A] border border-white/15 p-6 rounded-[32px] space-y-5 shadow-[0_25px_70px_rgba(0,0,0,0.9)] ring-1 ring-white/[0.04] animate-[scaleIn_0.2s_ease-out]" onClick={e => e.stopPropagation()}>
             <div className="text-center space-y-2">
               <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto shadow-inner">
                 <div className="w-7 h-7"><IcoLock/></div>
@@ -1745,14 +1746,14 @@ export default function AdminPage() {
               placeholder="••••••" 
               value={pinInput} 
               onChange={e => setPinInput(e.target.value)} 
-              className="w-full bg-[#070A12] border border-white/10 text-center font-mono text-xl font-black tracking-[0.5em] text-white py-4 rounded-2xl focus:outline-none focus:border-emerald-500/50 transition-all placeholder:tracking-[0.5em] shadow-inner" 
+              className="w-full bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 text-center font-mono text-xl font-black tracking-[0.5em] text-white py-4 rounded-2xl focus:outline-none focus:border-emerald-500/50 transition-all placeholder:tracking-[0.5em] shadow-inner" 
             />
 
             <div className="grid grid-cols-[0.8fr_1.4fr] gap-2.5">
               <button onClick={() => setPinModalOpen(false)} className="py-3.5 bg-white/5 border border-white/10 text-slate-300 font-extrabold rounded-2xl text-xs uppercase tracking-wider active:scale-[0.97] hover:bg-white/10 transition-all">
                 Batal
               </button>
-              <button onClick={confirmPinAndExecute} disabled={!pinInput.trim()} className="py-3.5 bg-white text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl active:scale-[0.97] disabled:opacity-40 shadow-lg shadow-white/10 hover:bg-slate-200 transition-all">
+              <button onClick={confirmPinAndExecute} disabled={!pinInput.trim()} className="py-3.5 bg-white text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl active:scale-[0.97] disabled:opacity-40 shadow-[0_8px_20px_-4px_rgba(255,255,255,0.2)] hover:bg-slate-200 transition-all">
                 Konfirmasi
               </button>
             </div>
@@ -1763,14 +1764,14 @@ export default function AdminPage() {
       {/* Image Preview Modal */}
       {previewImg && (
         <div className="fixed inset-0 z-50 bg-[#060810]/90 backdrop-blur-2xl flex items-center justify-center p-4 animate-[fadeIn_0.15s_ease-out]" onClick={() => setPreviewImg(null)}>
-          <div className="max-w-[380px] w-full bg-[#0D121F] border border-white/15 p-4 rounded-3xl space-y-3 shadow-2xl" onClick={e => e.stopPropagation()}>
+          <div className="max-w-[380px] w-full bg-gradient-to-b from-[#151C30] to-[#0A0E1A] border border-white/15 p-4 rounded-3xl space-y-3 shadow-2xl ring-1 ring-white/[0.04]" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center px-1">
               <span className="text-xs font-black text-white">Pratinjau Bukti Transfer</span>
               <button onClick={() => setPreviewImg(null)} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-slate-300 transition-all">
                 ✕
               </button>
             </div>
-            <div className="bg-[#070A12] rounded-2xl overflow-hidden border border-white/10 p-2">
+            <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] rounded-2xl overflow-hidden border border-white/10 p-2">
               <img src={previewImg} alt="Bukti Transfer" className="w-full max-h-[70vh] object-contain rounded-xl" />
             </div>
           </div>
