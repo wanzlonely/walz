@@ -195,7 +195,7 @@ export default function AdminPage() {
       }
     } catch {
       setAuth(false);
-    } finally {
+    } fontally {
       setRefreshing(false);
     }
   }, []);
