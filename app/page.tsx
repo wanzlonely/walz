@@ -28,13 +28,13 @@ const RECENT_PURCHASES = [
 ];
 
 const DAILY_STREAKS = [
-  { day: 1, pts: 10, label: 'Hari 1' },
-  { day: 2, pts: 15, label: 'Hari 2' },
-  { day: 3, pts: 20, label: 'Hari 3' },
-  { day: 4, pts: 25, label: 'Hari 4' },
-  { day: 5, pts: 30, label: 'Hari 5' },
-  { day: 6, pts: 40, label: 'Hari 6' },
-  { day: 7, pts: 75, label: 'Bonus Big' },
+  { day: 1, pts: 10, label: 'HARI 1' },
+  { day: 2, pts: 15, label: 'HARI 2' },
+  { day: 3, pts: 20, label: 'HARI 3' },
+  { day: 4, pts: 25, label: 'HARI 4' },
+  { day: 5, pts: 30, label: 'HARI 5' },
+  { day: 6, pts: 40, label: 'HARI 6' },
+  { day: 7, pts: 75, label: 'BONUS BIG' },
 ];
 
 const QRIS_IMAGE_URL = 'https://cdn.phototourl.com/free/2026-09-20-089b0a40-ebfa-44cc-822a-243c7f64a793.jpg';
@@ -793,7 +793,7 @@ export default function StoreUI() {
   const calculatedPrice = isFlashActive ? Math.max(0, Math.floor(rawPkg.price * (1 - flashDiscount / 100))) : rawPkg.price;
   const pkg = { ...rawPkg, price: calculatedPrice };
 
-  const displayName = tgUser ? [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ') : userStatus?.profile?.firstName || 'Exploit';
+  const displayName = tgUser ? [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ') : userStatus?.profile?.firstName || 'Exploit User';
   const userUsername = tgUser?.username || userStatus?.profile?.username || 'exploit_user';
   const userTelegramId = tgUser?.id || userStatus?.telegramId || '8884003270';
   const initials = displayName?.[0]?.toUpperCase() || 'E';
@@ -801,7 +801,7 @@ export default function StoreUI() {
   const userVouchers = userStatus?.vouchers || [];
 
   return (
-    <div className="min-h-screen bg-[#04060C] text-slate-100 font-sans relative overflow-x-hidden pb-36 selection:bg-emerald-500/30">
+    <div className="min-h-screen bg-[#04060C] text-slate-100 font-sans relative overflow-x-hidden pb-32 selection:bg-emerald-500/30">
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-emerald-500/12 rounded-full blur-[120px] animate-[pulseGlow_4s_infinite_ease-in-out]" />
         <div className="absolute top-1/3 -right-24 w-[320px] h-[320px] bg-teal-500/8 rounded-full blur-[110px]" />
@@ -891,20 +891,22 @@ export default function StoreUI() {
         {activeTab === 'dashboard' && (
           <div className="space-y-3.5 animate-[fadeIn_0.25s_ease-out]">
 
-            <div className="glass-card p-5 rounded-[28px] relative overflow-hidden border border-white/10 shadow-2xl space-y-3.5">
+            <div className="glass-card p-4 rounded-[28px] relative overflow-hidden border border-white/10 shadow-2xl space-y-3">
               <div className="absolute top-0 right-0 w-40 h-40 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
-              <div className="flex items-center gap-3.5 relative z-10">
-                <div className="w-13 h-13 rounded-2xl bg-gradient-to-tr from-emerald-400 via-teal-500 to-cyan-500 p-0.5 shadow-xl shrink-0">
-                  <div className="w-full h-full rounded-[14px] bg-[#0A0F1A] flex items-center justify-center font-black text-white text-lg overflow-hidden">
-                    {tgUser?.photo_url ? <img src={tgUser.photo_url} className="w-full h-full object-cover" alt=""/> : initials}
+              <div className="flex items-center justify-between gap-3 relative z-10">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-400 via-teal-500 to-cyan-500 p-0.5 shadow-xl shrink-0">
+                    <div className="w-full h-full rounded-[14px] bg-[#0A0F1A] flex items-center justify-center font-black text-white text-base overflow-hidden">
+                      {tgUser?.photo_url ? <img src={tgUser.photo_url} className="w-full h-full object-cover" alt=""/> : initials}
+                    </div>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h2 className="text-xs font-black text-white truncate">{displayName}</h2>
+                    {userUsername && <p className="text-[10px] text-emerald-400 font-extrabold leading-tight mt-0.5 truncate">@{userUsername}</p>}
+                    <p className="text-[9px] text-slate-500 font-mono mt-0.5">ID: {userTelegramId}</p>
                   </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h2 className="text-sm font-black text-white truncate">{displayName}</h2>
-                  {userUsername && <p className="text-[11px] text-emerald-400 font-extrabold leading-none mt-0.5">@{userUsername}</p>}
-                  <p className="text-[10px] text-slate-500 font-mono mt-0.5">ID: {userTelegramId}</p>
-                </div>
-                <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase border tracking-wider shrink-0 ${
+                <span className={`px-2.5 py-1 rounded-full text-[8px] font-black uppercase border tracking-wider shrink-0 ${
                   isPrem ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30 shadow-md shadow-emerald-500/10' : 'bg-white/5 text-slate-400 border-white/10'
                 }`}>
                   {isPrem ? 'VIP MEMBER' : 'FREE USER'}
@@ -912,13 +914,13 @@ export default function StoreUI() {
               </div>
 
               {isPrem && countdown && (
-                <div className="pt-3.5 border-t border-white/10 text-center relative z-10">
-                  <p className="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-2">Sisa Masa Aktif VIP</p>
-                  <div className="flex justify-center gap-2 font-mono text-xs font-black text-white">
-                    <div className="bg-[#050811] border border-white/10 px-3 py-1.5 rounded-xl shadow-inner"><span className="text-emerald-400">{countdown.days}</span>h</div>
-                    <div className="bg-[#050811] border border-white/10 px-3 py-1.5 rounded-xl shadow-inner"><span className="text-emerald-400">{String(countdown.hours).padStart(2, '0')}</span>j</div>
-                    <div className="bg-[#050811] border border-white/10 px-3 py-1.5 rounded-xl shadow-inner"><span className="text-emerald-400">{String(countdown.minutes).padStart(2, '0')}</span>m</div>
-                    <div className="bg-[#050811] border border-white/10 px-3 py-1.5 rounded-xl shadow-inner"><span className="text-emerald-400">{String(countdown.seconds).padStart(2, '0')}</span>s</div>
+                <div className="pt-3 border-t border-white/10 text-center relative z-10">
+                  <p className="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-1.5">Sisa Masa Aktif VIP</p>
+                  <div className="grid grid-cols-4 gap-1.5 font-mono text-xs font-black text-white">
+                    <div className="bg-[#050811] border border-white/10 py-1.5 rounded-xl text-center"><span className="text-emerald-400">{countdown.days}</span><span className="text-[8px] font-normal text-slate-400 ml-0.5">h</span></div>
+                    <div className="bg-[#050811] border border-white/10 py-1.5 rounded-xl text-center"><span className="text-emerald-400">{String(countdown.hours).padStart(2, '0')}</span><span className="text-[8px] font-normal text-slate-400 ml-0.5">j</span></div>
+                    <div className="bg-[#050811] border border-white/10 py-1.5 rounded-xl text-center"><span className="text-emerald-400">{String(countdown.minutes).padStart(2, '0')}</span><span className="text-[8px] font-normal text-slate-400 ml-0.5">m</span></div>
+                    <div className="bg-[#050811] border border-white/10 py-1.5 rounded-xl text-center"><span className="text-emerald-400">{String(countdown.seconds).padStart(2, '0')}</span><span className="text-[8px] font-normal text-slate-400 ml-0.5">s</span></div>
                   </div>
                 </div>
               )}
@@ -949,12 +951,12 @@ export default function StoreUI() {
                   placeholder="MASUKKAN KODE VOUCHER..."
                   value={claimInputCode}
                   onChange={e => setClaimInputCode(e.target.value)}
-                  className="flex-1 bg-[#050811] border border-white/10 text-white placeholder-slate-600 px-3.5 py-2.5 rounded-2xl text-xs font-mono font-bold uppercase focus:outline-none focus:border-emerald-500/50 transition-all shadow-inner"
+                  className="flex-1 min-w-0 bg-[#050811] border border-white/10 text-white placeholder-slate-600 px-3.5 py-2.5 rounded-2xl text-xs font-mono font-bold uppercase focus:outline-none focus:border-emerald-500/50 transition-all shadow-inner"
                 />
                 <button
                   onClick={handleClaimVoucher}
                   disabled={claiming || !claimInputCode.trim()}
-                  className="px-4 py-2.5 bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl active:scale-95 disabled:opacity-40 transition-all shadow-lg shadow-emerald-500/25"
+                  className="px-4 py-2.5 bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl active:scale-95 disabled:opacity-40 transition-all shadow-lg shadow-emerald-500/25 shrink-0"
                 >
                   {claiming ? '...' : 'Klaim'}
                 </button>
@@ -966,8 +968,8 @@ export default function StoreUI() {
                 onClick={() => { setActiveTab('buy'); setConfirmStep(false); }}
                 className="glass-card p-4 rounded-[28px] text-left border border-emerald-500/30 hover:border-emerald-500/50 active:scale-95 transition-all shadow-xl group"
               >
-                <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mb-3 shadow-md group-hover:bg-emerald-500/20 transition-all">
-                  <div className="w-5 h-5"><IcoStore/></div>
+                <div className="w-9 h-9 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mb-2.5 shadow-md group-hover:bg-emerald-500/20 transition-all">
+                  <div className="w-4.5 h-4.5"><IcoStore/></div>
                 </div>
                 <p className="text-xs font-black text-white">VIP Store</p>
                 <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Beli paket langganan</p>
@@ -977,8 +979,8 @@ export default function StoreUI() {
                 onClick={() => setActiveTab('checkin')}
                 className="glass-card p-4 rounded-[28px] text-left border border-amber-500/30 hover:border-amber-500/50 active:scale-95 transition-all shadow-xl group"
               >
-                <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center mb-3 shadow-md group-hover:bg-amber-500/20 transition-all">
-                  <div className="w-5 h-5"><IcoCalendar/></div>
+                <div className="w-9 h-9 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center mb-2.5 shadow-md group-hover:bg-amber-500/20 transition-all">
+                  <div className="w-4.5 h-4.5"><IcoCalendar/></div>
                 </div>
                 <p className="text-xs font-black text-white">Daily Check-in</p>
                 <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Klaim poin tiap 24 jam</p>
@@ -986,11 +988,11 @@ export default function StoreUI() {
             </div>
 
             <div className="glass-card border border-amber-500/30 rounded-[28px] overflow-hidden relative shadow-xl">
-              <div className="p-4.5 space-y-3.5">
+              <div className="p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-amber-500/20 shrink-0">
-                      <div className="w-5 h-5"><IcoTrophy/></div>
+                    <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-amber-500/20 shrink-0">
+                      <div className="w-4.5 h-4.5"><IcoTrophy/></div>
                     </div>
                     <div>
                       <h2 className="text-xs font-black text-white">Papan Skor Poin</h2>
@@ -998,7 +1000,7 @@ export default function StoreUI() {
                     </div>
                   </div>
                   {myRank && (
-                    <div className="text-right shrink-0 bg-[#050811] px-3 py-1.5 rounded-2xl border border-white/5">
+                    <div className="text-right shrink-0 bg-[#050811] px-2.5 py-1 rounded-xl border border-white/5">
                       <p className="text-[8px] text-slate-400 font-black uppercase tracking-wider">Rank Kamu</p>
                       <p className="text-xs font-black text-amber-400 font-mono">#{myRank}</p>
                     </div>
@@ -1007,11 +1009,11 @@ export default function StoreUI() {
 
                 <div className="space-y-2">
                   {leaderboardLoading ? (
-                    <div className="py-8 text-center">
+                    <div className="py-6 text-center">
                       <p className="text-xs text-slate-500">Memuat papan skor...</p>
                     </div>
                   ) : leaderboard.length === 0 ? (
-                    <div className="py-8 text-center border border-dashed border-white/10 rounded-2xl">
+                    <div className="py-6 text-center border border-dashed border-white/10 rounded-2xl">
                       <p className="text-xs text-slate-500">Belum ada data</p>
                     </div>
                   ) : (
@@ -1020,11 +1022,11 @@ export default function StoreUI() {
                       const isMe = p.telegramId === userTelegramId?.toString();
                       const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : null;
                       return (
-                        <div key={p.telegramId} className={`flex items-center gap-3 p-3 rounded-2xl border transition-all ${isMe ? 'bg-violet-500/15 border-violet-500/40 shadow-md' : 'bg-[#050811] border-white/5'}`}>
-                          <div className="w-6 text-center shrink-0">
-                            {medal ? <span className="text-sm">{medal}</span> : <span className="text-[10px] font-black text-slate-500">#{rank}</span>}
+                        <div key={p.telegramId} className={`flex items-center gap-2.5 p-2.5 rounded-2xl border transition-all ${isMe ? 'bg-violet-500/15 border-violet-500/40 shadow-md' : 'bg-[#050811] border-white/5'}`}>
+                          <div className="w-5 text-center shrink-0">
+                            {medal ? <span className="text-xs">{medal}</span> : <span className="text-[10px] font-black text-slate-500">#{rank}</span>}
                           </div>
-                          <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-violet-500 to-fuchsia-500 flex items-center justify-center text-white text-[10px] font-black shrink-0 shadow-md">
+                          <div className="w-6.5 h-6.5 rounded-xl bg-gradient-to-tr from-violet-500 to-fuchsia-500 flex items-center justify-center text-white text-[10px] font-black shrink-0 shadow-md">
                             {(p.firstName || '?')[0]?.toUpperCase()}
                           </div>
                           <div className="min-w-0 flex-1">
@@ -1044,25 +1046,25 @@ export default function StoreUI() {
         )}
 
         {activeTab === 'checkin' && (
-          <div className="space-y-4 animate-[fadeIn_0.25s_ease-out]">
-            <div className="glass-card border border-amber-500/30 p-6 rounded-[32px] text-center space-y-4 shadow-xl relative overflow-hidden">
-              <div className="w-16 h-16 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center mx-auto shadow-inner">
-                <div className="w-8 h-8"><IcoCalendar/></div>
+          <div className="space-y-3.5 animate-[fadeIn_0.25s_ease-out]">
+            <div className="glass-card border border-amber-500/30 p-5 rounded-[28px] text-center space-y-3 shadow-xl relative overflow-hidden">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center mx-auto shadow-inner">
+                <div className="w-6 h-6"><IcoCalendar/></div>
               </div>
 
               <div>
-                <span className="px-3.5 py-1 bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[9px] font-black rounded-full uppercase tracking-wider inline-block mb-1">
+                <span className="px-3 py-0.5 bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[9px] font-black rounded-full uppercase tracking-wider inline-block mb-1">
                   Daily Check-in Reward
                 </span>
-                <h2 className="text-base font-black text-white mt-1">Absen Harian Dapatkan Poin</h2>
-                <p className="text-xs text-slate-400 max-w-xs mx-auto mt-1 leading-relaxed">
+                <h2 className="text-sm font-black text-white mt-0.5">Absen Harian Dapatkan Poin</h2>
+                <p className="text-[11px] text-slate-400 max-w-xs mx-auto mt-1 leading-relaxed">
                   Kumpulkan poin gratis setiap 24 Jam untuk ditukarkan dengan VIP Access gratis.
                 </p>
               </div>
 
-              <div className="bg-[#050811] p-4 rounded-2xl border border-amber-500/25 flex items-center justify-between shadow-inner">
+              <div className="bg-[#050811] p-3 rounded-2xl border border-amber-500/25 flex items-center justify-between shadow-inner">
                 <div className="text-left">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Status Absen</p>
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider">Status Absen</p>
                   <p className={`text-xs font-black ${canCheckin ? 'text-amber-400' : 'text-emerald-400'}`}>
                     {canCheckin ? 'Siap Diklaim' : 'Sudah Absen Hari Ini'}
                   </p>
@@ -1070,7 +1072,7 @@ export default function StoreUI() {
                 <button
                   onClick={claimDailyBonus}
                   disabled={dailyClaiming || !canCheckin}
-                  className={`px-4.5 py-2.5 font-black text-xs uppercase tracking-wider rounded-2xl active:scale-95 transition-all shadow-lg ${
+                  className={`px-4 py-2 font-black text-xs uppercase tracking-wider rounded-xl active:scale-95 transition-all shadow-md ${
                     canCheckin
                       ? 'bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 text-slate-950 shadow-amber-500/30'
                       : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 cursor-not-allowed'
@@ -1081,21 +1083,23 @@ export default function StoreUI() {
               </div>
             </div>
 
-            <div className="glass-card p-4.5 rounded-[28px] border border-white/10 space-y-3.5 shadow-xl">
+            <div className="glass-card p-4 rounded-[28px] border border-white/10 space-y-3 shadow-xl">
               <div className="flex items-center justify-between">
                 <p className="text-xs font-black text-white uppercase tracking-wider">Streak Absen Beruntun</p>
                 <span className="text-[9px] text-amber-400 font-extrabold">+10 PTS / Hari</span>
               </div>
+              
               <div className="grid grid-cols-4 gap-2">
                 {DAILY_STREAKS.map((s) => {
                   const isClaimed = !canCheckin ? s.day <= checkinStreak : s.day < checkinStreak;
                   const isCurrentTarget = canCheckin && s.day === (checkinStreak + 1);
+                  const isDay7 = s.day === 7;
 
                   return (
                     <div
                       key={s.day}
-                      className={`p-3 rounded-2xl text-center border flex flex-col items-center justify-between relative overflow-hidden transition-all min-h-[96px] ${
-                        s.day === 7 ? 'col-span-2 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-950/30 border-amber-400 text-amber-200' : ''
+                      className={`p-2.5 rounded-2xl text-center border flex flex-col items-center justify-between relative overflow-hidden transition-all min-h-[84px] ${
+                        isDay7 ? 'col-span-2 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-950/30 border-amber-400/60 text-amber-200' : ''
                       } ${
                         isClaimed
                           ? 'bg-emerald-950/30 border-emerald-500/50 text-emerald-200'
@@ -1107,13 +1111,13 @@ export default function StoreUI() {
                       <div className="flex items-center justify-between w-full">
                         <span className="text-[8px] font-black uppercase text-slate-400">{s.label}</span>
                         {isClaimed && (
-                          <div className="w-3.5 h-3.5 text-emerald-400 flex items-center justify-center bg-emerald-500/20 rounded-full border border-emerald-500/40">
+                          <div className="w-3 h-3 text-emerald-400 flex items-center justify-center bg-emerald-500/20 rounded-full border border-emerald-500/40">
                             <IcoCheck/>
                           </div>
                         )}
                       </div>
 
-                      <div className="w-5 h-5 text-amber-400 my-1">
+                      <div className="w-4 h-4 text-amber-400 my-1">
                         <IcoStar/>
                       </div>
 
@@ -1122,7 +1126,7 @@ export default function StoreUI() {
                       ) : isCurrentTarget ? (
                         <span className="text-[8px] font-black text-amber-300 uppercase">Hari Ini</span>
                       ) : (
-                        <span className="text-[10px] font-black text-amber-400 font-mono">+{s.pts} PTS</span>
+                        <span className="text-[9px] font-black text-amber-400 font-mono">+{s.pts} PTS</span>
                       )}
                     </div>
                   );
@@ -1133,10 +1137,10 @@ export default function StoreUI() {
         )}
 
         {activeTab === 'buy' && (
-          <div className="space-y-4 animate-[fadeIn_0.25s_ease-out]">
+          <div className="space-y-3.5 animate-[fadeIn_0.25s_ease-out]">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-sm font-black text-white">Beli VIP Access</h2>
+                <h2 className="text-xs font-black text-white">Beli VIP Access</h2>
                 <p className="text-[10px] text-slate-400">Pilih durasi paket langganan Anda</p>
               </div>
               <span className="text-[9px] text-emerald-400 font-black bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">
@@ -1146,81 +1150,81 @@ export default function StoreUI() {
 
             {isPrem ? (
               <div className="space-y-3.5">
-                <div className="glass-card rounded-[32px] border border-emerald-500/30 p-6 text-center space-y-4 shadow-xl">
-                  <div className="w-16 h-16 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto border border-emerald-500/30 shadow-inner">
-                    <div className="w-8 h-8"><IcoCrown/></div>
+                <div className="glass-card rounded-[28px] border border-emerald-500/30 p-5 text-center space-y-3 shadow-xl">
+                  <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto border border-emerald-500/30 shadow-inner">
+                    <div className="w-7 h-7"><IcoCrown/></div>
                   </div>
                   <div>
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[9px] font-black uppercase tracking-wider">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[9px] font-black uppercase tracking-wider">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                       Status VIP Aktif
                     </span>
-                    <h3 className="text-sm font-black text-white mt-2">Akses VIP Anda Sedang Berjalan</h3>
-                    <p className="text-xs text-slate-400 mt-1 leading-relaxed max-w-xs mx-auto">
+                    <h3 className="text-xs font-black text-white mt-1.5">Akses VIP Anda Sedang Berjalan</h3>
+                    <p className="text-[11px] text-slate-400 mt-1 leading-relaxed max-w-xs mx-auto">
                       Pilihan pembelian paket baru akan terbuka secara otomatis saat masa aktif langganan habis.
                     </p>
                   </div>
                   {countdown && (
-                    <div className="grid grid-cols-3 gap-2 pt-2">
-                      <div className="bg-[#050811] border border-white/10 rounded-2xl py-3">
-                        <p className="text-lg font-black text-emerald-400 font-mono">{countdown.days}</p>
-                        <p className="text-[8px] text-slate-500 font-bold uppercase tracking-wider mt-0.5">Hari</p>
+                    <div className="grid grid-cols-3 gap-2 pt-1">
+                      <div className="bg-[#050811] border border-white/10 rounded-2xl py-2.5">
+                        <p className="text-base font-black text-emerald-400 font-mono">{countdown.days}</p>
+                        <p className="text-[8px] text-slate-500 font-bold uppercase tracking-wider">Hari</p>
                       </div>
-                      <div className="bg-[#050811] border border-white/10 rounded-2xl py-3">
-                        <p className="text-lg font-black text-emerald-400 font-mono">{countdown.hours}</p>
-                        <p className="text-[8px] text-slate-500 font-bold uppercase tracking-wider mt-0.5">Jam</p>
+                      <div className="bg-[#050811] border border-white/10 rounded-2xl py-2.5">
+                        <p className="text-base font-black text-emerald-400 font-mono">{countdown.hours}</p>
+                        <p className="text-[8px] text-slate-500 font-bold uppercase tracking-wider">Jam</p>
                       </div>
-                      <div className="bg-[#050811] border border-white/10 rounded-2xl py-3">
-                        <p className="text-lg font-black text-emerald-400 font-mono">{countdown.minutes}</p>
-                        <p className="text-[8px] text-slate-500 font-bold uppercase tracking-wider mt-0.5">Menit</p>
+                      <div className="bg-[#050811] border border-white/10 rounded-2xl py-2.5">
+                        <p className="text-base font-black text-emerald-400 font-mono">{countdown.minutes}</p>
+                        <p className="text-[8px] text-slate-500 font-bold uppercase tracking-wider">Menit</p>
                       </div>
                     </div>
                   )}
                 </div>
 
-                <div className="glass-card p-4 rounded-[28px] border border-white/10 space-y-3">
+                <div className="glass-card p-4 rounded-[28px] border border-white/10 space-y-2.5">
                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Keuntungan VIP Active</p>
                   <div className="grid grid-cols-2 gap-2 text-xs font-bold">
-                    <div className="bg-[#050811] p-3 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2">
+                    <div className="bg-[#050811] p-2.5 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2 text-[11px]">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"/>
                       Akses Fitur Premium
                     </div>
-                    <div className="bg-[#050811] p-3 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2">
+                    <div className="bg-[#050811] p-2.5 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2 text-[11px]">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"/>
                       Kecepatan Maksimal
                     </div>
-                    <div className="bg-[#050811] p-3 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2">
+                    <div className="bg-[#050811] p-2.5 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2 text-[11px]">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"/>
                       Tanpa Iklan / Delay
                     </div>
-                    <div className="bg-[#050811] p-3 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2">
+                    <div className="bg-[#050811] p-2.5 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2 text-[11px]">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"/>
-                      Support Prioritas 24/7
+                      Support Prioritas
                     </div>
                   </div>
                 </div>
               </div>
             ) : !confirmStep ? (
               <>
-                <div className="glass-card p-4 rounded-[28px] border border-emerald-500/30 space-y-3 shadow-xl">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-5 h-5 text-emerald-400"><IcoShieldCheck/></div>
+                <div className="glass-card p-4 rounded-[28px] border border-emerald-500/30 space-y-2.5 shadow-xl">
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 text-emerald-400"><IcoShieldCheck/></div>
                     <span className="text-xs font-black text-white uppercase tracking-wider">Keuntungan Akses VIP</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs font-bold">
-                    <div className="bg-[#050811] p-3 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2">
+                    <div className="bg-[#050811] p-2.5 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2 text-[10px]">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"/>
                       Tanpa Batas Akses
                     </div>
-                    <div className="bg-[#050811] p-3 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2">
+                    <div className="bg-[#050811] p-2.5 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2 text-[10px]">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"/>
                       Koneksi Cepat & Stabil
                     </div>
-                    <div className="bg-[#050811] p-3 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2">
+                    <div className="bg-[#050811] p-2.5 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2 text-[10px]">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"/>
                       Bebas Iklan / Delay
                     </div>
-                    <div className="bg-[#050811] p-3 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2">
+                    <div className="bg-[#050811] p-2.5 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2 text-[10px]">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"/>
                       Dukungan Prioritas
                     </div>
@@ -1234,7 +1238,7 @@ export default function StoreUI() {
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2.5">
                   {PACKAGES.map((p: any) => {
                     const originalPrice = p.price;
                     const itemPrice = isFlashActive ? Math.max(0, Math.floor(originalPrice * (1 - flashDiscount / 100))) : originalPrice;
@@ -1244,35 +1248,30 @@ export default function StoreUI() {
                       <button
                         key={p.id}
                         onClick={() => setSelectedPkg(p.id)}
-                        className={`p-4 rounded-[28px] text-left border-2 transition-all active:scale-95 relative overflow-hidden flex flex-col justify-between ${
+                        className={`p-3.5 rounded-2xl text-left border-2 transition-all active:scale-95 relative overflow-hidden flex flex-col justify-between ${
                           isSelected
                             ? 'bg-gradient-to-br from-emerald-500/20 via-teal-950/40 to-[#0A0F1A] border-emerald-400 text-white shadow-xl shadow-emerald-500/15'
                             : 'glass-card border-white/10 text-slate-300 hover:border-white/20'
                         }`}
                       >
                         {p.id === '30D' && (
-                          <span className="absolute top-0 right-0 bg-gradient-to-r from-amber-400 to-orange-500 text-[8px] font-black uppercase text-slate-950 px-3 py-1 rounded-bl-2xl shadow-md">
+                          <span className="absolute top-0 right-0 bg-gradient-to-r from-amber-400 to-orange-500 text-[8px] font-black uppercase text-slate-950 px-2.5 py-0.5 rounded-bl-xl shadow-md">
                             Best Value
                           </span>
                         )}
-                        {p.id === '20D' && (
-                          <span className="absolute top-0 right-0 bg-emerald-500/20 text-emerald-300 text-[8px] font-black uppercase px-2.5 py-0.5 rounded-bl-2xl border-l border-b border-emerald-500/30">
-                            Hemat 30%
-                          </span>
-                        )}
-                        <div className="flex items-center gap-2.5">
-                          <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${isSelected ? 'bg-emerald-500/20 text-emerald-300' : 'bg-white/5 text-slate-500'}`}>
-                            <div className="w-4 h-4"><IcoCrown/></div>
+                        <div className="flex items-center gap-2">
+                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${isSelected ? 'bg-emerald-500/20 text-emerald-300' : 'bg-white/5 text-slate-500'}`}>
+                            <div className="w-3.5 h-3.5"><IcoCrown/></div>
                           </div>
                           <div>
                             <p className="text-xs font-black text-slate-100 leading-tight">{p.label}</p>
-                            <p className="text-[9px] text-slate-400 mt-0.5 font-medium">{p.days} Hari VIP</p>
+                            <p className="text-[9px] text-slate-400 font-medium">{p.days} Hari VIP</p>
                           </div>
                         </div>
-                        <div className="mt-4 pt-2.5 border-t border-white/5 flex items-baseline gap-1.5">
-                          <p className="text-sm font-black text-emerald-400 font-mono">Rp {itemPrice.toLocaleString('id-ID')}</p>
+                        <div className="mt-3 pt-2 border-t border-white/5 flex items-baseline gap-1.5">
+                          <p className="text-xs font-black text-emerald-400 font-mono">Rp {itemPrice.toLocaleString('id-ID')}</p>
                           {isFlashActive && (
-                            <p className="text-[9px] text-slate-500 line-through font-bold font-mono">Rp {originalPrice.toLocaleString('id-ID')}</p>
+                            <p className="text-[8px] text-slate-500 line-through font-bold font-mono">Rp {originalPrice.toLocaleString('id-ID')}</p>
                           )}
                         </div>
                       </button>
@@ -1280,14 +1279,14 @@ export default function StoreUI() {
                   })}
                 </div>
 
-                <div className="glass-card p-4 rounded-[28px] border border-white/10 space-y-3 shadow-xl">
+                <div className="glass-card p-4 rounded-[28px] border border-white/10 space-y-2.5 shadow-xl">
                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Pilih Metode Pembayaran</p>
                   <div className="grid grid-cols-3 gap-2">
                     {METHODS.map(m => (
                       <button
                         key={m.id}
                         onClick={() => setPayMethod(m.id)}
-                        className={`p-3 rounded-2xl text-center border-2 transition-all active:scale-95 flex flex-col items-center justify-center gap-1 ${
+                        className={`p-2.5 rounded-2xl text-center border-2 transition-all active:scale-95 flex flex-col items-center justify-center gap-1 ${
                           payMethod === m.id
                             ? 'bg-emerald-500/15 border-emerald-400 text-emerald-300 shadow-lg shadow-emerald-500/15'
                             : 'bg-[#050811] border-white/5 text-slate-400'
@@ -1304,29 +1303,29 @@ export default function StoreUI() {
 
                 <button
                   onClick={() => setConfirmStep(true)}
-                  className="w-full py-4 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500 text-slate-950 font-black rounded-2xl text-xs uppercase tracking-wider active:scale-[0.98] shadow-lg shadow-emerald-500/30 hover:brightness-110 transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500 text-slate-950 font-black rounded-2xl text-xs uppercase tracking-wider active:scale-[0.98] shadow-lg shadow-emerald-500/30 hover:brightness-110 transition-all flex items-center justify-center gap-2"
                 >
-                  Lanjut ke Pembayaran
+                  Lanjut Pembayaran
                   <span className="opacity-60">•</span>
                   <span className="font-mono">Rp {pkg.price.toLocaleString('id-ID')}</span>
                 </button>
               </>
             ) : (
               <div className="glass-card p-5 rounded-[32px] space-y-4 border border-white/10 shadow-xl">
-                <div className="text-center pb-3.5 border-b border-white/10 space-y-1">
-                  <span className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-[9px] font-black rounded-full inline-block">
+                <div className="text-center pb-3 border-b border-white/10 space-y-1">
+                  <span className="px-3 py-0.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-[9px] font-black rounded-full inline-block">
                     ✓ Konfirmasi Instan Admin
                   </span>
                   <p className="text-[9px] text-slate-400 uppercase font-black tracking-widest pt-1">Total Tagihan</p>
-                  <p className="text-2xl font-black text-emerald-400 font-mono">Rp {pkg.price.toLocaleString('id-ID')}</p>
+                  <p className="text-xl font-black text-emerald-400 font-mono">Rp {pkg.price.toLocaleString('id-ID')}</p>
                   <p className="text-xs font-bold text-slate-300">{pkg.label} • Metode {payMethod}</p>
                 </div>
 
                 {payMethod === 'QRIS' && (
-                  <div className="bg-[#050811] border border-emerald-500/25 p-4 rounded-2xl text-center space-y-3">
+                  <div className="bg-[#050811] border border-emerald-500/25 p-3.5 rounded-2xl text-center space-y-2.5">
                     <p className="text-[10px] text-emerald-400 font-black uppercase tracking-wider">Scan QRIS All Payment</p>
 
-                    <div className="relative w-48 h-48 mx-auto bg-white p-2.5 rounded-2xl shadow-xl flex items-center justify-center border-2 border-emerald-400">
+                    <div className="relative w-40 h-40 mx-auto bg-white p-2 rounded-2xl shadow-xl flex items-center justify-center border-2 border-emerald-400">
                       <img
                         src={QRIS_IMAGE_URL}
                         alt="QRIS Payment"
@@ -1337,38 +1336,36 @@ export default function StoreUI() {
                     <div className="flex gap-2 justify-center pt-1">
                       <button
                         onClick={() => setQrisZoomOpen(true)}
-                        className="px-3.5 py-2 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs rounded-xl flex items-center gap-1.5 active:scale-95 transition-all"
+                        className="px-3 py-1.5 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold text-xs rounded-xl flex items-center gap-1.5 active:scale-95 transition-all"
                       >
                         <div className="w-3.5 h-3.5"><IcoZoom/></div>
-                        Perbesar QRIS
+                        Perbesar
                       </button>
 
                       <button
                         onClick={downloadQrisImage}
-                        className="px-3.5 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 font-bold text-xs rounded-xl flex items-center gap-1.5 active:scale-95 transition-all"
+                        className="px-3 py-1.5 bg-white/5 border border-white/10 text-slate-300 font-bold text-xs rounded-xl flex items-center gap-1.5 active:scale-95 transition-all"
                       >
                         <div className="w-3.5 h-3.5"><IcoDownload/></div>
                         Unduh Gambar
                       </button>
                     </div>
-
-                    <p className="text-[10px] text-slate-400 font-medium">Bisa di-scan semua E-Wallet & M-Banking</p>
                   </div>
                 )}
 
                 {payMethod === 'DANA' && (
                   <div className="bg-[#050811] border border-emerald-500/25 p-3.5 rounded-2xl space-y-2">
                     <div className="flex justify-between items-center text-xs">
-                      <span className="text-slate-400 font-bold">Transfer E-Wallet DANA</span>
+                      <span className="text-slate-400 font-bold">Transfer DANA</span>
                       <span className="text-emerald-400 font-black">A/n TI** SUT***</span>
                     </div>
                     <div className="flex items-center justify-between bg-[#0A0F1A] p-3 rounded-xl border border-white/5">
-                      <span className="font-mono text-sm font-black text-white tracking-wider">083124469855</span>
+                      <span className="font-mono text-xs font-black text-white tracking-wider">083124469855</span>
                       <button
                         onClick={() => copyPayNumber('083124469855')}
-                        className="px-3 py-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black rounded-lg active:scale-95 transition-transform"
+                        className="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black rounded-lg active:scale-95 transition-transform"
                       >
-                        {copiedNum === '083124469855' ? 'Tercopy' : 'Salin Nomor'}
+                        {copiedNum === '083124469855' ? 'Tercopy' : 'Salin'}
                       </button>
                     </div>
                   </div>
@@ -1381,25 +1378,25 @@ export default function StoreUI() {
                       <span className="text-emerald-400 font-black">A/n HAR*****O</span>
                     </div>
                     <div className="flex items-center justify-between bg-[#0A0F1A] p-3 rounded-xl border border-white/5">
-                      <span className="font-mono text-sm font-black text-white tracking-wider">901984771499</span>
+                      <span className="font-mono text-xs font-black text-white tracking-wider">901984771499</span>
                       <button
                         onClick={() => copyPayNumber('901984771499')}
-                        className="px-3 py-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black rounded-lg active:scale-95 transition-transform"
+                        className="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black rounded-lg active:scale-95 transition-transform"
                       >
-                        {copiedNum === '901984771499' ? 'Tercopy' : 'Salin Nomor'}
+                        {copiedNum === '901984771499' ? 'Tercopy' : 'Salin'}
                       </button>
                     </div>
                   </div>
                 )}
 
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Upload Bukti Pembayaran</p>
-                  <label className="w-full h-28 border border-dashed border-white/20 hover:border-emerald-500/50 rounded-2xl flex flex-col items-center justify-center cursor-pointer bg-[#050811] overflow-hidden relative transition-all shadow-inner">
+                  <label className="w-full h-24 border border-dashed border-white/20 hover:border-emerald-500/50 rounded-2xl flex flex-col items-center justify-center cursor-pointer bg-[#050811] overflow-hidden relative transition-all shadow-inner">
                     {proofImage ? (
                       <img src={proofImage} alt="Bukti" className="w-full h-full object-contain p-2"/>
                     ) : (
                       <div className="text-center text-slate-500 space-y-1">
-                        <div className="w-6 h-6 mx-auto text-emerald-400"><IcoUpload/></div>
+                        <div className="w-5 h-5 mx-auto text-emerald-400"><IcoUpload/></div>
                         <span className="text-xs font-bold text-slate-400">Pilih Foto Bukti Transfer</span>
                       </div>
                     )}
@@ -1412,19 +1409,19 @@ export default function StoreUI() {
                   placeholder="Catatan / Nama Pengirim..."
                   value={proofNote}
                   onChange={e => setProofNote(e.target.value)}
-                  className="w-full bg-[#050811] border border-white/10 text-white placeholder-slate-600 px-4 py-3 rounded-2xl text-xs font-medium focus:outline-none focus:border-emerald-500/50 transition-all shadow-inner"
+                  className="w-full bg-[#050811] border border-white/10 text-white placeholder-slate-600 px-3.5 py-2.5 rounded-2xl text-xs font-medium focus:outline-none focus:border-emerald-500/50 transition-all shadow-inner"
                 />
 
                 <div className="grid grid-cols-[0.8fr_1.4fr] gap-2.5 pt-1">
-                  <button onClick={() => setConfirmStep(false)} className="py-3.5 bg-white/5 border border-white/10 text-slate-300 font-extrabold rounded-2xl text-xs uppercase tracking-wider active:scale-95 hover:bg-white/10 transition-all">
+                  <button onClick={() => setConfirmStep(false)} className="py-3 bg-white/5 border border-white/10 text-slate-300 font-extrabold rounded-2xl text-xs uppercase tracking-wider active:scale-95 transition-all">
                     Kembali
                   </button>
                   <button
                     onClick={submit}
                     disabled={submitting || !proofNote.trim() || !proofImage}
-                    className="py-3.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl disabled:opacity-40 active:scale-[0.98] shadow-lg shadow-emerald-500/25 hover:brightness-110 transition-all"
+                    className="py-3 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl disabled:opacity-40 active:scale-[0.98] shadow-lg shadow-emerald-500/25 transition-all"
                   >
-                    {submitting ? 'Mengirim...' : 'Kirim Bukti Pembayaran'}
+                    {submitting ? 'Mengirim...' : 'Kirim Bukti'}
                   </button>
                 </div>
               </div>
@@ -1433,16 +1430,16 @@ export default function StoreUI() {
         )}
 
         {activeTab === 'redeem' && (
-          <div className="space-y-4 animate-[fadeIn_0.25s_ease-out]">
+          <div className="space-y-3.5 animate-[fadeIn_0.25s_ease-out]">
 
-            <div className="glass-card border border-amber-500/30 p-5 rounded-[28px] relative overflow-hidden shadow-xl space-y-3.5">
+            <div className="glass-card border border-amber-500/30 p-4.5 rounded-[28px] relative overflow-hidden shadow-xl space-y-3">
               <div className="flex justify-between items-start">
                 <div>
                   <span className="text-[9px] font-black uppercase tracking-wider text-amber-400/90">Bonus & Referral Program</span>
-                  <h2 className="text-2xl font-black mt-1 text-white font-mono">{userPoints} PTS</h2>
-                  <p className="text-[10px] text-slate-400 font-medium mt-0.5">+50 Poin Otomatis per Teman bergabung</p>
+                  <h2 className="text-xl font-black mt-0.5 text-white font-mono">{userPoints} PTS</h2>
+                  <p className="text-[10px] text-slate-400 font-medium mt-0.5">+50 Poin per Teman bergabung</p>
                 </div>
-                <div className="w-11 h-11 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-inner">
+                <div className="w-10 h-10 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-inner">
                   <div className="w-5 h-5"><IcoStar/></div>
                 </div>
               </div>
@@ -1452,31 +1449,31 @@ export default function StoreUI() {
                   onClick={copyReferral}
                   className="flex-1 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all"
                 >
-                  <div className="w-4 h-4"><IcoCopy/></div>
-                  {copied ? 'Tercopy!' : 'Salin Link Referral'}
+                  <div className="w-3.5 h-3.5"><IcoCopy/></div>
+                  {copied ? 'Tercopy!' : 'Salin Link'}
                 </button>
                 <button
                   onClick={shareToTelegram}
                   className="py-2.5 px-4 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-black text-xs rounded-2xl flex items-center gap-1.5 active:scale-95 shadow-md shadow-amber-500/20 transition-all"
                 >
-                  <div className="w-4 h-4"><IcoShare/></div>
+                  <div className="w-3.5 h-3.5"><IcoShare/></div>
                   Bagikan
                 </button>
               </div>
             </div>
 
             {userVouchers.length > 0 && (
-              <div className="glass-card border border-white/10 p-4 rounded-[28px] space-y-2.5 shadow-xl">
+              <div className="glass-card border border-white/10 p-4 rounded-[28px] space-y-2 shadow-xl">
                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Voucher Milik Anda ({userVouchers.length})</p>
                 {userVouchers.map((v: any, idx: number) => (
-                  <div key={idx} className="bg-[#050811] border border-white/5 p-3.5 rounded-2xl flex items-center justify-between">
+                  <div key={idx} className="bg-[#050811] border border-white/5 p-3 rounded-2xl flex items-center justify-between">
                     <div>
                       <p className="font-mono text-xs font-black text-amber-300 tracking-wider">{v.code}</p>
                       <p className="text-[10px] text-emerald-400 font-bold">Diskon {v.discount}% VIP Access</p>
                     </div>
                     <button
                       onClick={() => copyVoucherCode(v.code)}
-                      className="px-3 py-1.5 bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[10px] font-bold rounded-xl active:scale-95 transition-all"
+                      className="px-3 py-1 bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[10px] font-bold rounded-xl active:scale-95 transition-all"
                     >
                       {copiedVoucher === v.code ? 'Disalin' : 'Salin Kode'}
                     </button>
@@ -1485,30 +1482,30 @@ export default function StoreUI() {
               </div>
             )}
 
-            <div className="glass-card border border-white/10 p-4.5 rounded-[28px] space-y-3.5 shadow-xl">
+            <div className="glass-card border border-white/10 p-4 rounded-[28px] space-y-3 shadow-xl">
               <div className="flex items-center justify-between pb-2 border-b border-white/10">
                 <div>
                   <h3 className="text-xs font-black text-white uppercase tracking-wider">Katalog Penukaran Poin</h3>
-                  <p className="text-[10px] text-slate-400 mt-0.5">Geser ke samping untuk melihat opsi →</p>
+                  <p className="text-[10px] text-slate-400 mt-0.5">Geser ke samping untuk opsi →</p>
                 </div>
-                <span className="px-3 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-300 font-black text-[10px] rounded-full font-mono">
+                <span className="px-2.5 py-0.5 bg-amber-500/10 border border-amber-500/20 text-amber-300 font-black text-[10px] rounded-full font-mono">
                   {userPoints} PTS
                 </span>
               </div>
 
-              <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 pt-1">
+              <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1 pt-1">
                 {REDEEM_OPTIONS.map(opt => {
                   const canRedeem = userPoints >= opt.points;
                   const progressPct = Math.min((userPoints / opt.points) * 100, 100);
 
                   return (
-                    <div key={opt.id} className="min-w-[210px] max-w-[210px] shrink-0">
-                      <div className={`rounded-[28px] border overflow-hidden relative ${
+                    <div key={opt.id} className="min-w-[200px] max-w-[200px] shrink-0">
+                      <div className={`rounded-[24px] border overflow-hidden relative ${
                         canRedeem
                           ? 'bg-[#050811] border-amber-500/40 shadow-lg shadow-amber-500/10'
                           : 'bg-[#050811] border-white/5'
                       }`}>
-                        <div className="p-4 pb-3 space-y-1.5">
+                        <div className="p-3.5 pb-2.5 space-y-1">
                           <div className="flex items-center justify-between">
                             <span className={`text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider border ${
                               canRedeem ? 'bg-amber-500/20 text-amber-300 border-amber-500/30' : 'bg-white/5 text-slate-500 border-white/5'
@@ -1516,27 +1513,27 @@ export default function StoreUI() {
                               {opt.badge}
                             </span>
                             <div className={canRedeem ? 'text-amber-400' : 'text-slate-600'}>
-                              <div className="w-4 h-4">{opt.isVoucher ? <IcoTag/> : <IcoStar/>}</div>
+                              <div className="w-3.5 h-3.5">{opt.isVoucher ? <IcoTag/> : <IcoStar/>}</div>
                             </div>
                           </div>
                           <p className={`text-xs font-black leading-snug ${canRedeem ? 'text-white' : 'text-slate-400'}`}>{opt.label}</p>
-                          <p className="text-[10px] text-slate-500 leading-relaxed h-8 overflow-hidden font-medium">{opt.desc}</p>
+                          <p className="text-[9px] text-slate-500 leading-relaxed h-7 overflow-hidden font-medium">{opt.desc}</p>
                         </div>
 
-                        <div className="relative flex items-center px-4">
+                        <div className="relative flex items-center px-3">
                           <div className="ticket-notch left"/>
                           <div className="ticket-divider flex-1"/>
                           <div className="ticket-notch right"/>
                         </div>
 
-                        <div className="p-4 pt-3 space-y-2.5">
+                        <div className="p-3.5 pt-2.5 space-y-2">
                           <div className="flex items-baseline justify-between">
-                            <p className={`text-base font-black font-mono ${canRedeem ? 'text-amber-400' : 'text-slate-500'}`}>{opt.points}</p>
-                            <span className="text-[9px] text-slate-500 font-bold uppercase">Poin</span>
+                            <p className={`text-sm font-black font-mono ${canRedeem ? 'text-amber-400' : 'text-slate-500'}`}>{opt.points}</p>
+                            <span className="text-[8px] text-slate-500 font-bold uppercase">Poin</span>
                           </div>
 
                           {!canRedeem && (
-                            <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
+                            <div className="h-1 rounded-full bg-white/5 overflow-hidden">
                               <div className="h-full bg-amber-500/50 rounded-full" style={{ width: `${progressPct}%` }} />
                             </div>
                           )}
@@ -1544,13 +1541,13 @@ export default function StoreUI() {
                           <button
                             onClick={() => setRedeemConfirmItem(opt)}
                             disabled={!canRedeem}
-                            className={`w-full py-2.5 font-black text-xs uppercase tracking-wider rounded-2xl transition-all active:scale-95 ${
+                            className={`w-full py-2 font-black text-[11px] uppercase tracking-wider rounded-xl transition-all active:scale-95 ${
                               canRedeem
                                 ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-md shadow-amber-500/20'
                                 : 'bg-white/5 text-slate-500 border border-white/5 cursor-not-allowed'
                             }`}
                           >
-                            {canRedeem ? 'Tukar Sekarang' : `Kurang ${opt.points - userPoints} PTS`}
+                            {canRedeem ? 'Tukar' : `Kurang ${opt.points - userPoints} PTS`}
                           </button>
                         </div>
                       </div>
@@ -1564,46 +1561,43 @@ export default function StoreUI() {
         )}
 
         {activeTab === 'profile' && (
-          <div className="space-y-4 animate-[fadeIn_0.25s_ease-out]">
+          <div className="space-y-3.5 animate-[fadeIn_0.25s_ease-out]">
 
-            <div className="relative rounded-[32px] overflow-hidden border border-white/10 glass-card shadow-xl">
-              <div className="absolute top-0 right-0 w-40 h-40 bg-violet-500/10 rounded-full blur-2xl pointer-events-none" />
-              <div className="p-5 relative z-10">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-300 via-fuchsia-500 to-violet-500 p-0.5 shadow-lg shrink-0">
-                    <div className="w-full h-full rounded-[14px] bg-[#050811] flex items-center justify-center font-black text-white text-xl overflow-hidden">
-                      {tgUser?.photo_url ? <img src={tgUser.photo_url} className="w-full h-full object-cover" alt=""/> : initials}
-                    </div>
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <p className="text-base font-black text-white truncate leading-tight">{displayName}</p>
-                    <p className="text-xs text-slate-400 font-mono mt-0.5">@{userUsername}</p>
-                    {badge && (
-                      <span
-                        className="inline-flex items-center gap-1.5 mt-2 px-3 py-0.5 rounded-full text-[9px] font-black border uppercase tracking-wider"
-                        style={{ color: badge.color, borderColor: `${badge.color}55`, backgroundColor: `${badge.color}18` }}
-                      >
-                        <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: badge.color }} />
-                        {badge.label}
-                      </span>
-                    )}
+            <div className="relative rounded-[28px] overflow-hidden border border-white/10 glass-card shadow-xl p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-13 h-13 rounded-2xl bg-gradient-to-tr from-amber-300 via-fuchsia-500 to-violet-500 p-0.5 shadow-lg shrink-0">
+                  <div className="w-full h-full rounded-[14px] bg-[#050811] flex items-center justify-center font-black text-white text-base overflow-hidden">
+                    {tgUser?.photo_url ? <img src={tgUser.photo_url} className="w-full h-full object-cover" alt=""/> : initials}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-white/10 text-center">
-                  <div className="bg-[#050811] p-2.5 rounded-2xl border border-white/5">
-                    <p className="text-base font-black text-amber-400 font-mono leading-none">{userPoints}</p>
-                    <p className="text-[8px] text-slate-400 font-black uppercase tracking-wider mt-1">Poin</p>
-                  </div>
-                  <div className="bg-[#050811] p-2.5 rounded-2xl border border-white/5">
-                    <p className="text-base font-black text-violet-400 font-mono leading-none">{userStatus?.referralCount || 0}</p>
-                    <p className="text-[8px] text-slate-400 font-black uppercase tracking-wider mt-1">Referral</p>
-                  </div>
-                  <div className="bg-[#050811] p-2.5 rounded-2xl border border-white/5">
-                    <p className="text-base font-black text-emerald-400 font-mono leading-none">{checkinStreak}</p>
-                    <p className="text-[8px] text-slate-400 font-black uppercase tracking-wider mt-1">Streak</p>
-                  </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-black text-white truncate leading-tight">{displayName}</p>
+                  <p className="text-[11px] text-slate-400 font-mono mt-0.5">@{userUsername}</p>
+                  {badge && (
+                    <span
+                      className="inline-flex items-center gap-1.5 mt-1.5 px-2.5 py-0.5 rounded-full text-[8px] font-black border uppercase tracking-wider"
+                      style={{ color: badge.color, borderColor: `${badge.color}55`, backgroundColor: `${badge.color}18` }}
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: badge.color }} />
+                      {badge.label}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-white/10 text-center">
+                <div className="bg-[#050811] p-2 rounded-xl border border-white/5">
+                  <p className="text-sm font-black text-amber-400 font-mono leading-none">{userPoints}</p>
+                  <p className="text-[8px] text-slate-400 font-black uppercase tracking-wider mt-1">Poin</p>
+                </div>
+                <div className="bg-[#050811] p-2 rounded-xl border border-white/5">
+                  <p className="text-sm font-black text-violet-400 font-mono leading-none">{userStatus?.referralCount || 0}</p>
+                  <p className="text-[8px] text-slate-400 font-black uppercase tracking-wider mt-1">Referral</p>
+                </div>
+                <div className="bg-[#050811] p-2 rounded-xl border border-white/5">
+                  <p className="text-sm font-black text-emerald-400 font-mono leading-none">{checkinStreak}</p>
+                  <p className="text-[8px] text-slate-400 font-black uppercase tracking-wider mt-1">Streak</p>
                 </div>
               </div>
             </div>
@@ -1613,7 +1607,7 @@ export default function StoreUI() {
                 <button
                   key={t}
                   onClick={() => setProfileSubTab(t)}
-                  className={`flex-1 py-2.5 rounded-xl text-xs font-black transition-all ${
+                  className={`flex-1 py-2 rounded-xl text-xs font-black transition-all ${
                     profileSubTab === t
                       ? 'bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-md'
                       : 'text-slate-400 hover:text-slate-200'
@@ -1627,10 +1621,10 @@ export default function StoreUI() {
             {profileSubTab === 'overview' && (
               <div className="space-y-3.5 animate-[fadeIn_0.25s_ease-out]">
 
-                <div className="glass-card border border-white/10 p-4.5 rounded-[28px] space-y-3 shadow-xl">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-                      <div className="w-4 h-4"><IcoTarget/></div>
+                <div className="glass-card border border-white/10 p-4 rounded-[28px] space-y-3 shadow-xl">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                      <div className="w-3.5 h-3.5"><IcoTarget/></div>
                     </div>
                     <div>
                       <h2 className="text-xs font-black text-white">Misi Harian</h2>
@@ -1644,10 +1638,10 @@ export default function StoreUI() {
                       { key: 'checkin', label: 'Klaim bonus check-in harian', pts: 10, done: !!userStatus?.missionsDone?.checkin },
                       { key: 'redeem', label: 'Tukar poin dengan reward', pts: 0, done: !!userStatus?.missionsDone?.redeem },
                     ].map((m) => (
-                      <div key={m.key} className={`flex items-center justify-between p-3 rounded-2xl border ${m.done ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-[#050811] border-white/5'}`}>
-                        <div className="flex items-center gap-2.5">
-                          <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${m.done ? 'bg-emerald-500 text-slate-950' : 'bg-white/5 text-slate-600'}`}>
-                            {m.done && <div className="w-3 h-3"><IcoCheck/></div>}
+                      <div key={m.key} className={`flex items-center justify-between p-2.5 rounded-2xl border ${m.done ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-[#050811] border-white/5'}`}>
+                        <div className="flex items-center gap-2">
+                          <div className={`w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0 ${m.done ? 'bg-emerald-500 text-slate-950' : 'bg-white/5 text-slate-600'}`}>
+                            {m.done && <div className="w-2.5 h-2.5"><IcoCheck/></div>}
                           </div>
                           <p className={`text-xs font-bold ${m.done ? 'text-emerald-300' : 'text-slate-300'}`}>{m.label}</p>
                         </div>
@@ -1657,10 +1651,10 @@ export default function StoreUI() {
                   </div>
                 </div>
 
-                <div className="glass-card border border-white/10 p-4.5 rounded-[28px] space-y-3 shadow-xl">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400">
-                      <div className="w-4 h-4"><IcoUsers/></div>
+                <div className="glass-card border border-white/10 p-4 rounded-[28px] space-y-3 shadow-xl">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400">
+                      <div className="w-3.5 h-3.5"><IcoUsers/></div>
                     </div>
                     <div>
                       <h2 className="text-xs font-black text-white">Program Ajak Teman</h2>
@@ -1668,73 +1662,27 @@ export default function StoreUI() {
                     </div>
                   </div>
 
-                  <div className="bg-[#050811] border border-white/10 rounded-2xl p-3 flex items-center justify-between gap-2">
+                  <div className="bg-[#050811] border border-white/10 rounded-2xl p-2.5 flex items-center justify-between gap-2">
                     <p className="text-[10px] font-mono text-slate-400 truncate">t.me/fixeedredbot?start=ref_{userTelegramId}</p>
-                    <button onClick={copyReferral} className="px-3 py-1.5 bg-violet-500/20 border border-violet-500/30 text-violet-300 rounded-xl text-xs font-bold shrink-0 active:scale-95 transition-all">
+                    <button onClick={copyReferral} className="px-2.5 py-1 bg-violet-500/20 border border-violet-500/30 text-violet-300 rounded-lg text-xs font-bold shrink-0 active:scale-95 transition-all">
                       {copied ? 'Disalin!' : 'Salin'}
                     </button>
                   </div>
 
-                  <button onClick={shareToTelegram} className="w-full py-3.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-black text-xs uppercase tracking-wider rounded-2xl active:scale-[0.98] shadow-lg shadow-violet-500/20 transition-all flex items-center justify-center gap-2">
-                    <div className="w-4 h-4"><IcoShare/></div>
+                  <button onClick={shareToTelegram} className="w-full py-3 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-black text-xs uppercase tracking-wider rounded-2xl active:scale-[0.98] shadow-lg shadow-violet-500/20 transition-all flex items-center justify-center gap-2">
+                    <div className="w-3.5 h-3.5"><IcoShare/></div>
                     Bagikan ke Telegram
                   </button>
-
-                  {referredUsers.length > 0 && (
-                    <div className="space-y-2 pt-1">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Teman Terundang ({referredUsers.length})</p>
-                      <div className="space-y-1.5 max-h-40 overflow-y-auto">
-                        {referredUsers.slice(0, 8).map((r: any, i: number) => (
-                          <div key={i} className="flex items-center gap-2.5 bg-[#050811] border border-white/5 rounded-xl p-2.5">
-                            <div className="w-6 h-6 rounded-lg bg-violet-500/20 text-violet-300 flex items-center justify-center text-[10px] font-black shrink-0">
-                              {(r.firstName || '?')[0]?.toUpperCase()}
-                            </div>
-                            <p className="text-xs font-bold text-slate-300 truncate flex-1">{r.firstName}</p>
-                            <span className="text-[10px] text-emerald-400 font-bold font-mono shrink-0">+50 PTS</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="glass-card border border-white/10 p-4.5 rounded-[28px] space-y-3 shadow-xl">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
-                      <div className="w-4 h-4"><IcoCrown/></div>
-                    </div>
-                    <div>
-                      <h2 className="text-xs font-black text-white">Tingkat Level Member</h2>
-                      <p className="text-[10px] text-slate-400">Naikkan level dari referral & transaksi</p>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-5 gap-1.5">
-                    {[
-                      { t: 'BRONZE', l: '🥉' },
-                      { t: 'SILVER', l: '🥈' },
-                      { t: 'GOLD', l: '🥇' },
-                      { t: 'PLATINUM', l: '🏆' },
-                      { t: 'DIAMOND', l: '💎' },
-                    ].map((lvl) => {
-                      const isCurrent = badge?.tier === lvl.t;
-                      return (
-                        <div key={lvl.t} className={`text-center py-2.5 rounded-2xl border transition-all ${isCurrent ? 'border-white/30 bg-white/10 shadow-md' : 'border-white/5 opacity-40'}`}>
-                          <p className="text-base">{lvl.l}</p>
-                          <p className="text-[8px] font-black text-slate-300 mt-1 uppercase">{lvl.t}</p>
-                        </div>
-                      );
-                    })}
-                  </div>
                 </div>
 
               </div>
             )}
 
             {profileSubTab === 'history' && (
-              <div className="glass-card border border-white/10 p-4.5 rounded-[28px] space-y-3 shadow-xl animate-[fadeIn_0.25s_ease-out]">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-2xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400">
-                    <div className="w-4 h-4"><IcoClock/></div>
+              <div className="glass-card border border-white/10 p-4 rounded-[28px] space-y-3 shadow-xl animate-[fadeIn_0.25s_ease-out]">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400">
+                    <div className="w-3.5 h-3.5"><IcoClock/></div>
                   </div>
                   <div>
                     <h2 className="text-xs font-black text-white">Riwayat Transaksi</h2>
@@ -1743,69 +1691,53 @@ export default function StoreUI() {
                 </div>
 
                 {historyLoading ? (
-                  <div className="py-8 text-center">
+                  <div className="py-6 text-center">
                     <p className="text-xs text-slate-500">Memuat riwayat...</p>
                   </div>
                 ) : history.length === 0 ? (
-                  <div className="py-8 text-center border border-dashed border-white/10 rounded-2xl">
+                  <div className="py-6 text-center border border-dashed border-white/10 rounded-2xl">
                     <p className="text-xs text-slate-500">Belum ada riwayat aktivitas</p>
                   </div>
                 ) : (
-                  <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
-                    {history.map((h: any, i: number) => {
-                      const typeStyle: Record<string, { icon: string; color: string }> = {
-                        CHECKIN: { icon: '📅', color: 'text-emerald-400' },
-                        VOUCHER: { icon: '🎟️', color: 'text-amber-400' },
-                        REDEEM_VIP: { icon: '⭐', color: 'text-violet-400' },
-                        REDEEM_VOUCHER: { icon: '🎁', color: 'text-fuchsia-400' },
-                        PURCHASE: { icon: '💳', color: 'text-teal-400' },
-                      };
-                      const style = typeStyle[h.type] || { icon: '📌', color: 'text-slate-400' };
-                      return (
-                        <div key={i} className="flex items-center gap-3 p-3 bg-[#050811] border border-white/5 rounded-2xl">
-                          <span className="text-base shrink-0">{style.icon}</span>
-                          <div className="min-w-0 flex-1">
-                            <p className="text-xs font-bold text-slate-200 truncate">{h.label}</p>
-                            <p className="text-[9px] text-slate-500">{new Date(h.timestamp).toLocaleString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</p>
-                          </div>
-                          {typeof h.points === 'number' && h.points !== 0 && (
-                            <span className={`text-xs font-black font-mono shrink-0 ${h.points > 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-                              {h.points > 0 ? '+' : ''}{h.points} PTS
-                            </span>
-                          )}
+                  <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
+                    {history.map((h: any, i: number) => (
+                      <div key={i} className="flex items-center gap-2.5 p-2.5 bg-[#050811] border border-white/5 rounded-2xl">
+                        <span className="text-sm shrink-0">📌</span>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-bold text-slate-200 truncate">{h.label}</p>
+                          <p className="text-[9px] text-slate-500">{new Date(h.timestamp).toLocaleString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</p>
                         </div>
-                      );
-                    })}
+                        {typeof h.points === 'number' && h.points !== 0 && (
+                          <span className={`text-xs font-black font-mono shrink-0 ${h.points > 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                            {h.points > 0 ? '+' : ''}{h.points} PTS
+                          </span>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
             )}
 
             {profileSubTab === 'settings' && (
-              <div className="space-y-3.5 animate-[fadeIn_0.25s_ease-out]">
-                <div className="glass-card border border-white/10 p-4.5 rounded-[28px] space-y-3 shadow-xl">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400">
-                      <div className="w-4 h-4"><IcoUserCircle/></div>
-                    </div>
-                    <div>
-                      <h2 className="text-xs font-black text-white">Info Akun</h2>
-                      <p className="text-[10px] text-slate-400">Rincian identitas Telegram</p>
-                    </div>
+              <div className="glass-card border border-white/10 p-4 rounded-[28px] space-y-3 shadow-xl animate-[fadeIn_0.25s_ease-out]">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400">
+                    <div className="w-3.5 h-3.5"><IcoUserCircle/></div>
                   </div>
-                  <div className="bg-[#050811] border border-white/5 rounded-2xl divide-y divide-white/5">
-                    <div className="flex items-center justify-between p-3.5">
-                      <span className="text-xs text-slate-400 font-medium">Telegram ID</span>
-                      <span className="text-xs text-slate-200 font-mono font-bold">{userTelegramId}</span>
-                    </div>
-                    <div className="flex items-center justify-between p-3.5">
-                      <span className="text-xs text-slate-400 font-medium">Username</span>
-                      <span className="text-xs text-slate-200 font-mono font-bold">@{userUsername}</span>
-                    </div>
-                    <div className="flex items-center justify-between p-3.5">
-                      <span className="text-xs text-slate-400 font-medium">Status Keanggotaan</span>
-                      <span className={`text-xs font-bold ${isPrem ? 'text-emerald-400' : 'text-slate-400'}`}>{isPrem ? 'VIP Member' : 'Free User'}</span>
-                    </div>
+                  <div>
+                    <h2 className="text-xs font-black text-white">Info Akun</h2>
+                    <p className="text-[10px] text-slate-400">Rincian identitas Telegram</p>
+                  </div>
+                </div>
+                <div className="bg-[#050811] border border-white/5 rounded-2xl divide-y divide-white/5">
+                  <div className="flex items-center justify-between p-3">
+                    <span className="text-xs text-slate-400 font-medium">Telegram ID</span>
+                    <span className="text-xs text-slate-200 font-mono font-bold">{userTelegramId}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-3">
+                    <span className="text-xs text-slate-400 font-medium">Username</span>
+                    <span className="text-xs text-slate-200 font-mono font-bold">@{userUsername}</span>
                   </div>
                 </div>
               </div>
@@ -1816,11 +1748,29 @@ export default function StoreUI() {
 
       </main>
 
-      <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[92%] max-w-sm">
-        <div className="glass bg-[#080D1A]/90 rounded-full p-2 border border-white/15 flex items-center justify-around shadow-[0_20px_50px_rgba(0,0,0,0.9)] gap-1">
+      {!chatOpen && (
+        <button
+          onClick={() => setChatOpen(true)}
+          aria-label="Support"
+          className="fixed right-4 bottom-24 z-30 h-10 px-3.5 rounded-full bg-gradient-to-r from-violet-600 via-fuchsia-600 to-purple-600 text-white flex items-center gap-2 shadow-lg shadow-purple-900/40 border border-white/20 active:scale-95 transition-all"
+        >
+          <span className="relative w-4 h-4 block">
+            <IcoChat />
+            {chatUnread > 0 && (
+              <span className="absolute -top-1.5 -right-2 min-w-[14px] h-3.5 px-0.5 rounded-full bg-rose-500 text-[8px] font-black flex items-center justify-center leading-none">
+                {chatUnread > 9 ? '9+' : chatUnread}
+              </span>
+            )}
+          </span>
+          <span className="text-[11px] font-black tracking-wide">Support</span>
+        </button>
+      )}
+
+      <nav className="fixed bottom-3 left-1/2 -translate-x-1/2 z-40 w-[92%] max-w-sm">
+        <div className="glass bg-[#080D1A]/90 rounded-full p-1.5 border border-white/15 flex items-center justify-around shadow-[0_20px_50px_rgba(0,0,0,0.9)] gap-1">
           <button
             onClick={() => setActiveTab('dashboard')}
-            className={`flex-1 py-2.5 rounded-full flex flex-col items-center justify-center gap-1 text-[9px] font-black transition-all active:scale-95 ${
+            className={`flex-1 py-2 rounded-full flex flex-col items-center justify-center gap-1 text-[9px] font-black transition-all active:scale-95 ${
               activeTab === 'dashboard' ? 'bg-white text-slate-950 shadow-md shadow-white/20' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -1830,7 +1780,7 @@ export default function StoreUI() {
 
           <button
             onClick={() => { setActiveTab('buy'); setConfirmStep(false); }}
-            className={`flex-1 py-2.5 rounded-full flex flex-col items-center justify-center gap-1 text-[9px] font-black transition-all active:scale-95 ${
+            className={`flex-1 py-2 rounded-full flex flex-col items-center justify-center gap-1 text-[9px] font-black transition-all active:scale-95 ${
               activeTab === 'buy' ? 'bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-md shadow-emerald-500/20' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -1840,7 +1790,7 @@ export default function StoreUI() {
 
           <button
             onClick={() => setActiveTab('checkin')}
-            className={`flex-1 py-2.5 rounded-full flex flex-col items-center justify-center gap-1 text-[9px] font-black transition-all active:scale-95 ${
+            className={`flex-1 py-2 rounded-full flex flex-col items-center justify-center gap-1 text-[9px] font-black transition-all active:scale-95 ${
               activeTab === 'checkin' ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-md shadow-amber-500/20' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -1850,7 +1800,7 @@ export default function StoreUI() {
 
           <button
             onClick={() => setActiveTab('redeem')}
-            className={`flex-1 py-2.5 rounded-full flex flex-col items-center justify-center gap-1 text-[9px] font-black transition-all active:scale-95 ${
+            className={`flex-1 py-2 rounded-full flex flex-col items-center justify-center gap-1 text-[9px] font-black transition-all active:scale-95 ${
               activeTab === 'redeem' ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-md shadow-amber-500/20' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -1860,7 +1810,7 @@ export default function StoreUI() {
 
           <button
             onClick={() => setActiveTab('profile')}
-            className={`flex-1 py-2.5 rounded-full flex flex-col items-center justify-center gap-1 text-[9px] font-black transition-all active:scale-95 ${
+            className={`flex-1 py-2 rounded-full flex flex-col items-center justify-center gap-1 text-[9px] font-black transition-all active:scale-95 ${
               activeTab === 'profile' ? 'bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-md shadow-violet-500/20' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -1872,46 +1822,24 @@ export default function StoreUI() {
 
       {redeemConfirmItem && (
         <div className="fixed inset-0 z-50 bg-[#04060C]/85 backdrop-blur-2xl flex items-center justify-center p-4 animate-[fadeIn_0.15s_ease-out]" onClick={() => setRedeemConfirmItem(null)}>
-          <div className="max-w-xs w-full bg-[#0B0F1A] p-6 rounded-[32px] space-y-4 border border-amber-500/30 text-center shadow-[0_25px_70px_rgba(0,0,0,0.9)] animate-[scaleIn_0.2s_ease-out]" onClick={e => e.stopPropagation()}>
-            <div className="w-14 h-14 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center mx-auto shadow-inner">
-              <div className="w-7 h-7"><IcoGift/></div>
+          <div className="max-w-xs w-full bg-[#0B0F1A] p-5 rounded-[32px] space-y-3 border border-amber-500/30 text-center shadow-2xl animate-[scaleIn_0.2s_ease-out]" onClick={e => e.stopPropagation()}>
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center mx-auto shadow-inner">
+              <div className="w-6 h-6"><IcoGift/></div>
             </div>
 
             <div>
-              <h3 className="text-sm font-black text-white">Konfirmasi Penukaran Poin</h3>
-              <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                Potong <span className="text-amber-400 font-bold font-mono">{redeemConfirmItem.points} PTS</span> untuk menukar <span className="text-white font-bold">{redeemConfirmItem.label}</span>?
+              <h3 className="text-xs font-black text-white">Konfirmasi Penukaran Poin</h3>
+              <p className="text-[11px] text-slate-300 mt-1 leading-relaxed">
+                Tukar <span className="text-amber-400 font-bold font-mono">{redeemConfirmItem.points} PTS</span> untuk <span className="text-white font-bold">{redeemConfirmItem.label}</span>?
               </p>
             </div>
 
-            <div className="bg-[#050811] p-3 rounded-2xl border border-white/10 text-xs space-y-1.5 text-left">
-              <div className="flex justify-between">
-                <span className="text-slate-400">Saldo Saat Ini:</span>
-                <span className="text-white font-bold font-mono">{userPoints} PTS</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Biaya Penukaran:</span>
-                <span className="text-amber-400 font-bold font-mono">-{redeemConfirmItem.points} PTS</span>
-              </div>
-              <div className="flex justify-between pt-1.5 border-t border-white/5">
-                <span className="text-slate-400">Sisa Poin:</span>
-                <span className="text-emerald-400 font-bold font-mono">{userPoints - redeemConfirmItem.points} PTS</span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-[0.8fr_1.4fr] gap-2.5 pt-1">
-              <button
-                onClick={() => setRedeemConfirmItem(null)}
-                className="py-3 bg-white/5 border border-white/10 text-slate-300 font-extrabold rounded-2xl text-xs uppercase tracking-wider active:scale-95 transition-all"
-              >
+            <div className="grid grid-cols-[0.8fr_1.4fr] gap-2 pt-1">
+              <button onClick={() => setRedeemConfirmItem(null)} className="py-2.5 bg-white/5 border border-white/10 text-slate-300 font-extrabold rounded-xl text-xs uppercase active:scale-95 transition-all">
                 Batal
               </button>
-              <button
-                onClick={executeRedeem}
-                disabled={redeeming}
-                className="py-3 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl active:scale-95 disabled:opacity-40 shadow-lg shadow-amber-500/20 transition-all"
-              >
-                {redeeming ? 'Proses...' : 'Konfirmasi Klaim'}
+              <button onClick={executeRedeem} disabled={redeeming} className="py-2.5 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-black text-xs uppercase rounded-xl active:scale-95 disabled:opacity-40 transition-all shadow-md">
+                {redeeming ? '...' : 'Konfirmasi'}
               </button>
             </div>
           </div>
@@ -1920,178 +1848,58 @@ export default function StoreUI() {
 
       {qrisZoomOpen && (
         <div className="fixed inset-0 z-50 bg-[#04060C]/90 backdrop-blur-2xl flex items-center justify-center p-4 animate-[fadeIn_0.15s_ease-out]" onClick={() => setQrisZoomOpen(false)}>
-          <div className="max-w-sm w-full bg-[#0B0F1A] p-5 rounded-[32px] space-y-4 border border-emerald-500/40 text-center shadow-2xl" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-center gap-2 pb-2 border-b border-white/10">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"/>
-              <span className="text-xs font-black text-white uppercase tracking-wider">QRIS FULLSCREEN SCANNER</span>
+          <div className="max-w-xs w-full bg-[#0B0F1A] p-4 rounded-[28px] space-y-3 border border-emerald-500/40 text-center shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="w-full aspect-square bg-white p-2 rounded-2xl shadow-xl flex items-center justify-center border-2 border-emerald-400">
+              <img src={QRIS_IMAGE_URL} alt="QRIS Fullscreen" className="w-full h-full object-contain rounded-xl" />
             </div>
-
-            <div className="w-full aspect-square bg-white p-3 rounded-2xl shadow-2xl flex items-center justify-center border-4 border-emerald-400">
-              <img
-                src={QRIS_IMAGE_URL}
-                alt="QRIS Fullscreen"
-                className="w-full h-full object-contain rounded-xl"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <p className="text-xs text-emerald-400 font-bold">Siap di-scan menggunakan DANA, GoPay, OVO, ShopeePay & M-Banking</p>
-              <button
-                onClick={() => setQrisZoomOpen(false)}
-                className="w-full py-3.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg shadow-emerald-500/25 active:scale-95 transition-all"
-              >
-                Tutup & Kembali
-              </button>
-            </div>
+            <button onClick={() => setQrisZoomOpen(false)} className="w-full py-2.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500 text-slate-950 font-black text-xs uppercase rounded-xl active:scale-95">
+              Tutup
+            </button>
           </div>
         </div>
       )}
 
-      {!chatOpen && (
-        <button
-          onClick={() => setChatOpen(true)}
-          aria-label="Chat dengan Owner"
-          className="fixed right-4 z-40 bottom-[calc(5.8rem+env(safe-area-inset-bottom))] h-12 pl-3.5 pr-4 rounded-full bg-gradient-to-br from-violet-600 via-fuchsia-600 to-purple-600 text-white flex items-center gap-2 shadow-[0_10px_28px_rgba(147,51,234,0.5)] active:scale-95 transition-all border border-white/20"
-        >
-          <span className="relative w-5 h-5 block">
-            <IcoChat />
-            {chatUnread > 0 && (
-              <span className="absolute -top-2 -right-2.5 min-w-[18px] h-4.5 px-1 rounded-full bg-rose-500 border-2 border-[#0B0F1A] text-[8px] font-black flex items-center justify-center leading-none">
-                {chatUnread > 9 ? '9+' : chatUnread}
-              </span>
-            )}
-          </span>
-          <span className="text-[11px] font-black tracking-wide">Support</span>
-        </button>
-      )}
-
       {chatOpen && (
         <div className="fixed inset-0 z-50 bg-[#04060C] flex flex-col h-[100dvh] animate-[fadeIn_0.15s_ease-out]">
-          <div className="shrink-0 flex items-center gap-3 px-4 pb-3.5 pt-[max(56px,calc(env(safe-area-inset-top)+44px))] border-b border-white/10 bg-[#0B0F1A]">
-            <button
-              onClick={() => setChatOpen(false)}
-              className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 active:scale-95 transition-all shrink-0"
-            >
+          <div className="shrink-0 flex items-center gap-3 px-4 pb-3 pt-[max(16px,env(safe-area-inset-top))] border-b border-white/10 bg-[#0B0F1A]">
+            <button onClick={() => setChatOpen(false)} className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 shrink-0">
               ←
             </button>
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center text-white shrink-0 shadow-md">
-              <div className="w-4.5 h-4.5"><IcoChat /></div>
-            </div>
             <div className="min-w-0 flex-1">
               <p className="text-xs font-black text-white">Customer Support</p>
-              <p className="text-[10px] text-slate-400 font-medium">
-                {chatConversation?.status === 'closed' ? 'Percakapan ditutup' : 'Owner biasanya membalas cepat'}
-              </p>
+              <p className="text-[10px] text-slate-400">Owner membalas pesan secara cepat</p>
             </div>
-            <button
-              onClick={() => loadChat(initData)}
-              className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 active:scale-95 transition-all shrink-0"
-            >
-              <div className="w-4 h-4"><IcoRefresh /></div>
-            </button>
           </div>
 
-          <div
-            ref={chatScrollRef}
-            onScroll={handleChatScroll}
-            className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 py-4 space-y-3 bg-[#04060C]"
-          >
-            {chatLoading && chatMessages.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center gap-2 text-slate-500">
-                <div className="w-7 h-7 border-2 border-violet-500/30 border-t-violet-500 rounded-full animate-spin" />
-                <p className="text-xs font-medium">Memuat percakapan...</p>
-              </div>
-            ) : chatError ? (
-              <div className="h-full flex flex-col items-center justify-center gap-3 text-center px-6">
-                <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-center justify-center">
-                  <div className="w-6 h-6"><IcoLock /></div>
-                </div>
-                <p className="text-xs text-rose-300 font-semibold">{chatError}</p>
-                <button
-                  onClick={() => loadChat(initData)}
-                  className="px-4 py-2 bg-white/5 border border-white/10 text-slate-200 text-[11px] font-bold rounded-xl active:scale-95 transition-all"
-                >
-                  Coba Lagi
-                </button>
-              </div>
-            ) : chatMessages.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center gap-2 text-center px-6">
-                <div className="w-12 h-12 rounded-2xl bg-violet-500/10 border border-violet-500/30 text-violet-400 flex items-center justify-center">
-                  <div className="w-6 h-6"><IcoChat /></div>
-                </div>
-                <p className="text-xs text-slate-300 font-bold">Belum ada percakapan</p>
-                <p className="text-[10px] text-slate-500 max-w-[220px]">Kirim pesan pertama Anda, Owner akan segera membalas.</p>
-              </div>
-            ) : (
-              chatMessages.map((m: any) => {
-                const isUser = m.sender_type === 'user';
-                const isAi = m.sender_type === 'ai';
-                return (
-                  <div key={m.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'} animate-[fadeIn_0.2s_ease-out]`}>
-                    <div className={`max-w-[80%] px-4 py-2.5 text-[12.5px] leading-relaxed ${
-                      isUser
-                        ? 'bg-gradient-to-br from-violet-600 via-fuchsia-600 to-purple-600 text-white rounded-2xl rounded-br-md shadow-[0_4px_16px_-4px_rgba(168,85,247,0.5)] ring-1 ring-fuchsia-300/20'
-                        : isAi
-                        ? 'bg-gradient-to-br from-cyan-600 via-teal-600 to-emerald-600 text-white rounded-2xl rounded-bl-md shadow-[0_4px_16px_-4px_rgba(6,182,212,0.5)] ring-1 ring-cyan-300/20'
-                        : 'bg-gradient-to-br from-[#121828] to-[#0A0E18] text-slate-100 rounded-2xl rounded-bl-md shadow-[0_4px_14px_-6px_rgba(0,0,0,0.6)] ring-1 ring-white/[0.08]'
-                    }`}>
-                      {isAi && (
-                        <p className="flex items-center gap-1 text-[8.5px] font-black uppercase tracking-widest text-cyan-50/90 mb-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-200 shadow-[0_0_6px_rgba(165,243,252,0.9)]" />
-                          Asisten AI
-                        </p>
-                      )}
-                      <p className="whitespace-pre-wrap break-words">{m.message}</p>
-                      <p className={`text-[9px] mt-1 font-medium flex items-center gap-1 ${isUser ? 'text-fuchsia-50/75 justify-end' : isAi ? 'text-cyan-50/75' : 'text-slate-500'}`}>
-                        {m._failed ? (
-                          <span className="text-rose-200">Gagal terkirim</span>
-                        ) : m._pending ? (
-                          <span>Mengirim...</span>
-                        ) : (
-                          new Date(m.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
-                        )}
-                      </p>
-                    </div>
+          <div ref={chatScrollRef} onScroll={handleChatScroll} className="flex-1 min-h-0 overflow-y-auto px-4 py-3 space-y-2 bg-[#04060C]">
+            {chatMessages.map((m: any) => {
+              const isUser = m.sender_type === 'user';
+              return (
+                <div key={m.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[80%] px-3.5 py-2 text-xs leading-relaxed ${
+                    isUser
+                      ? 'bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white rounded-2xl rounded-br-xs'
+                      : 'bg-[#121828] text-slate-100 rounded-2xl rounded-bl-xs border border-white/10'
+                  }`}>
+                    <p className="whitespace-pre-wrap break-words">{m.message}</p>
                   </div>
-                );
-              })
-            )}
+                </div>
+              );
+            })}
           </div>
 
-          <div className="shrink-0 p-3 pb-[max(12px,env(safe-area-inset-bottom))] border-t border-white/10 bg-[#0B0F1A]">
-            {chatConversation?.status === 'closed' ? (
-              <div className="text-center py-2">
-                <p className="text-[10px] text-slate-500 font-medium">Percakapan ini telah ditutup oleh Owner. Kirim pesan baru untuk membuka kembali.</p>
-              </div>
-            ) : null}
-            <div className="flex items-end gap-2">
-              <textarea
-                value={chatInput}
-                onChange={(e) => {
-                  setChatInput(e.target.value);
-                  e.target.style.height = 'auto';
-                  e.target.style.height = Math.min(e.target.scrollHeight, 96) + 'px';
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendChatMessage();
-                  }
-                }}
-                placeholder="Tulis pesan..."
-                rows={1}
-                maxLength={2000}
-                disabled={chatSending}
-                className="flex-1 bg-[#050811] border border-white/10 text-white placeholder-slate-600 px-3.5 py-2.5 rounded-2xl text-xs focus:outline-none focus:border-violet-500/50 transition-all shadow-inner resize-none max-h-24 disabled:opacity-60"
-              />
-              <button
-                onClick={sendChatMessage}
-                disabled={chatSending || !chatInput.trim()}
-                className="w-10 h-10 shrink-0 rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white flex items-center justify-center active:scale-95 disabled:opacity-40 transition-all shadow-lg shadow-violet-500/20"
-              >
-                <div className="w-4 h-4">{chatSending ? '···' : <IcoSend />}</div>
-              </button>
-            </div>
+          <div className="shrink-0 p-3 border-t border-white/10 bg-[#0B0F1A] flex gap-2">
+            <input
+              type="text"
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && sendChatMessage()}
+              placeholder="Tulis pesan..."
+              className="flex-1 bg-[#050811] border border-white/10 text-white px-3.5 py-2 rounded-xl text-xs focus:outline-none"
+            />
+            <button onClick={sendChatMessage} disabled={chatSending || !chatInput.trim()} className="px-4 py-2 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white text-xs font-black rounded-xl shrink-0">
+              Kirim
+            </button>
           </div>
         </div>
       )}
