@@ -767,22 +767,32 @@ export default function StoreUI() {
   const checkinStreak = !canCheckin ? Math.max(1, rawStreak) : rawStreak;
 
   if (loading) return (
-    <div className="min-h-screen bg-[#060810] flex flex-col items-center justify-center p-4">
-      <div className="flex flex-col items-center gap-3 p-6 bg-[#0D121F]/80 border border-emerald-500/20 rounded-3xl backdrop-blur-2xl shadow-[0_0_50px_rgba(16,185,129,0.1)]">
-        <div className="relative flex items-center justify-center w-12 h-12">
-          <div className="absolute inset-0 border-2 border-emerald-500/20 border-t-emerald-400 rounded-full animate-spin" />
-          <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-white font-black text-xs shadow-md shadow-emerald-500/30">
+    <div className="min-h-screen bg-[#05070e] flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      <div className="orb orb-emerald w-[400px] h-[400px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-40" />
+      <div className="flex flex-col items-center gap-4 p-8 premium-glass rounded-[32px] border border-emerald-500/20 shadow-[0_0_80px_rgba(16,185,129,0.15)] animate-scale-in relative z-10">
+        <div className="relative flex items-center justify-center w-16 h-16">
+          <div className="absolute inset-0 rounded-[20px] bg-gradient-to-br from-emerald-400/20 to-teal-600/20 blur-xl animate-glow" />
+          <div className="absolute inset-0 border-2 border-emerald-500/20 border-t-emerald-400 rounded-[20px] animate-spin" />
+          <div className="w-10 h-10 rounded-[14px] bg-emerald-glow flex items-center justify-center text-white font-black text-sm shadow-lg shadow-emerald-500/30 animate-float">
             W
           </div>
         </div>
-        <p className="text-[10px] font-black tracking-[0.2em] text-emerald-400 uppercase">WALZSHOP STORE</p>
+        <div className="text-center space-y-1">
+          <p className="text-[11px] font-black tracking-[0.25em] text-gradient-emerald uppercase">WALZSHOP</p>
+          <p className="text-[9px] font-bold tracking-widest text-slate-500 uppercase">Obsidian Luxe Edition • Loading</p>
+          <div className="flex gap-1 justify-center pt-2">
+            <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse delay-100" />
+            <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse delay-200" />
+          </div>
+        </div>
       </div>
     </div>
   );
 
   if (isBanned) return (
     <div className="min-h-screen bg-[#060810] text-slate-100 flex items-center justify-center p-4 font-sans">
-      <div className="bg-gradient-to-b from-[#12182A] to-[#0A0E1A] p-6 rounded-3xl max-w-xs w-full text-center space-y-3 border border-rose-500/40 shadow-[0_0_40px_rgba(244,63,94,0.15)]">
+      <div className="bg-[#0D121F] p-6 rounded-3xl max-w-xs w-full text-center space-y-3 border border-rose-500/40 shadow-[0_0_40px_rgba(244,63,94,0.15)]">
         <div className="w-12 h-12 rounded-2xl bg-rose-500/20 border border-rose-500/30 text-rose-400 flex items-center justify-center mx-auto">
           <div className="w-6 h-6"><IcoLock/></div>
         </div>
@@ -806,9 +816,9 @@ export default function StoreUI() {
   const userVouchers = userStatus?.vouchers || [];
 
   return (
-    <div className="min-h-screen bg-[#060810] text-slate-100 font-sans relative overflow-x-hidden pb-36 selection:bg-emerald-500/30">
+    <div className="min-h-screen bg-[#05070e] text-slate-100 font-sans relative overflow-x-hidden pb-36 selection:bg-emerald-500/30">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap');
         * { font-family: 'Plus Jakarta Sans', sans-serif; }
         .glass { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -839,19 +849,41 @@ export default function StoreUI() {
         }
         .ticket-notch.left { left: -7px; }
         .ticket-notch.right { right: -7px; }
+
+        .premium-luxe-card {
+          background: linear-gradient(165deg, rgba(18,26,47,0.92) 0%, rgba(10,15,30,0.96) 100%);
+          backdrop-filter: blur(36px) saturate(1.5);
+          border: 1px solid rgba(255,255,255,0.08);
+          box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset, 0 16px 48px -16px rgba(0,0,0,0.9);
+        }
+        .premium-luxe-card:hover {
+          transform: translateY(-2px);
+          border-color: rgba(255,255,255,0.12);
+          box-shadow: 0 0 0 1px rgba(255,255,255,0.06) inset, 0 24px 60px -16px rgba(0,0,0,0.95), 0 0 30px -10px rgba(16,185,129,0.15);
+        }
+        @keyframes luxeShine {
+          0% { transform: translateX(-100%) skewX(-12deg); }
+          100% { transform: translateX(200%) skewX(-12deg); }
+        }
+
       `}</style>
 
-      {/* Ambient Lighting */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[450px] h-[280px] bg-emerald-500/[0.08] rounded-full blur-[110px]" />
-        <div className="absolute top-1/2 -right-20 w-[280px] h-[280px] bg-amber-500/[0.05] rounded-full blur-[110px]" />
-        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-teal-500/[0.04] rounded-full blur-[120px]" />
+      {/* PREMIUM AMBIENT LUXE - Obsidian Orbs */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="orb orb-emerald w-[600px] h-[500px] -top-32 left-1/2 -translate-x-1/2 opacity-60 animate-orb-float" />
+        <div className="orb orb-violet w-[500px] h-[500px] top-[30%] -right-32 opacity-50 animate-orb-float delay-200" />
+        <div className="orb orb-amber w-[400px] h-[400px] top-[60%] -left-20 opacity-30 animate-orb-float delay-300" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#05070e]/80" />
       </div>
+      
+      {/* Noise + Mesh overlay */}
+      <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.015] mix-blend-soft-light" style={{backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`}} />
+
 
       {/* Smooth Spring Floating Toast Notification */}
       {toastMsg && (
         <div className="fixed top-3 left-0 right-0 z-[100] px-4 pointer-events-none flex justify-center">
-          <div className={`pointer-events-auto w-full max-w-[360px] p-3.5 rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.8)] flex items-center gap-3 border backdrop-blur-2xl animate-[toastSlide_0.4s_cubic-bezier(0.16,1,0.3,1)] ${
+          <div className={`pointer-events-auto w-full max-w-[360px] p-3.5 rounded-[20px] shadow-[0_12px_40px_rgba(0,0,0,0.8)] flex items-center gap-3 border backdrop-blur-2xl animate-toast-cool ${
             toastMsg.type === 'success' 
               ? 'border-emerald-500/50 bg-[#061B14]/95 text-emerald-200 shadow-emerald-950/40' 
               : 'border-rose-500/50 bg-[#1D090E]/95 text-rose-200 shadow-rose-950/40'
@@ -872,10 +904,10 @@ export default function StoreUI() {
       )}
 
       {/* Header */}
-      <header className="sticky top-0 z-30 glass bg-[#060810]/85 border-b border-white/[0.08] px-4 py-3 max-w-md mx-auto flex items-center justify-between shadow-[0_4px_24px_rgba(0,0,0,0.5)]">
+      <header className="sticky top-0 z-30 glass bg-[#05070e]/80 border-b border-white/10 px-4 py-3 max-w-md mx-auto flex items-center justify-between shadow-lg shadow-black/40">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-emerald-600 flex items-center justify-center text-white font-black text-sm shadow-[0_4px_14px_-2px_rgba(16,185,129,0.45)] ring-1 ring-white/25">
+            <div className="w-9 h-9 rounded-[20px] bg-gradient-to-br from-emerald-400 via-teal-500 to-emerald-600 flex items-center justify-center text-white font-black text-sm shadow-md shadow-emerald-500/30 ring-1 ring-white/20">
               W
             </div>
             <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#060810]" />
@@ -892,7 +924,7 @@ export default function StoreUI() {
         <button
           onClick={() => checkStatus(initData)}
           disabled={refreshing}
-          className={`w-9 h-9 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:bg-white/10 active:scale-90 transition-all ${refreshing ? 'animate-spin text-emerald-400' : ''}`}
+          className={`w-9 h-9 rounded-[20px] bg-white/5 border border-white/[0.08] flex items-center justify-center text-slate-300 hover:bg-white/10 active:scale-90 transition-all ${refreshing ? 'animate-spin text-emerald-400' : ''}`}
         >
           <div className="w-4 h-4"><IcoRefresh/></div>
         </button>
@@ -902,16 +934,16 @@ export default function StoreUI() {
       <main className="px-4 pt-3.5 max-w-md mx-auto space-y-3.5 relative z-10">
 
         {/* Live Purchase Ticker */}
-        <div className="bg-gradient-to-r from-[#0F1626] to-[#0A0E1A] border border-emerald-500/30 px-3.5 py-2 rounded-2xl flex items-center gap-2.5 text-[10px] font-bold text-emerald-300 shadow-lg shadow-black/30 overflow-hidden">
+        <div className="cyber-card border border-emerald-500/30 shadow-[0_0_20px_-8px_rgba(16,185,129,0.2)] px-3.5 py-2 rounded-[20px] flex items-center gap-2.5 text-[10px] font-bold text-emerald-300 shadow-lg shadow-black/30 overflow-hidden">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
           <p className="truncate key={tickerIndex} animate-[fadeIn_0.3s_ease-out]">{RECENT_PURCHASES[tickerIndex]}</p>
         </div>
 
         {/* Flash Sale Banner */}
         {isFlashActive && (
-          <div className="bg-gradient-to-r from-[#1C1218] via-[#140E16] to-[#0A070D] border border-rose-500/30 p-3.5 rounded-3xl flex items-center justify-between shadow-xl shadow-rose-950/20">
+          <div className="bg-gradient-to-r from-[#1C1218] via-[#140E16] to-[#0A070D] border border-rose-500/30 p-3.5 rounded-[28px] flex items-center justify-between shadow-xl shadow-rose-950/20">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-400 flex items-center justify-center shadow-md">
+              <div className="w-8 h-8 rounded-[20px] bg-rose-500/20 border border-rose-500/40 text-rose-400 flex items-center justify-center shadow-md">
                 <div className="w-4 h-4"><IcoZap/></div>
               </div>
               <div>
@@ -927,7 +959,7 @@ export default function StoreUI() {
 
         {/* Pending Order Notice */}
         {pending && (
-          <div className="bg-amber-950/20 border border-amber-500/40 p-3.5 rounded-3xl flex items-center gap-3 shadow-lg">
+          <div className="bg-amber-950/20 border border-amber-500/40 p-3.5 rounded-[28px] flex items-center gap-3 shadow-lg">
             <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shrink-0" />
             <p className="text-amber-200 text-xs font-bold">Transaksi Anda sedang diverifikasi oleh Admin...</p>
           </div>
@@ -935,12 +967,12 @@ export default function StoreUI() {
 
         {/* TAB 1: DASHBOARD */}
         {activeTab === 'dashboard' && (
-          <div className="space-y-3.5 animate-[fadeIn_0.25s_ease-out]">
+          <div className="space-y-3.5 animate-cyber">
 
             {/* Profile Overview Card */}
-            <div className="bg-gradient-to-b from-[#12182A] to-[#0A0E1A] p-4.5 rounded-3xl relative overflow-hidden border border-white/[0.08] shadow-[0_8px_32px_-8px_rgba(0,0,0,0.6)] ring-1 ring-white/[0.03] space-y-3">
+            <div className="cyber-card p-4.5 rounded-[28px] relative overflow-hidden border border-white/[0.08] shadow-xl space-y-3">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-400 via-teal-500 to-indigo-600 flex items-center justify-center font-black text-white text-base shadow-[0_4px_14px_-2px_rgba(16,185,129,0.4)] ring-2 ring-white/[0.15] shrink-0 overflow-hidden">
+                <div className="w-12 h-12 rounded-[20px] bg-gradient-to-tr from-emerald-400 via-teal-500 to-indigo-600 flex items-center justify-center font-black text-white text-base shadow-md border border-white/20 shrink-0 overflow-hidden">
                   {tgUser?.photo_url ? <img src={tgUser.photo_url} className="w-full h-full object-cover" alt=""/> : initials}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -959,32 +991,32 @@ export default function StoreUI() {
                 <div className="pt-3 border-t border-white/5 text-center">
                   <p className="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-1.5">Sisa Masa Aktif VIP</p>
                   <div className="flex justify-center gap-1.5 font-mono text-xs font-black text-white">
-                    <span className="bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 px-2.5 py-1 rounded-xl">{countdown.days}h</span>
-                    <span className="bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 px-2.5 py-1 rounded-xl">{String(countdown.hours).padStart(2, '0')}j</span>
-                    <span className="bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 px-2.5 py-1 rounded-xl">{String(countdown.minutes).padStart(2, '0')}m</span>
-                    <span className="bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 px-2.5 py-1 rounded-xl">{String(countdown.seconds).padStart(2, '0')}s</span>
+                    <span className="glass-ultra border border-white/[0.08] px-2.5 py-1 rounded-xl">{countdown.days}h</span>
+                    <span className="glass-ultra border border-white/[0.08] px-2.5 py-1 rounded-xl">{String(countdown.hours).padStart(2, '0')}j</span>
+                    <span className="glass-ultra border border-white/[0.08] px-2.5 py-1 rounded-xl">{String(countdown.minutes).padStart(2, '0')}m</span>
+                    <span className="glass-ultra border border-white/[0.08] px-2.5 py-1 rounded-xl">{String(countdown.seconds).padStart(2, '0')}s</span>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Quick Status Bar */}
-            <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] p-3 rounded-2xl border border-white/[0.08] grid grid-cols-2 gap-2 text-center">
-              <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] p-2.5 rounded-xl border border-white/5">
+            <div className="cyber-card p-3 rounded-[20px] border border-white/[0.08] grid grid-cols-2 gap-2 text-center">
+              <div className="glass-ultra p-2.5 rounded-xl border border-white/5">
                 <span className="text-[9px] text-slate-400 font-bold block uppercase tracking-wider">Status Bot</span>
                 <div className="flex items-center justify-center gap-1.5 mt-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"/>
                   <span className="font-black text-emerald-400 text-xs">Online 24/7</span>
                 </div>
               </div>
-              <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] p-2.5 rounded-xl border border-white/5">
+              <div className="glass-ultra p-2.5 rounded-xl border border-white/5">
                 <span className="text-[9px] text-slate-400 font-bold block uppercase tracking-wider">Saldo Poin</span>
                 <span className="font-black text-amber-400 text-xs mt-1 block font-mono">{userPoints} PTS</span>
               </div>
             </div>
 
             {/* Promo Code Input Card */}
-            <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] p-4 rounded-3xl space-y-2.5 border border-emerald-500/25 shadow-[0_8px_28px_-8px_rgba(16,185,129,0.12)]">
+            <div className="cyber-card p-4 rounded-[28px] space-y-2.5 border border-emerald-500/25 shadow-xl">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 text-emerald-400"><IcoTag/></div>
                 <p className="text-xs font-black text-white">Klaim Kode Promo / Voucher</p>
@@ -995,12 +1027,12 @@ export default function StoreUI() {
                   placeholder="MASUKKAN KODE VOUCHER..."
                   value={claimInputCode}
                   onChange={e => setClaimInputCode(e.target.value)}
-                  className="flex-1 bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 text-white placeholder-slate-600 px-3.5 py-2.5 rounded-2xl text-xs font-mono font-bold uppercase focus:outline-none focus:border-emerald-500/50 transition-all shadow-inner"
+                  className="flex-1 glass-ultra border border-white/[0.08] text-white placeholder-slate-600 px-3.5 py-2.5 rounded-[20px] text-xs font-mono font-bold uppercase focus:outline-none focus:border-emerald-500/50 transition-all shadow-inner"
                 />
                 <button
                   onClick={handleClaimVoucher}
                   disabled={claiming || !claimInputCode.trim()}
-                  className="px-4 py-2.5 bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl active:scale-95 disabled:opacity-40 transition-all shadow-[0_6px_18px_-4px_rgba(16,185,129,0.45)] ring-1 ring-emerald-300/30"
+                  className="px-4 py-2.5 bg-emerald-glow premium-btn glow-mint text-slate-950 font-black text-xs uppercase tracking-wider rounded-[20px] active:scale-95 disabled:opacity-40 transition-all shadow-lg shadow-emerald-500/20"
                 >
                   {claiming ? '...' : 'Klaim'}
                 </button>
@@ -1011,9 +1043,9 @@ export default function StoreUI() {
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={() => { setActiveTab('buy'); setConfirmStep(false); }}
-                className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] p-4 rounded-3xl text-left border border-emerald-500/30 hover:border-emerald-500/50 active:scale-95 transition-all shadow-[0_8px_28px_-8px_rgba(16,185,129,0.12)]"
+                className="cyber-card p-4 rounded-[28px] text-left border border-emerald-500/30 shadow-[0_0_20px_-8px_rgba(16,185,129,0.2)] hover:border-emerald-500/50 active:scale-95 transition-all shadow-xl"
               >
-                <div className="w-9 h-9 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mb-2.5 shadow-md">
+                <div className="w-9 h-9 rounded-[20px] bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 flex items-center justify-center mb-2.5 shadow-md">
                   <div className="w-4.5 h-4.5"><IcoStore/></div>
                 </div>
                 <p className="text-xs font-black text-white">VIP Store</p>
@@ -1022,9 +1054,9 @@ export default function StoreUI() {
 
               <button
                 onClick={() => setActiveTab('checkin')}
-                className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] p-4 rounded-3xl text-left border border-amber-500/30 hover:border-amber-500/50 active:scale-95 transition-all shadow-[0_8px_28px_-8px_rgba(245,158,11,0.12)]"
+                className="cyber-card p-4 rounded-[28px] text-left border border-amber-500/30 shadow-[0_0_20px_-8px_rgba(245,158,11,0.2)] hover:border-amber-500/50 active:scale-95 transition-all shadow-xl"
               >
-                <div className="w-9 h-9 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center mb-2.5 shadow-md">
+                <div className="w-9 h-9 rounded-[20px] bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center mb-2.5 shadow-md">
                   <div className="w-4.5 h-4.5"><IcoCalendar/></div>
                 </div>
                 <p className="text-xs font-black text-white">Daily Check-in</p>
@@ -1033,11 +1065,11 @@ export default function StoreUI() {
             </div>
 
             {/* Leaderboard Section */}
-            <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-amber-500/25 rounded-3xl overflow-hidden relative shadow-[0_8px_28px_-8px_rgba(245,158,11,0.12)]">
+            <div className="cyber-card border border-amber-500/25 rounded-[28px] overflow-hidden relative shadow-xl">
               <div className="p-4 space-y-3.5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-slate-950 font-black shadow-md shrink-0">
+                    <div className="w-9 h-9 rounded-[20px] bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-slate-950 font-black shadow-md shrink-0">
                       <div className="w-4.5 h-4.5"><IcoTrophy/></div>
                     </div>
                     <div>
@@ -1059,7 +1091,7 @@ export default function StoreUI() {
                       <p className="text-xs text-slate-500">Memuat papan skor...</p>
                     </div>
                   ) : leaderboard.length === 0 ? (
-                    <div className="py-8 text-center border border-dashed border-white/10 rounded-2xl">
+                    <div className="py-8 text-center border border-dashed border-white/10 rounded-[20px]">
                       <p className="text-xs text-slate-500">Belum ada data</p>
                     </div>
                   ) : (
@@ -1068,7 +1100,7 @@ export default function StoreUI() {
                       const isMe = p.telegramId === userTelegramId?.toString();
                       const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : null;
                       return (
-                        <div key={p.telegramId} className={`flex items-center gap-3 p-3 rounded-2xl border ${isMe ? 'bg-violet-500/10 border-violet-500/30' : 'bg-gradient-to-b from-[#0D1322] to-[#080B14] border-white/5'}`}>
+                        <div key={p.telegramId} className={`flex items-center gap-3 p-3 rounded-[20px] border ${isMe ? 'bg-violet-500/10 border-violet-500/30' : 'glass-ultra border-white/5'}`}>
                           <div className="w-6 text-center shrink-0">
                             {medal ? <span className="text-sm">{medal}</span> : <span className="text-[10px] font-black text-slate-500">#{rank}</span>}
                           </div>
@@ -1093,14 +1125,14 @@ export default function StoreUI() {
 
         {/* TAB 2: CHECKIN */}
         {activeTab === 'checkin' && (
-          <div className="space-y-4 animate-[fadeIn_0.25s_ease-out]">
-            <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-amber-500/30 p-6 rounded-3xl text-center space-y-4 shadow-[0_8px_28px_-8px_rgba(245,158,11,0.12)] relative overflow-hidden">
-              <div className="w-14 h-14 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center mx-auto shadow-inner">
+          <div className="space-y-4 animate-cyber">
+            <div className="cyber-card border border-amber-500/30 shadow-[0_0_20px_-8px_rgba(245,158,11,0.2)] p-6 rounded-[28px] text-center space-y-4 shadow-xl relative overflow-hidden">
+              <div className="w-14 h-14 rounded-[20px] bg-amber-500/15 border border-amber-500/30 shadow-[0_0_20px_-8px_rgba(245,158,11,0.2)] text-amber-400 flex items-center justify-center mx-auto shadow-inner">
                 <div className="w-7 h-7"><IcoCalendar/></div>
               </div>
 
               <div>
-                <span className="px-3 py-1 bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[9px] font-black rounded-full uppercase tracking-wider">
+                <span className="px-3 py-1 bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-[0_0_20px_-8px_rgba(245,158,11,0.2)] text-[9px] font-black rounded-full uppercase tracking-wider">
                   Daily Check-in Reward
                 </span>
                 <h2 className="text-base font-black text-white mt-2">Absen Harian Dapatkan Poin</h2>
@@ -1109,7 +1141,7 @@ export default function StoreUI() {
                 </p>
               </div>
 
-              <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] p-4 rounded-2xl border border-amber-500/20 flex items-center justify-between">
+              <div className="glass-ultra p-4 rounded-[20px] border border-amber-500/20 flex items-center justify-between">
                 <div className="text-left">
                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Status Absen</p>
                   <p className={`text-xs font-black ${canCheckin ? 'text-amber-400' : 'text-emerald-400'}`}>
@@ -1119,10 +1151,10 @@ export default function StoreUI() {
                 <button
                   onClick={claimDailyBonus}
                   disabled={dailyClaiming || !canCheckin}
-                  className={`px-4 py-2.5 font-black text-xs uppercase tracking-wider rounded-2xl active:scale-95 transition-all shadow-lg ${
+                  className={`px-4 py-2.5 font-black text-xs uppercase tracking-wider rounded-[20px] active:scale-95 transition-all shadow-lg ${
                     canCheckin
                       ? 'bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 text-slate-950 shadow-amber-500/30'
-                      : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 cursor-not-allowed'
+                      : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-[0_0_20px_-8px_rgba(16,185,129,0.2)] cursor-not-allowed'
                   }`}
                 >
                   {dailyClaiming ? 'Proses...' : canCheckin ? 'Klaim +10 PTS' : 'Selesai ✓'}
@@ -1131,7 +1163,7 @@ export default function StoreUI() {
             </div>
 
             {/* Streak Grid */}
-            <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] p-4 rounded-3xl border border-white/[0.08] space-y-3 shadow-[0_8px_28px_-8px_rgba(0,0,0,0.55)]">
+            <div className="cyber-card p-4 rounded-[28px] border border-white/[0.08] space-y-3 shadow-xl">
               <div className="flex items-center justify-between">
                 <p className="text-xs font-black text-white uppercase tracking-wider">Streak Absen Beruntun</p>
                 <span className="text-[9px] text-amber-400 font-bold">+10 PTS / Hari</span>
@@ -1144,14 +1176,14 @@ export default function StoreUI() {
                   return (
                     <div
                       key={s.day}
-                      className={`p-3 rounded-2xl text-center border flex flex-col items-center justify-between relative overflow-hidden transition-all min-h-[96px] ${
+                      className={`p-3 rounded-[20px] text-center border flex flex-col items-center justify-between relative overflow-hidden transition-all min-h-[96px] ${
                         s.day === 7 ? 'col-span-2 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-950/30 border-amber-400 text-amber-200' : ''
                       } ${
                         isClaimed
                           ? 'bg-emerald-950/30 border-emerald-500/50 text-emerald-200'
                           : isCurrentTarget
                           ? 'bg-amber-950/30 border-amber-400 text-amber-300 shadow-md shadow-amber-500/10'
-                          : 'bg-gradient-to-b from-[#0D1322] to-[#080B14] border-white/5 text-slate-500'
+                          : 'glass-ultra border-white/5 text-slate-500'
                       }`}
                     >
                       <div className="flex items-center justify-between w-full">
@@ -1184,25 +1216,25 @@ export default function StoreUI() {
 
         {/* TAB 3: BUY / VIP STORE */}
         {activeTab === 'buy' && (
-          <div className="space-y-4 animate-[fadeIn_0.25s_ease-out]">
+          <div className="space-y-4 animate-cyber">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-sm font-black text-white">Beli VIP Access</h2>
                 <p className="text-[10px] text-slate-400">Pilih durasi paket langganan Anda</p>
               </div>
-              <span className="text-[9px] text-emerald-400 font-black bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">
+              <span className="text-[9px] text-emerald-400 font-black bg-emerald-500/10 border border-emerald-500/25 px-3 py-1 rounded-full">
                 Official Store
               </span>
             </div>
 
             {isPrem ? (
               <div className="space-y-3.5">
-                <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] rounded-3xl border border-emerald-500/30 p-6 text-center space-y-4 shadow-[0_8px_28px_-8px_rgba(16,185,129,0.12)]">
-                  <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto border border-emerald-500/30">
+                <div className="cyber-card rounded-[28px] border border-emerald-500/30 shadow-[0_0_20px_-8px_rgba(16,185,129,0.2)] p-6 text-center space-y-4 shadow-xl">
+                  <div className="w-14 h-14 rounded-[20px] bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto border border-emerald-500/30 shadow-[0_0_20px_-8px_rgba(16,185,129,0.2)]">
                     <div className="w-7 h-7"><IcoCrown/></div>
                   </div>
                   <div>
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[9px] font-black uppercase tracking-wider">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 shadow-[0_0_20px_-8px_rgba(16,185,129,0.2)] text-emerald-300 text-[9px] font-black uppercase tracking-wider">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                       Status VIP Aktif
                     </span>
@@ -1213,15 +1245,15 @@ export default function StoreUI() {
                   </div>
                   {countdown && (
                     <div className="grid grid-cols-3 gap-2 pt-2">
-                      <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 rounded-2xl py-3">
+                      <div className="glass-ultra border border-white/[0.08] rounded-[20px] py-3">
                         <p className="text-lg font-black text-emerald-400 font-mono">{countdown.days}</p>
                         <p className="text-[8px] text-slate-500 font-bold uppercase tracking-wider mt-0.5">Hari</p>
                       </div>
-                      <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 rounded-2xl py-3">
+                      <div className="glass-ultra border border-white/[0.08] rounded-[20px] py-3">
                         <p className="text-lg font-black text-emerald-400 font-mono">{countdown.hours}</p>
                         <p className="text-[8px] text-slate-500 font-bold uppercase tracking-wider mt-0.5">Jam</p>
                       </div>
-                      <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 rounded-2xl py-3">
+                      <div className="glass-ultra border border-white/[0.08] rounded-[20px] py-3">
                         <p className="text-lg font-black text-emerald-400 font-mono">{countdown.minutes}</p>
                         <p className="text-[8px] text-slate-500 font-bold uppercase tracking-wider mt-0.5">Menit</p>
                       </div>
@@ -1229,22 +1261,22 @@ export default function StoreUI() {
                   )}
                 </div>
 
-                <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] p-4 rounded-3xl border border-white/[0.08] space-y-3 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.5)]">
+                <div className="cyber-card p-4 rounded-[28px] border border-white/[0.08] space-y-3">
                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Keuntungan VIP Active</p>
                   <div className="grid grid-cols-2 gap-2 text-xs font-bold">
-                    <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] p-3 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2">
+                    <div className="glass-ultra p-3 rounded-[20px] border border-white/5 text-emerald-300 flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"/>
                       Akses Fitur Premium
                     </div>
-                    <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] p-3 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2">
+                    <div className="glass-ultra p-3 rounded-[20px] border border-white/5 text-emerald-300 flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"/>
                       Kecepatan Maksimal
                     </div>
-                    <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] p-3 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2">
+                    <div className="glass-ultra p-3 rounded-[20px] border border-white/5 text-emerald-300 flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"/>
                       Tanpa Iklan / Delay
                     </div>
-                    <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] p-3 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2">
+                    <div className="glass-ultra p-3 rounded-[20px] border border-white/5 text-emerald-300 flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"/>
                       Support Prioritas 24/7
                     </div>
@@ -1253,25 +1285,25 @@ export default function StoreUI() {
               </div>
             ) : !confirmStep ? (
               <>
-                <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] p-4 rounded-3xl border border-emerald-500/30 space-y-3 shadow-[0_8px_28px_-8px_rgba(16,185,129,0.12)]">
+                <div className="cyber-card p-4 rounded-[28px] border border-emerald-500/30 shadow-[0_0_20px_-8px_rgba(16,185,129,0.2)] space-y-3 shadow-xl">
                   <div className="flex items-center gap-2.5">
                     <div className="w-5 h-5 text-emerald-400"><IcoShieldCheck/></div>
                     <span className="text-xs font-black text-white uppercase tracking-wider">Keuntungan Akses VIP</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs font-bold">
-                    <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] p-3 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2">
+                    <div className="glass-ultra p-3 rounded-[20px] border border-white/5 text-emerald-300 flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"/>
                       Tanpa Batas Akses
                     </div>
-                    <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] p-3 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2">
+                    <div className="glass-ultra p-3 rounded-[20px] border border-white/5 text-emerald-300 flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"/>
                       Koneksi Cepat & Stabil
                     </div>
-                    <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] p-3 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2">
+                    <div className="glass-ultra p-3 rounded-[20px] border border-white/5 text-emerald-300 flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"/>
                       Bebas Iklan / Delay
                     </div>
-                    <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] p-3 rounded-2xl border border-white/5 text-emerald-300 flex items-center gap-2">
+                    <div className="glass-ultra p-3 rounded-[20px] border border-white/5 text-emerald-300 flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"/>
                       Dukungan Prioritas
                     </div>
@@ -1296,14 +1328,14 @@ export default function StoreUI() {
                       <button
                         key={p.id}
                         onClick={() => setSelectedPkg(p.id)}
-                        className={`p-4 rounded-3xl text-left border-2 transition-all active:scale-95 relative overflow-hidden flex flex-col justify-between ${
+                        className={`p-4 rounded-[28px] text-left border-2 transition-all active:scale-95 relative overflow-hidden flex flex-col justify-between ${
                           isSelected
                             ? 'bg-gradient-to-br from-emerald-500/20 via-teal-950/40 to-[#0D121F] border-emerald-400 text-white shadow-xl shadow-emerald-500/10'
-                            : 'bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border-white/10 text-slate-300 hover:border-white/20'
+                            : 'cyber-card border-white/10 text-slate-300 hover:border-white/20'
                         }`}
                       >
                         {p.id === '30D' && (
-                          <span className="absolute top-0 right-0 bg-gradient-to-r from-amber-400 to-orange-500 text-[8px] font-black uppercase text-slate-950 px-3 py-1 rounded-bl-2xl shadow-md">
+                          <span className="absolute top-0 right-0 bg-amber-glow premium-btn glow-amber-box text-[8px] font-black uppercase text-slate-950 px-3 py-1 rounded-bl-2xl shadow-md">
                             Best Value
                           </span>
                         )}
@@ -1333,17 +1365,17 @@ export default function StoreUI() {
                 </div>
 
                 {/* Payment Method Selector */}
-                <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] p-4 rounded-3xl border border-white/[0.08] space-y-3 shadow-[0_8px_28px_-8px_rgba(0,0,0,0.55)]">
+                <div className="cyber-card p-4 rounded-[28px] border border-white/[0.08] space-y-3 shadow-xl">
                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Pilih Metode Pembayaran</p>
                   <div className="grid grid-cols-3 gap-2">
                     {METHODS.map(m => (
                       <button
                         key={m.id}
                         onClick={() => setPayMethod(m.id)}
-                        className={`p-3 rounded-2xl text-center border-2 transition-all active:scale-95 flex flex-col items-center justify-center gap-1 ${
+                        className={`p-3 rounded-[20px] text-center border-2 transition-all active:scale-95 flex flex-col items-center justify-center gap-1 ${
                           payMethod === m.id
                             ? 'bg-emerald-500/15 border-emerald-400 text-emerald-300 shadow-lg shadow-emerald-500/10'
-                            : 'bg-gradient-to-b from-[#0D1322] to-[#080B14] border-white/5 text-slate-400'
+                            : 'glass-ultra border-white/5 text-slate-400'
                         }`}
                       >
                         <span className="text-xs font-black">{m.id}</span>
@@ -1357,7 +1389,7 @@ export default function StoreUI() {
 
                 <button
                   onClick={() => setConfirmStep(true)}
-                  className="w-full py-4 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-500 text-slate-950 font-black rounded-2xl text-xs uppercase tracking-wider active:scale-[0.98] shadow-[0_8px_24px_-6px_rgba(16,185,129,0.45)] ring-1 ring-emerald-300/30 hover:brightness-110 transition-all flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-500 text-slate-950 font-black rounded-[20px] text-xs uppercase tracking-wider active:scale-[0.98] shadow-lg shadow-emerald-500/20 hover:brightness-110 transition-all flex items-center justify-center gap-2"
                 >
                   Lanjut ke Pembayaran
                   <span className="opacity-60">•</span>
@@ -1366,9 +1398,9 @@ export default function StoreUI() {
               </>
             ) : (
               /* Payment Form */
-              <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] p-5 rounded-3xl space-y-4 border border-white/[0.08] shadow-[0_8px_28px_-8px_rgba(0,0,0,0.55)]">
+              <div className="cyber-card p-5 rounded-[28px] space-y-4 border border-white/[0.08] shadow-xl">
                 <div className="text-center pb-3.5 border-b border-white/10 space-y-1">
-                  <span className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-[9px] font-black rounded-full inline-block">
+                  <span className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/25 text-emerald-300 text-[9px] font-black rounded-full inline-block">
                     ✓ Konfirmasi Instan Admin
                   </span>
                   <p className="text-[9px] text-slate-400 uppercase font-black tracking-widest pt-1">Total Tagihan</p>
@@ -1377,10 +1409,10 @@ export default function StoreUI() {
                 </div>
 
                 {payMethod === 'QRIS' && (
-                  <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-emerald-500/25 p-4 rounded-2xl text-center space-y-3">
+                  <div className="glass-ultra border border-emerald-500/25 p-4 rounded-[20px] text-center space-y-3">
                     <p className="text-[10px] text-emerald-400 font-black uppercase tracking-wider">Scan QRIS All Payment</p>
 
-                    <div className="relative w-48 h-48 mx-auto bg-white p-2.5 rounded-2xl shadow-xl flex items-center justify-center border-2 border-emerald-400">
+                    <div className="relative w-48 h-48 mx-auto bg-white p-2.5 rounded-[20px] shadow-xl flex items-center justify-center border-2 border-emerald-400">
                       <img
                         src={QRIS_IMAGE_URL}
                         alt="QRIS Payment"
@@ -1399,7 +1431,7 @@ export default function StoreUI() {
 
                       <button
                         onClick={downloadQrisImage}
-                        className="px-3.5 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 font-bold text-xs rounded-xl flex items-center gap-1.5 active:scale-95 transition-all"
+                        className="px-3.5 py-2 bg-white/5 hover:bg-white/10 border border-white/[0.08] text-slate-300 font-bold text-xs rounded-xl flex items-center gap-1.5 active:scale-95 transition-all"
                       >
                         <div className="w-3.5 h-3.5"><IcoDownload/></div>
                         Unduh Gambar
@@ -1411,16 +1443,16 @@ export default function StoreUI() {
                 )}
 
                 {payMethod === 'DANA' && (
-                  <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-emerald-500/25 p-3.5 rounded-2xl space-y-2">
+                  <div className="glass-ultra border border-emerald-500/25 p-3.5 rounded-[20px] space-y-2">
                     <div className="flex justify-between items-center text-xs">
                       <span className="text-slate-400 font-bold">Transfer E-Wallet DANA</span>
                       <span className="text-emerald-400 font-black">A/n TI** SUT***</span>
                     </div>
-                    <div className="flex items-center justify-between bg-[#0D121F] p-3 rounded-xl border border-white/5">
+                    <div className="flex items-center justify-between cyber-card p-3 rounded-xl border border-white/5">
                       <span className="font-mono text-sm font-black text-white tracking-wider">083124469855</span>
                       <button
                         onClick={() => copyPayNumber('083124469855')}
-                        className="px-3 py-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black rounded-lg active:scale-95 transition-transform"
+                        className="px-3 py-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow-[0_0_20px_-8px_rgba(16,185,129,0.2)] text-[10px] font-black rounded-lg active:scale-95 transition-transform"
                       >
                         {copiedNum === '083124469855' ? 'Tercopy' : 'Salin Nomor'}
                       </button>
@@ -1429,16 +1461,16 @@ export default function StoreUI() {
                 )}
 
                 {payMethod === 'SEABANK' && (
-                  <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-emerald-500/25 p-3.5 rounded-2xl space-y-2">
+                  <div className="glass-ultra border border-emerald-500/25 p-3.5 rounded-[20px] space-y-2">
                     <div className="flex justify-between items-center text-xs">
                       <span className="text-slate-400 font-bold">No. Rekening SeaBank</span>
                       <span className="text-emerald-400 font-black">A/n HAR*****O</span>
                     </div>
-                    <div className="flex items-center justify-between bg-[#0D121F] p-3 rounded-xl border border-white/5">
+                    <div className="flex items-center justify-between cyber-card p-3 rounded-xl border border-white/5">
                       <span className="font-mono text-sm font-black text-white tracking-wider">901984771499</span>
                       <button
                         onClick={() => copyPayNumber('901984771499')}
-                        className="px-3 py-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black rounded-lg active:scale-95 transition-transform"
+                        className="px-3 py-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow-[0_0_20px_-8px_rgba(16,185,129,0.2)] text-[10px] font-black rounded-lg active:scale-95 transition-transform"
                       >
                         {copiedNum === '901984771499' ? 'Tercopy' : 'Salin Nomor'}
                       </button>
@@ -1448,7 +1480,7 @@ export default function StoreUI() {
 
                 <div className="space-y-1.5">
                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Upload Bukti Pembayaran</p>
-                  <label className="w-full h-28 border border-dashed border-white/20 hover:border-emerald-500/50 rounded-2xl flex flex-col items-center justify-center cursor-pointer bg-gradient-to-b from-[#0D1322] to-[#080B14] overflow-hidden relative transition-all shadow-inner">
+                  <label className="w-full h-28 border border-dashed border-white/20 hover:border-emerald-500/50 rounded-[20px] flex flex-col items-center justify-center cursor-pointer glass-ultra overflow-hidden relative transition-all shadow-inner">
                     {proofImage ? (
                       <img src={proofImage} alt="Bukti" className="w-full h-full object-contain p-2"/>
                     ) : (
@@ -1466,17 +1498,17 @@ export default function StoreUI() {
                   placeholder="Catatan / Nama Pengirim..."
                   value={proofNote}
                   onChange={e => setProofNote(e.target.value)}
-                  className="w-full bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 text-white placeholder-slate-600 px-4 py-3 rounded-2xl text-xs font-medium focus:outline-none focus:border-emerald-500/50 transition-all shadow-inner"
+                  className="w-full glass-ultra border border-white/[0.08] text-white placeholder-slate-600 px-4 py-3 rounded-[20px] text-xs font-medium focus:outline-none focus:border-emerald-500/50 transition-all shadow-inner"
                 />
 
                 <div className="grid grid-cols-[0.8fr_1.4fr] gap-2.5 pt-1">
-                  <button onClick={() => setConfirmStep(false)} className="py-3.5 bg-white/5 border border-white/10 text-slate-300 font-extrabold rounded-2xl text-xs uppercase tracking-wider active:scale-95 hover:bg-white/10 transition-all">
+                  <button onClick={() => setConfirmStep(false)} className="py-3.5 bg-white/5 border border-white/[0.08] text-slate-300 font-extrabold rounded-[20px] text-xs uppercase tracking-wider active:scale-95 hover:bg-white/10 transition-all">
                     Kembali
                   </button>
                   <button
                     onClick={submit}
                     disabled={submitting || !proofNote.trim() || !proofImage}
-                    className="py-3.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl disabled:opacity-40 active:scale-[0.98] shadow-[0_8px_24px_-6px_rgba(16,185,129,0.45)] ring-1 ring-emerald-300/30 hover:brightness-110 transition-all"
+                    className="py-3.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-[20px] disabled:opacity-40 active:scale-[0.98] shadow-lg shadow-emerald-500/20 hover:brightness-110 transition-all"
                   >
                     {submitting ? 'Mengirim...' : 'Kirim Bukti Pembayaran'}
                   </button>
@@ -1488,17 +1520,17 @@ export default function StoreUI() {
 
         {/* TAB 4: REDEEM / POINTS */}
         {activeTab === 'redeem' && (
-          <div className="space-y-4 animate-[fadeIn_0.25s_ease-out]">
+          <div className="space-y-4 animate-cyber">
 
             {/* Points Summary Card */}
-            <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-amber-500/30 p-5 rounded-3xl relative overflow-hidden shadow-[0_8px_28px_-8px_rgba(245,158,11,0.12)] space-y-3">
+            <div className="cyber-card border border-amber-500/30 shadow-[0_0_20px_-8px_rgba(245,158,11,0.2)] p-5 rounded-[28px] relative overflow-hidden shadow-xl space-y-3">
               <div className="flex justify-between items-start">
                 <div>
                   <span className="text-[9px] font-black uppercase tracking-wider text-amber-400/90">Bonus & Referral Program</span>
                   <h2 className="text-2xl font-black mt-1 text-white font-mono">{userPoints} PTS</h2>
                   <p className="text-[10px] text-slate-400 font-medium mt-0.5">+50 Poin Otomatis per Teman bergabung</p>
                 </div>
-                <div className="w-10 h-10 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                <div className="w-10 h-10 rounded-[20px] bg-amber-500/15 border border-amber-500/30 shadow-[0_0_20px_-8px_rgba(245,158,11,0.2)] flex items-center justify-center text-amber-400">
                   <div className="w-5 h-5"><IcoStar/></div>
                 </div>
               </div>
@@ -1506,14 +1538,14 @@ export default function StoreUI() {
               <div className="flex gap-2 pt-1">
                 <button
                   onClick={copyReferral}
-                  className="flex-1 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all"
+                  className="flex-1 py-2.5 bg-white/5 hover:bg-white/10 border border-white/[0.08] rounded-[20px] text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all"
                 >
                   <div className="w-4 h-4"><IcoCopy/></div>
                   {copied ? 'Tercopy!' : 'Salin Link Referral'}
                 </button>
                 <button
                   onClick={shareToTelegram}
-                  className="py-2.5 px-4 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-black text-xs rounded-2xl flex items-center gap-1.5 active:scale-95 shadow-md shadow-amber-500/20 transition-all"
+                  className="py-2.5 px-4 bg-amber-glow premium-btn glow-amber-box text-slate-950 font-black text-xs rounded-[20px] flex items-center gap-1.5 active:scale-95 shadow-md shadow-amber-500/20 transition-all"
                 >
                   <div className="w-4 h-4"><IcoShare/></div>
                   Bagikan
@@ -1523,17 +1555,17 @@ export default function StoreUI() {
 
             {/* Active Vouchers List */}
             {userVouchers.length > 0 && (
-              <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-white/[0.08] p-4 rounded-3xl space-y-2 shadow-[0_8px_28px_-8px_rgba(0,0,0,0.55)]">
+              <div className="cyber-card border border-white/[0.08] p-4 rounded-[28px] space-y-2 shadow-xl">
                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Voucher Milik Anda ({userVouchers.length})</p>
                 {userVouchers.map((v: any, idx: number) => (
-                  <div key={idx} className="bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/5 p-3 rounded-2xl flex items-center justify-between">
+                  <div key={idx} className="glass-ultra border border-white/5 p-3 rounded-[20px] flex items-center justify-between">
                     <div>
                       <p className="font-mono text-xs font-black text-amber-300 tracking-wider">{v.code}</p>
                       <p className="text-[10px] text-emerald-400 font-bold">Diskon {v.discount}% VIP Access</p>
                     </div>
                     <button
                       onClick={() => copyVoucherCode(v.code)}
-                      className="px-3 py-1.5 bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[10px] font-bold rounded-xl active:scale-95 transition-all"
+                      className="px-3 py-1.5 bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-[0_0_20px_-8px_rgba(245,158,11,0.2)] text-[10px] font-bold rounded-xl active:scale-95 transition-all"
                     >
                       {copiedVoucher === v.code ? 'Disalin' : 'Salin Kode'}
                     </button>
@@ -1543,7 +1575,7 @@ export default function StoreUI() {
             )}
 
             {/* Redeem Catalog Slider */}
-            <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-white/[0.08] p-4 rounded-3xl space-y-3 shadow-[0_8px_28px_-8px_rgba(0,0,0,0.55)]">
+            <div className="cyber-card border border-white/[0.08] p-4 rounded-[28px] space-y-3 shadow-xl">
               <div className="flex items-center justify-between pb-2 border-b border-white/5">
                 <div>
                   <h3 className="text-xs font-black text-white uppercase tracking-wider">Katalog Penukaran Poin</h3>
@@ -1561,10 +1593,10 @@ export default function StoreUI() {
 
                   return (
                     <div key={opt.id} className="min-w-[210px] max-w-[210px] shrink-0">
-                      <div className={`rounded-3xl border overflow-hidden relative ${
+                      <div className={`rounded-[28px] border overflow-hidden relative ${
                         canRedeem
-                          ? 'bg-gradient-to-b from-[#0D1322] to-[#080B14] border-amber-500/40 shadow-lg shadow-amber-500/10'
-                          : 'bg-gradient-to-b from-[#0D1322] to-[#080B14] border-white/5'
+                          ? 'glass-ultra border-amber-500/40 shadow-lg shadow-amber-500/10'
+                          : 'glass-ultra border-white/5'
                       }`}>
                         {/* Upper Ticket */}
                         <div className="p-4 pb-3 space-y-1.5">
@@ -1605,9 +1637,9 @@ export default function StoreUI() {
                           <button
                             onClick={() => setRedeemConfirmItem(opt)}
                             disabled={!canRedeem}
-                            className={`w-full py-2.5 font-black text-xs uppercase tracking-wider rounded-2xl transition-all active:scale-95 ${
+                            className={`w-full py-2.5 font-black text-xs uppercase tracking-wider rounded-[20px] transition-all active:scale-95 ${
                               canRedeem
-                                ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-md shadow-amber-500/20'
+                                ? 'bg-amber-glow premium-btn glow-amber-box text-slate-950 shadow-md shadow-amber-500/20'
                                 : 'bg-white/5 text-slate-500 border border-white/5 cursor-not-allowed'
                             }`}
                           >
@@ -1626,15 +1658,15 @@ export default function StoreUI() {
 
         {/* TAB 5: PROFILE */}
         {activeTab === 'profile' && (
-          <div className="space-y-4 animate-[fadeIn_0.25s_ease-out]">
+          <div className="space-y-4 animate-cyber">
 
             {/* Profile Header Hero */}
-            <div className="relative rounded-3xl overflow-hidden border border-white/[0.08] bg-gradient-to-b from-[#11172A] to-[#0A0E1A] shadow-[0_8px_28px_-8px_rgba(0,0,0,0.5)]">
+            <div className="relative rounded-[28px] overflow-hidden border border-white/[0.08] cyber-card shadow-xl">
               <div className="absolute top-0 right-0 w-40 h-40 bg-violet-500/10 rounded-full blur-2xl pointer-events-none" />
               <div className="p-5 relative z-10">
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-300 via-fuchsia-500 to-violet-500 p-0.5 shadow-lg shrink-0">
-                    <div className="w-full h-full rounded-[14px] bg-gradient-to-b from-[#0D1322] to-[#080B14] flex items-center justify-center font-black text-white text-xl overflow-hidden">
+                  <div className="w-16 h-16 rounded-[20px] bg-gradient-to-tr from-amber-300 via-fuchsia-500 to-violet-500 p-0.5 shadow-lg shrink-0">
+                    <div className="w-full h-full rounded-[14px] glass-ultra flex items-center justify-center font-black text-white text-xl overflow-hidden">
                       {tgUser?.photo_url ? <img src={tgUser.photo_url} className="w-full h-full object-cover" alt=""/> : initials}
                     </div>
                   </div>
@@ -1655,15 +1687,15 @@ export default function StoreUI() {
                 </div>
 
                 <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-white/5 text-center">
-                  <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] p-2.5 rounded-2xl border border-white/5">
+                  <div className="glass-ultra p-2.5 rounded-[20px] border border-white/5">
                     <p className="text-base font-black text-amber-400 font-mono leading-none">{userPoints}</p>
                     <p className="text-[8px] text-slate-400 font-black uppercase tracking-wider mt-1">Poin</p>
                   </div>
-                  <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] p-2.5 rounded-2xl border border-white/5">
+                  <div className="glass-ultra p-2.5 rounded-[20px] border border-white/5">
                     <p className="text-base font-black text-violet-400 font-mono leading-none">{userStatus?.referralCount || 0}</p>
                     <p className="text-[8px] text-slate-400 font-black uppercase tracking-wider mt-1">Referral</p>
                   </div>
-                  <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] p-2.5 rounded-2xl border border-white/5">
+                  <div className="glass-ultra p-2.5 rounded-[20px] border border-white/5">
                     <p className="text-base font-black text-emerald-400 font-mono leading-none">{checkinStreak}</p>
                     <p className="text-[8px] text-slate-400 font-black uppercase tracking-wider mt-1">Streak</p>
                   </div>
@@ -1672,14 +1704,14 @@ export default function StoreUI() {
             </div>
 
             {/* Profile Sub Tabs */}
-            <div className="bg-[#0A0E1A] border border-white/[0.08] p-1 rounded-2xl flex gap-1 shadow-inner">
+            <div className="cyber-card border border-white/[0.08] p-1 rounded-[20px] flex gap-1">
               {(['overview', 'history', 'settings'] as const).map((t) => (
                 <button
                   key={t}
                   onClick={() => setProfileSubTab(t)}
                   className={`flex-1 py-2.5 rounded-xl text-xs font-black transition-all ${
                     profileSubTab === t
-                      ? 'bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-md'
+                      ? 'bg-gradient-to-r from-violet-600 via-fuchsia-600 to-violet-700 premium-btn text-white shadow-md'
                       : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
@@ -1690,12 +1722,12 @@ export default function StoreUI() {
 
             {/* Overview Sub-tab */}
             {profileSubTab === 'overview' && (
-              <div className="space-y-3.5 animate-[fadeIn_0.25s_ease-out]">
+              <div className="space-y-3.5 animate-cyber">
 
                 {/* Daily Missions */}
-                <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-white/[0.08] p-4 rounded-3xl space-y-3 shadow-[0_8px_28px_-8px_rgba(0,0,0,0.55)]">
+                <div className="cyber-card border border-white/[0.08] p-4 rounded-[28px] space-y-3 shadow-xl">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                    <div className="w-8 h-8 rounded-[20px] bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-400">
                       <div className="w-4 h-4"><IcoTarget/></div>
                     </div>
                     <div>
@@ -1710,7 +1742,7 @@ export default function StoreUI() {
                       { key: 'checkin', label: 'Klaim bonus check-in harian', pts: 10, done: !!userStatus?.missionsDone?.checkin },
                       { key: 'redeem', label: 'Tukar poin dengan reward', pts: 0, done: !!userStatus?.missionsDone?.redeem },
                     ].map((m) => (
-                      <div key={m.key} className={`flex items-center justify-between p-3 rounded-2xl border ${m.done ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-gradient-to-b from-[#0D1322] to-[#080B14] border-white/5'}`}>
+                      <div key={m.key} className={`flex items-center justify-between p-3 rounded-[20px] border ${m.done ? 'bg-emerald-500/10 border-emerald-500/20' : 'glass-ultra border-white/5'}`}>
                         <div className="flex items-center gap-2.5">
                           <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${m.done ? 'bg-emerald-500 text-slate-950' : 'bg-white/5 text-slate-600'}`}>
                             {m.done && <div className="w-3 h-3"><IcoCheck/></div>}
@@ -1724,9 +1756,9 @@ export default function StoreUI() {
                 </div>
 
                 {/* Referral Link Card */}
-                <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-white/[0.08] p-4 rounded-3xl space-y-3 shadow-[0_8px_28px_-8px_rgba(0,0,0,0.55)]">
+                <div className="cyber-card border border-white/[0.08] p-4 rounded-[28px] space-y-3 shadow-xl">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400">
+                    <div className="w-8 h-8 rounded-[20px] bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400">
                       <div className="w-4 h-4"><IcoUsers/></div>
                     </div>
                     <div>
@@ -1735,14 +1767,14 @@ export default function StoreUI() {
                     </div>
                   </div>
 
-                  <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 rounded-2xl p-3 flex items-center justify-between gap-2">
+                  <div className="glass-ultra border border-white/[0.08] rounded-[20px] p-3 flex items-center justify-between gap-2">
                     <p className="text-[10px] font-mono text-slate-400 truncate">t.me/fixeedredbot?start=ref_{userTelegramId}</p>
                     <button onClick={copyReferral} className="px-3 py-1.5 bg-violet-500/20 border border-violet-500/30 text-violet-300 rounded-xl text-xs font-bold shrink-0 active:scale-95 transition-all">
                       {copied ? 'Disalin!' : 'Salin'}
                     </button>
                   </div>
 
-                  <button onClick={shareToTelegram} className="w-full py-3.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-black text-xs uppercase tracking-wider rounded-2xl active:scale-[0.98] shadow-lg shadow-violet-500/20 transition-all flex items-center justify-center gap-2">
+                  <button onClick={shareToTelegram} className="w-full py-3.5 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-violet-700 premium-btn text-white font-black text-xs uppercase tracking-wider rounded-[20px] active:scale-[0.98] shadow-lg shadow-violet-500/20 transition-all flex items-center justify-center gap-2">
                     <div className="w-4 h-4"><IcoShare/></div>
                     Bagikan ke Telegram
                   </button>
@@ -1752,7 +1784,7 @@ export default function StoreUI() {
                       <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Teman Terundang ({referredUsers.length})</p>
                       <div className="space-y-1.5 max-h-40 overflow-y-auto">
                         {referredUsers.slice(0, 8).map((r: any, i: number) => (
-                          <div key={i} className="flex items-center gap-2.5 bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/5 rounded-xl p-2.5">
+                          <div key={i} className="flex items-center gap-2.5 glass-ultra border border-white/5 rounded-xl p-2.5">
                             <div className="w-6 h-6 rounded-lg bg-violet-500/20 text-violet-300 flex items-center justify-center text-[10px] font-black shrink-0">
                               {(r.firstName || '?')[0]?.toUpperCase()}
                             </div>
@@ -1766,9 +1798,9 @@ export default function StoreUI() {
                 </div>
 
                 {/* Tier Progress */}
-                <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-white/[0.08] p-4 rounded-3xl space-y-3 shadow-[0_8px_28px_-8px_rgba(0,0,0,0.55)]">
+                <div className="cyber-card border border-white/[0.08] p-4 rounded-[28px] space-y-3 shadow-xl">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                    <div className="w-8 h-8 rounded-[20px] bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
                       <div className="w-4 h-4"><IcoCrown/></div>
                     </div>
                     <div>
@@ -1786,7 +1818,7 @@ export default function StoreUI() {
                     ].map((lvl) => {
                       const isCurrent = badge?.tier === lvl.t;
                       return (
-                        <div key={lvl.t} className={`text-center py-2.5 rounded-2xl border transition-all ${isCurrent ? 'border-white/30 bg-white/10' : 'border-white/5 opacity-40'}`}>
+                        <div key={lvl.t} className={`text-center py-2.5 rounded-[20px] border transition-all ${isCurrent ? 'border-white/30 bg-white/10' : 'border-white/5 opacity-40'}`}>
                           <p className="text-base">{lvl.l}</p>
                           <p className="text-[8px] font-black text-slate-300 mt-1 uppercase">{lvl.t}</p>
                         </div>
@@ -1800,9 +1832,9 @@ export default function StoreUI() {
 
             {/* History Sub-tab */}
             {profileSubTab === 'history' && (
-              <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-white/[0.08] p-4 rounded-3xl space-y-3 shadow-[0_8px_28px_-8px_rgba(0,0,0,0.55)] animate-[fadeIn_0.25s_ease-out]">
+              <div className="cyber-card border border-white/[0.08] p-4 rounded-[28px] space-y-3 shadow-xl animate-cyber">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-2xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400">
+                  <div className="w-8 h-8 rounded-[20px] bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400">
                     <div className="w-4 h-4"><IcoClock/></div>
                   </div>
                   <div>
@@ -1816,7 +1848,7 @@ export default function StoreUI() {
                     <p className="text-xs text-slate-500">Memuat riwayat...</p>
                   </div>
                 ) : history.length === 0 ? (
-                  <div className="py-8 text-center border border-dashed border-white/10 rounded-2xl">
+                  <div className="py-8 text-center border border-dashed border-white/10 rounded-[20px]">
                     <p className="text-xs text-slate-500">Belum ada riwayat aktivitas</p>
                   </div>
                 ) : (
@@ -1831,7 +1863,7 @@ export default function StoreUI() {
                       };
                       const style = typeStyle[h.type] || { icon: '📌', color: 'text-slate-400' };
                       return (
-                        <div key={i} className="flex items-center gap-3 p-3 bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/5 rounded-2xl">
+                        <div key={i} className="flex items-center gap-3 p-3 glass-ultra border border-white/5 rounded-[20px]">
                           <span className="text-base shrink-0">{style.icon}</span>
                           <div className="min-w-0 flex-1">
                             <p className="text-xs font-bold text-slate-200 truncate">{h.label}</p>
@@ -1852,10 +1884,10 @@ export default function StoreUI() {
 
             {/* Settings Sub-tab */}
             {profileSubTab === 'settings' && (
-              <div className="space-y-3.5 animate-[fadeIn_0.25s_ease-out]">
-                <div className="bg-gradient-to-b from-[#11172A] to-[#0A0E1A] border border-white/[0.08] p-4 rounded-3xl space-y-3 shadow-[0_8px_28px_-8px_rgba(0,0,0,0.55)]">
+              <div className="space-y-3.5 animate-cyber">
+                <div className="cyber-card border border-white/[0.08] p-4 rounded-[28px] space-y-3 shadow-xl">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400">
+                    <div className="w-8 h-8 rounded-[20px] bg-white/5 border border-white/[0.08] flex items-center justify-center text-slate-400">
                       <div className="w-4 h-4"><IcoUserCircle/></div>
                     </div>
                     <div>
@@ -1863,7 +1895,7 @@ export default function StoreUI() {
                       <p className="text-[10px] text-slate-400">Rincian identitas Telegram</p>
                     </div>
                   </div>
-                  <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/5 rounded-2xl divide-y divide-white/5">
+                  <div className="glass-ultra border border-white/5 rounded-[20px] divide-y divide-white/5">
                     <div className="flex items-center justify-between p-3.5">
                       <span className="text-xs text-slate-400 font-medium">Telegram ID</span>
                       <span className="text-xs text-slate-200 font-mono font-bold">{userTelegramId}</span>
@@ -1888,10 +1920,10 @@ export default function StoreUI() {
 
       {/* Bottom Floating Navigation Bar */}
       <nav className="fixed bottom-3 left-1/2 -translate-x-1/2 z-40 w-[94%] max-w-sm">
-        <div className="glass bg-[#0D121F]/90 backdrop-blur-3xl rounded-[28px] p-1.5 border border-white/[0.08] flex items-center justify-around shadow-[0_20px_50px_rgba(0,0,0,0.8)] ring-1 ring-white/[0.03] gap-1">
+        <div className="glass cyber-card/90 backdrop-blur-3xl rounded-[28px] p-1.5 border border-white/[0.08] flex items-center justify-around shadow-[0_20px_50px_rgba(0,0,0,0.8)] gap-1">
           <button
             onClick={() => setActiveTab('dashboard')}
-            className={`flex-1 py-2.5 rounded-2xl flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${
+            className={`flex-1 py-2.5 rounded-[20px] flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${
               activeTab === 'dashboard' ? 'bg-white text-slate-950 shadow-md' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -1901,7 +1933,7 @@ export default function StoreUI() {
 
           <button
             onClick={() => { setActiveTab('buy'); setConfirmStep(false); }}
-            className={`flex-1 py-2.5 rounded-2xl flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${
+            className={`flex-1 py-2.5 rounded-[20px] flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${
               activeTab === 'buy' ? 'bg-white text-slate-950 shadow-md' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -1911,8 +1943,8 @@ export default function StoreUI() {
 
           <button
             onClick={() => setActiveTab('checkin')}
-            className={`flex-1 py-2.5 rounded-2xl flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${
-              activeTab === 'checkin' ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-slate-200'
+            className={`flex-1 py-2.5 rounded-[20px] flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${
+              activeTab === 'checkin' ? 'bg-amber-glow premium-btn glow-amber-box text-slate-950 shadow-md' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
             <div className="w-4 h-4"><IcoCalendar/></div>
@@ -1921,8 +1953,8 @@ export default function StoreUI() {
 
           <button
             onClick={() => setActiveTab('redeem')}
-            className={`flex-1 py-2.5 rounded-2xl flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${
-              activeTab === 'redeem' ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-slate-200'
+            className={`flex-1 py-2.5 rounded-[20px] flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${
+              activeTab === 'redeem' ? 'bg-amber-glow premium-btn glow-amber-box text-slate-950 shadow-md' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
             <div className="w-4 h-4"><IcoGift/></div>
@@ -1931,8 +1963,8 @@ export default function StoreUI() {
 
           <button
             onClick={() => setActiveTab('profile')}
-            className={`flex-1 py-2.5 rounded-2xl flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${
-              activeTab === 'profile' ? 'bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'
+            className={`flex-1 py-2.5 rounded-[20px] flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${
+              activeTab === 'profile' ? 'bg-gradient-to-r from-violet-600 via-fuchsia-600 to-violet-700 premium-btn text-white shadow-md' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
             <div className="w-4 h-4"><IcoUserCircle/></div>
@@ -1943,9 +1975,9 @@ export default function StoreUI() {
 
       {/* Redeem Confirmation Modal */}
       {redeemConfirmItem && (
-        <div className="fixed inset-0 z-50 bg-[#060810]/85 backdrop-blur-xl flex items-center justify-center p-4 animate-[fadeIn_0.15s_ease-out]" onClick={() => setRedeemConfirmItem(null)}>
-          <div className="max-w-xs w-full bg-gradient-to-b from-[#151C30] to-[#0A0E1A] p-6 rounded-[32px] space-y-4 border border-amber-500/30 text-center shadow-[0_25px_70px_rgba(0,0,0,0.9)] ring-1 ring-white/[0.04] animate-[scaleIn_0.2s_ease-out]" onClick={e => e.stopPropagation()}>
-            <div className="w-14 h-14 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center mx-auto shadow-inner">
+        <div className="fixed inset-0 z-50 bg-[#05070e]/85 backdrop-blur-xl flex items-center justify-center p-4 animate-fade-in" onClick={() => setRedeemConfirmItem(null)}>
+          <div className="max-w-xs w-full cyber-card p-6 rounded-[32px] space-y-4 border border-amber-500/30 shadow-[0_0_20px_-8px_rgba(245,158,11,0.2)] text-center shadow-[0_25px_70px_rgba(0,0,0,0.9)] animate-scale-in" onClick={e => e.stopPropagation()}>
+            <div className="w-14 h-14 rounded-[20px] bg-amber-500/15 border border-amber-500/30 shadow-[0_0_20px_-8px_rgba(245,158,11,0.2)] text-amber-400 flex items-center justify-center mx-auto shadow-inner">
               <div className="w-7 h-7"><IcoGift/></div>
             </div>
 
@@ -1956,7 +1988,7 @@ export default function StoreUI() {
               </p>
             </div>
 
-            <div className="bg-gradient-to-b from-[#0D1322] to-[#080B14] p-3 rounded-2xl border border-white/10 text-xs space-y-1.5 text-left">
+            <div className="glass-ultra p-3 rounded-[20px] border border-white/[0.08] text-xs space-y-1.5 text-left">
               <div className="flex justify-between">
                 <span className="text-slate-400">Saldo Saat Ini:</span>
                 <span className="text-white font-bold font-mono">{userPoints} PTS</span>
@@ -1974,14 +2006,14 @@ export default function StoreUI() {
             <div className="grid grid-cols-[0.8fr_1.4fr] gap-2.5 pt-1">
               <button
                 onClick={() => setRedeemConfirmItem(null)}
-                className="py-3 bg-white/5 border border-white/10 text-slate-300 font-extrabold rounded-2xl text-xs uppercase tracking-wider active:scale-95 transition-all"
+                className="py-3 bg-white/5 border border-white/[0.08] text-slate-300 font-extrabold rounded-[20px] text-xs uppercase tracking-wider active:scale-95 transition-all"
               >
                 Batal
               </button>
               <button
                 onClick={executeRedeem}
                 disabled={redeeming}
-                className="py-3 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl active:scale-95 disabled:opacity-40 shadow-lg shadow-amber-500/20 transition-all"
+                className="py-3 bg-amber-glow premium-btn glow-amber-box text-slate-950 font-black text-xs uppercase tracking-wider rounded-[20px] active:scale-95 disabled:opacity-40 shadow-lg shadow-amber-500/20 transition-all"
               >
                 {redeeming ? 'Proses...' : 'Konfirmasi Klaim'}
               </button>
@@ -1992,14 +2024,14 @@ export default function StoreUI() {
 
       {/* QRIS Fullscreen Modal */}
       {qrisZoomOpen && (
-        <div className="fixed inset-0 z-50 bg-[#060810]/90 backdrop-blur-2xl flex items-center justify-center p-4 animate-[fadeIn_0.15s_ease-out]" onClick={() => setQrisZoomOpen(false)}>
-          <div className="max-w-sm w-full bg-gradient-to-b from-[#151C30] to-[#0A0E1A] p-5 rounded-[32px] space-y-4 border border-emerald-500/40 text-center shadow-2xl ring-1 ring-white/[0.04]" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 bg-[#05070e]/90 backdrop-blur-2xl flex items-center justify-center p-4 animate-fade-in" onClick={() => setQrisZoomOpen(false)}>
+          <div className="max-w-sm w-full cyber-card p-5 rounded-[32px] space-y-4 border border-emerald-500/40 text-center shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-center gap-2 pb-2 border-b border-white/10">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"/>
               <span className="text-xs font-black text-white uppercase tracking-wider">QRIS FULLSCREEN SCANNER</span>
             </div>
 
-            <div className="w-full aspect-square bg-white p-3 rounded-2xl shadow-2xl flex items-center justify-center border-4 border-emerald-400">
+            <div className="w-full aspect-square bg-white p-3 rounded-[20px] shadow-2xl flex items-center justify-center border-4 border-emerald-400">
               <img
                 src={QRIS_IMAGE_URL}
                 alt="QRIS Fullscreen"
@@ -2011,7 +2043,7 @@ export default function StoreUI() {
               <p className="text-xs text-emerald-400 font-bold">Siap di-scan menggunakan DANA, GoPay, OVO, ShopeePay & M-Banking</p>
               <button
                 onClick={() => setQrisZoomOpen(false)}
-                className="w-full py-3.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg shadow-emerald-500/20 active:scale-95 transition-all"
+                className="w-full py-3.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-[20px] shadow-lg shadow-emerald-500/20 active:scale-95 transition-all"
               >
                 Tutup & Kembali
               </button>
@@ -2025,7 +2057,7 @@ export default function StoreUI() {
         <button
           onClick={() => setChatOpen(true)}
           aria-label="Chat dengan Owner"
-          className="fixed right-3.5 z-40 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] h-11 pl-3 pr-3.5 rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white flex items-center gap-1.5 shadow-[0_8px_24px_rgba(147,51,234,0.45)] active:scale-95 transition-all border border-white/15"
+          className="fixed right-3.5 z-40 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] h-11 pl-3 pr-3.5 rounded-full bg-gradient-to-br from-violet-600 via-fuchsia-600 to-violet-700 premium-btn shadow-[0_8px_24px_-8px_rgba(139,92,246,0.5)] text-white flex items-center gap-1.5 shadow-[0_8px_24px_rgba(147,51,234,0.45)] active:scale-95 transition-all border border-white/15"
         >
           <span className="relative w-[18px] h-[18px] block">
             <IcoChat />
@@ -2041,16 +2073,16 @@ export default function StoreUI() {
 
       {/* Customer Support Chat: Full-screen Panel */}
       {chatOpen && (
-        <div className="fixed inset-0 z-50 bg-[#060810] flex flex-col h-[100dvh] animate-[fadeIn_0.15s_ease-out]">
+        <div className="fixed inset-0 z-50 bg-[#05070e] flex flex-col h-[100dvh] animate-fade-in">
           {/* Header */}
-          <div className="shrink-0 flex items-center gap-3 px-4 pb-3 pt-[max(56px,calc(env(safe-area-inset-top)+44px))] border-b border-white/10 bg-[#0D121F]">
+          <div className="shrink-0 flex items-center gap-3 px-4 pb-3 pt-[max(56px,calc(env(safe-area-inset-top)+44px))] border-b border-white/10 cyber-card">
             <button
               onClick={() => setChatOpen(false)}
-              className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 active:scale-95 transition-all shrink-0"
+              className="w-9 h-9 rounded-xl bg-white/5 border border-white/[0.08] flex items-center justify-center text-slate-300 active:scale-95 transition-all shrink-0"
             >
               ←
             </button>
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center text-white shrink-0 shadow-md">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 via-fuchsia-600 to-violet-700 premium-btn shadow-[0_8px_24px_-8px_rgba(139,92,246,0.5)] flex items-center justify-center text-white shrink-0 shadow-md">
               <div className="w-4.5 h-4.5"><IcoChat /></div>
             </div>
             <div className="min-w-0 flex-1">
@@ -2061,7 +2093,7 @@ export default function StoreUI() {
             </div>
             <button
               onClick={() => loadChat(initData)}
-              className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 active:scale-95 transition-all shrink-0"
+              className="w-9 h-9 rounded-xl bg-white/5 border border-white/[0.08] flex items-center justify-center text-slate-300 active:scale-95 transition-all shrink-0"
             >
               <div className="w-4 h-4"><IcoRefresh /></div>
             </button>
@@ -2080,20 +2112,20 @@ export default function StoreUI() {
               </div>
             ) : chatError ? (
               <div className="h-full flex flex-col items-center justify-center gap-3 text-center px-6">
-                <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-[20px] bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-center justify-center">
                   <div className="w-6 h-6"><IcoLock /></div>
                 </div>
                 <p className="text-xs text-rose-300 font-semibold">{chatError}</p>
                 <button
                   onClick={() => loadChat(initData)}
-                  className="px-4 py-2 bg-white/5 border border-white/10 text-slate-200 text-[11px] font-bold rounded-xl active:scale-95 transition-all"
+                  className="px-4 py-2 bg-white/5 border border-white/[0.08] text-slate-200 text-[11px] font-bold rounded-xl active:scale-95 transition-all"
                 >
                   Coba Lagi
                 </button>
               </div>
             ) : chatMessages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center gap-2 text-center px-6">
-                <div className="w-12 h-12 rounded-2xl bg-violet-500/10 border border-violet-500/30 text-violet-400 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-[20px] bg-violet-500/10 border border-violet-500/30 text-violet-400 flex items-center justify-center">
                   <div className="w-6 h-6"><IcoChat /></div>
                 </div>
                 <p className="text-xs text-slate-300 font-bold">Belum ada percakapan</p>
@@ -2104,13 +2136,13 @@ export default function StoreUI() {
                 const isUser = m.sender_type === 'user';
                 const isAi = m.sender_type === 'ai';
                 return (
-                  <div key={m.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'} animate-[fadeIn_0.25s_ease-out]`}>
+                  <div key={m.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'} animate-cyber`}>
                     <div className={`max-w-[78%] px-4 py-2.5 text-[12.5px] leading-relaxed ${
                       isUser
-                        ? 'bg-gradient-to-br from-violet-600 via-fuchsia-600 to-purple-600 text-white rounded-2xl rounded-br-md shadow-[0_4px_16px_-4px_rgba(168,85,247,0.5)] ring-1 ring-fuchsia-300/20'
+                        ? 'bg-gradient-to-br from-violet-600 via-fuchsia-600 to-purple-600 text-white rounded-[20px] rounded-br-md shadow-[0_4px_16px_-4px_rgba(168,85,247,0.5)] ring-1 ring-fuchsia-300/20'
                         : isAi
-                        ? 'bg-gradient-to-br from-cyan-600 via-teal-600 to-emerald-600 text-white rounded-2xl rounded-bl-md shadow-[0_4px_16px_-4px_rgba(6,182,212,0.5)] ring-1 ring-cyan-300/20'
-                        : 'bg-gradient-to-br from-[#141B2C] to-[#0C1120] text-slate-100 rounded-2xl rounded-bl-md shadow-[0_4px_14px_-6px_rgba(0,0,0,0.6)] ring-1 ring-white/[0.08]'
+                        ? 'bg-gradient-to-br from-cyan-600 via-teal-600 to-emerald-600 text-white rounded-[20px] rounded-bl-md shadow-[0_4px_16px_-4px_rgba(6,182,212,0.5)] ring-1 ring-cyan-300/20'
+                        : 'bg-gradient-to-br from-[#141B2C] to-[#0C1120] text-slate-100 rounded-[20px] rounded-bl-md shadow-[0_4px_14px_-6px_rgba(0,0,0,0.6)] ring-1 ring-white/[0.08]'
                     }`}>
                       {isAi && (
                         <p className="flex items-center gap-1 text-[8.5px] font-black uppercase tracking-widest text-cyan-50/90 mb-1">
@@ -2136,7 +2168,7 @@ export default function StoreUI() {
           </div>
 
           {/* Input */}
-          <div className="shrink-0 p-3 pb-[max(12px,env(safe-area-inset-bottom))] border-t border-white/10 bg-[#0D121F]">
+          <div className="shrink-0 p-3 pb-[max(12px,env(safe-area-inset-bottom))] border-t border-white/10 cyber-card">
             {chatConversation?.status === 'closed' ? (
               <div className="text-center py-2">
                 <p className="text-[10px] text-slate-500 font-medium">Percakapan ini telah ditutup oleh Owner. Kirim pesan baru untuk membuka kembali.</p>
@@ -2160,12 +2192,12 @@ export default function StoreUI() {
                 rows={1}
                 maxLength={2000}
                 disabled={chatSending}
-                className="flex-1 bg-gradient-to-b from-[#0D1322] to-[#080B14] border border-white/10 text-white placeholder-slate-600 px-3.5 py-2.5 rounded-2xl text-xs focus:outline-none focus:border-violet-500/50 transition-all shadow-inner resize-none max-h-24 disabled:opacity-60"
+                className="flex-1 glass-ultra border border-white/[0.08] text-white placeholder-slate-600 px-3.5 py-2.5 rounded-[20px] text-xs focus:outline-none focus:border-violet-500/50 transition-all shadow-inner resize-none max-h-24 disabled:opacity-60"
               />
               <button
                 onClick={sendChatMessage}
                 disabled={chatSending || !chatInput.trim()}
-                className="w-10 h-10 shrink-0 rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white flex items-center justify-center active:scale-95 disabled:opacity-40 transition-all shadow-lg shadow-violet-500/20"
+                className="w-10 h-10 shrink-0 rounded-[20px] bg-gradient-to-br from-violet-600 via-fuchsia-600 to-violet-700 premium-btn shadow-[0_8px_24px_-8px_rgba(139,92,246,0.5)] text-white flex items-center justify-center active:scale-95 disabled:opacity-40 transition-all shadow-lg shadow-violet-500/20"
               >
                 <div className="w-4 h-4">{chatSending ? '···' : <IcoSend />}</div>
               </button>
