@@ -223,14 +223,6 @@ function IcoTarget() {
     </svg>
   );
 }
-function IcoSend() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
-      <path d="M22 2 11 13" />
-      <path d="M22 2 15 22 11 13 2 9z" />
-    </svg>
-  );
-}
 function IcoChat() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
@@ -280,7 +272,6 @@ export default function StoreUI() {
   const [myRank, setMyRank] = useState<number | null>(null);
   const [totalPlayers, setTotalPlayers] = useState(0);
   const [leaderboardLoading, setLeaderboardLoading] = useState(false);
-  const [referredUsers, setReferredUsers] = useState<any[]>([]);
   const [profileSubTab, setProfileSubTab] = useState<'overview' | 'history' | 'settings'>('overview');
 
   const [chatOpen, setChatOpen] = useState(false);
@@ -689,21 +680,8 @@ export default function StoreUI() {
     }
   };
 
-  const fetchReferrals = async () => {
-    try {
-      const res = await fetch('/api/store', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ initData, action: 'get_referrals' }),
-      });
-      const d = await res.json();
-      if (res.ok) setReferredUsers(d.referredUsers || []);
-    } catch {}
-  };
-
   useEffect(() => {
     if (activeTab === 'profile' && initData) {
-      fetchReferrals();
       if (profileSubTab === 'history') fetchHistory();
     }
   }, [activeTab, profileSubTab, initData]);
@@ -1871,21 +1849,38 @@ export default function StoreUI() {
             </div>
           </div>
 
+          {chatError && (
+            <div className="px-4 py-2 bg-rose-500/15 border-b border-rose-500/25 text-[10px] font-semibold text-rose-300 text-center">
+              {chatError}
+            </div>
+          )}
+
           <div ref={chatScrollRef} onScroll={handleChatScroll} className="flex-1 min-h-0 overflow-y-auto px-4 py-3 space-y-2 bg-[#04060C]">
-            {chatMessages.map((m: any) => {
-              const isUser = m.sender_type === 'user';
-              return (
-                <div key={m.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[80%] px-3.5 py-2 text-xs leading-relaxed ${
-                    isUser
-                      ? 'bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white rounded-2xl rounded-br-xs'
-                      : 'bg-[#121828] text-slate-100 rounded-2xl rounded-bl-xs border border-white/10'
-                  }`}>
-                    <p className="whitespace-pre-wrap break-words">{m.message}</p>
+            {chatLoading && chatMessages.length === 0 ? (
+              <div className="h-full flex flex-col items-center justify-center gap-2 text-slate-500">
+                <div className="w-6 h-6 border-2 border-violet-500/30 border-t-violet-500 rounded-full animate-spin" />
+                <p className="text-xs font-medium">Memuat pesan...</p>
+              </div>
+            ) : chatMessages.length === 0 ? (
+              <div className="h-full flex flex-col items-center justify-center gap-2 text-center px-6">
+                <p className="text-xs text-slate-500">Belum ada pesan di percakapan ini.</p>
+              </div>
+            ) : (
+              chatMessages.map((m: any) => {
+                const isUser = m.sender_type === 'user';
+                return (
+                  <div key={m.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`max-w-[80%] px-3.5 py-2 text-xs leading-relaxed ${
+                      isUser
+                        ? 'bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white rounded-2xl rounded-br-xs'
+                        : 'bg-[#121828] text-slate-100 rounded-2xl rounded-bl-xs border border-white/10'
+                    }`}>
+                      <p className="whitespace-pre-wrap break-words">{m.message}</p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
 
           <div className="shrink-0 p-3 border-t border-white/10 bg-[#0B0F1A] flex gap-2">
