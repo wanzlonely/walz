@@ -1,4 +1,4 @@
-import { NextResponse, after } from 'next/server';
+import { NextResponse } from 'next/server';
 import { verifyTelegramInitData } from '@/lib/utils';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { handleAiSupport } from '@/lib/ai-support';
@@ -21,13 +21,17 @@ async function getOrCreateConversation(
   telegramId: string,
   userName: string
 ) {
+  // Try to find existing conversation
   const { data: existing, error: findErr } = await supabaseAdmin
     .from('chat_conversations')
     .select('*')
     .eq('telegram_id', telegramId)
     .maybeSingle();
 
-  if (findErr) throw findErr;
+  if (findErr) {
+    // Log error but continue - may be RLS issue; try creating new one
+    console.error('[chat] Error finding conversation:', findErr.message);
+  }
 
   if (existing) {
     if (existing.user_name !== userName) {
@@ -42,6 +46,7 @@ async function getOrCreateConversation(
     return existing;
   }
 
+  // Create new conversation
   const { data: created, error: createErr } = await supabaseAdmin
     .from('chat_conversations')
     .insert({
@@ -53,6 +58,8 @@ async function getOrCreateConversation(
     .single();
 
   if (createErr) {
+    console.error('[chat] Error creating conversation:', createErr.message);
+    // Try to find it again in case race condition
     const { data: again } = await supabaseAdmin
       .from('chat_conversations')
       .select('*')
@@ -61,7 +68,8 @@ async function getOrCreateConversation(
 
     if (again) return again;
 
-    throw createErr;
+    // Re-throw with more context
+    throw new Error(`Gagal membuat percakapan: ${createErr.message}`);
   }
 
   return created;
