@@ -803,7 +803,7 @@ export default function StoreUI() {
   const displayName = tgUser
     ? [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ')
     : userStatus?.firstName || 'Exploit';
-  const userUsername = tgUser?.username || userStatus?.username || 'exploit_user';
+  const userUsername = tgUser?.username || userStatus?.username || 'unknown';
   const userTelegramId = tgUser?.id || userStatus?.telegramId || '8884003270';
   const initials = displayName?.[0]?.toUpperCase() || 'E';
   const userPoints = userStatus?.points || 0;
@@ -943,7 +943,7 @@ export default function StoreUI() {
             {/* Profile Overview Card */}
             <div className="bg-[#0D121F] p-4.5 rounded-3xl relative overflow-hidden border border-white/10 shadow-xl space-y-3">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-400 via-teal-500 to-indigo-600 flex items-center justify-center font-black text-white text-base shadow-md border border-white/20 shrink-0 overflow-hidden">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-400 via-teal-500 to-indigo-600 flex items-center justify-center font-black text-white text-base shadow-md border border-white/20 shrink-0 overflow-hidden">
                   {tgUser?.photo_url ? <img src={tgUser.photo_url} className="w-full h-full object-cover" alt=""/> : initials}
                 </div>
                 <div className="flex-1 min-w-0">
