@@ -86,54 +86,48 @@ export async function POST(req: Request) {
 
         await redis.set(userKey, JSON.stringify(userData));
 
-        const statusLabel = isPremium ? 'VIP PREMIUM' : 'FREE USER';
-        const statusIcon = isPremium ? '👑' : '🆓';
-
         const welcomeText =
-          `<b>✨ WALZSHOP × ${botName}</b>\n` +
-          `━━━━━━━━━━━━━━━━━━━━\n` +
-          `🚀 Layanan Digital Premium\n` +
-          `💎 Store Terpercaya & Cepat\n` +
-          `━━━━━━━━━━━━━━━━━━━━\n\n` +
-          `<b>👤 Profil Akun</b>\n` +
-          `├ 🆔 ID: <code>${telegramId}</code>\n` +
-          `├ 👨‍💻 Nama: <b>${firstName}</b>\n` +
-          `├ \( {statusIcon} Status: <b> \){statusLabel}</b>\n` +
-          `└ ⭐ Poin: <b>${userData.points || 0}</b>\n\n` +
-          `🎯 Pilih menu di bawah untuk mulai:`;
+          `<b>WALZSHOP DIGITAL HUB</b>\n` +
+          `<i>Official Premium Ecosystem • ${botName}</i>\n\n` +
+          `<blockquote>` +
+          `<b>[ ACCOUNT OVERVIEW ]</b>\n` +
+          `🆔 ID : <code>${telegramId}</code>\n` +
+          `👤 User : <b>${firstName}</b>\n` +
+          `💎 Tier : <b>${isPremium ? 'VIP ACCESS' : 'FREE USER'}</b>\n` +
+          `⭐ Poin : <b>${userData.points || 0} PTS</b>` +
+          `</blockquote>\n\n` +
+          `Gunakan navigasi di bawah untuk mengakses fitur:`;
 
         const inline_keyboard = [
           [
             {
-              text: isPremium ? '📞 Fixmerah' : '📞 Fixmerah (Premium)',
+              text: isPremium ? '⚡ Fixmerah Service' : '🔒 Fixmerah (VIP Only)',
               callback_data: 'fixmerah',
             },
           ],
           [
             {
-              text: isPremium
-                ? '💳 Beli VIP'
-                : '💳 Beli VIP (Limited 5x/hari)',
+              text: '👑 Upgrade VIP',
               web_app: { url: `${webAppUrl}?tab=buy` },
             },
             {
-              text: '⭐ Tukar Poin',
+              text: '🎁 Redeem Reward',
               web_app: { url: `${webAppUrl}?tab=redeem` },
             },
           ],
           [
             {
-              text: '👥 Ajak Teman',
+              text: '🔗 Referral Link',
               web_app: { url: `${webAppUrl}?tab=profile` },
             },
             {
-              text: '🏆 Leaderboard',
+              text: '📊 Leaderboard',
               web_app: { url: `${webAppUrl}?tab=profile` },
             },
           ],
           [
             {
-              text: '💬 Customer Support',
+              text: '🎧 Helpdesk Support',
               web_app: { url: `${webAppUrl}?tab=chat` },
             },
           ],
@@ -162,7 +156,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ ok: true });
       }
 
-      if (text.startsWith('/fixmerah') || text === '📞 Fixmerah') {
+      if (text.startsWith('/fixmerah') || text === '⚡ Fixmerah Service') {
         if (!isPremium) {
           await fetch(
             `https://api.telegram.org/bot${botToken}/sendMessage`,
@@ -171,7 +165,7 @@ export async function POST(req: Request) {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 chat_id: chatId,
-                text: '❌ <b>Fitur Fixmerah hanya untuk pengguna Premium.</b>',
+                text: '🔒 <b>Akses ditolak. Fitur Fixmerah hanya berlaku untuk akun VIP.</b>',
                 parse_mode: 'HTML',
               }),
             }
@@ -191,9 +185,9 @@ export async function POST(req: Request) {
             body: JSON.stringify({
               chat_id: chatId,
               text:
-                `<b>🛠 PROSES FIXMERAH AKTIF</b>\n\n` +
-                `<blockquote>Kirim 1 sampai 3 nomor telepon\nmasing-masing di baris baru\n\nContoh:\n081234567890\n081298765432</blockquote>\n\n` +
-                `Ketik /batalkan untuk membatalkan.`,
+                `<b>⚡ FIXMERAH SERVICE</b>\n\n` +
+                `<blockquote>Kirim 1 hingga 3 nomor tujuan.\nPastikan satu nomor per baris.\n\nContoh:\n081234567890\n081298765432</blockquote>\n\n` +
+                `<i>Ketik /batalkan untuk menghentikan proses.</i>`,
               parse_mode: 'HTML',
             }),
           }
@@ -214,7 +208,7 @@ export async function POST(req: Request) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               chat_id: chatId,
-              text: '❌ <b>Proses Fixmerah dibatalkan.</b>',
+              text: '<b>Sesi Fixmerah telah dibatalkan.</b>',
               parse_mode: 'HTML',
             }),
           }
@@ -238,7 +232,7 @@ export async function POST(req: Request) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                   chat_id: chatId,
-                  text: '⚠️ <b>Kirim 1 sampai 3 nomor</b>, masing-masing di baris baru.',
+                  text: '⚠️ <b>Format tidak valid.</b> Masukkan 1 sampai 3 nomor.',
                   parse_mode: 'HTML',
                 }),
               }
@@ -268,12 +262,12 @@ export async function POST(req: Request) {
                 body: JSON.stringify({
                   chat_id: '@' + targetUsername,
                   text:
-                    `<b>🛠 BARU MASUK FIXMERAH</b>\n\n` +
-                    `Dari: <code>${telegramId}</code>\n` +
+                    `<b>⚡ INCOMING FIXMERAH TASK</b>\n\n` +
+                    `Client ID: <code>${telegramId}</code>\n` +
                     formatted
                       .map(
                         (n: string, i: number) =>
-                          `Nomor \( {i + 1}: <code> \){n}</code>`
+                          `Target ${i + 1}: <code>${n}</code>`
                       )
                       .join('\n'),
                   parse_mode: 'HTML',
@@ -283,19 +277,19 @@ export async function POST(req: Request) {
           }
 
           const defaultText =
-            `<b>✅ BERHASIL PROSES FIXMERAH</b>\n\n` +
+            `<b>✅ PERMINTAAN DIPROSES</b>\n\n` +
             formatted
               .map(
                 (n: string, i: number) =>
                   `<blockquote>` +
-                  `✅ BERHASIL (${i + 1})\n` +
+                  `📌 <b>Target #${i + 1}</b>\n` +
                   `📱 <code>${n}</code>\n` +
-                  `🆔 ID: NBNX-5269-1297-${2050 + i * 100}\n` +
-                  `📩 TERKIRIM` +
+                  `🔑 REF: NBNX-5269-1297-${2050 + i * 100}\n` +
+                  `Status: Submitted` +
                   `</blockquote>`
               )
               .join('\n') +
-            `\n📬 Notifikasi update status akan dikirim otomatis jika ada balasan.`;
+            `\n<i>Notifikasi pembaharuan status akan dikirim secara otomatis.</i>`;
 
           await fetch(
             `https://api.telegram.org/bot${botToken}/sendMessage`,
@@ -352,7 +346,7 @@ export async function POST(req: Request) {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 chat_id: chatId,
-                text: '❌ <b>Fitur Fixmerah hanya untuk pengguna Premium.</b>',
+                text: '🔒 <b>Akses ditolak. Fitur Fixmerah hanya berlaku untuk akun VIP.</b>',
                 parse_mode: 'HTML',
               }),
             }
@@ -370,9 +364,9 @@ export async function POST(req: Request) {
               body: JSON.stringify({
                 chat_id: chatId,
                 text:
-                  `<b>🛠 PROSES FIXMERAH AKTIF</b>\n\n` +
-                  `<blockquote>Kirim 1 sampai 3 nomor telepon\nmasing-masing di baris baru</blockquote>\n\n` +
-                  `Ketik /batalkan untuk membatalkan.`,
+                  `<b>⚡ FIXMERAH SERVICE</b>\n\n` +
+                  `<blockquote>Kirim 1 hingga 3 nomor tujuan.\nPastikan satu nomor per baris.</blockquote>\n\n` +
+                  `<i>Ketik /batalkan untuk menghentikan proses.</i>`,
                 parse_mode: 'HTML',
               }),
             }
