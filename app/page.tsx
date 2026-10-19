@@ -798,8 +798,12 @@ export default function StoreUI() {
   const calculatedPrice = isFlashActive ? Math.max(0, Math.floor(rawPkg.price * (1 - flashDiscount / 100))) : rawPkg.price;
   const pkg = { ...rawPkg, price: calculatedPrice };
 
-  const displayName = tgUser ? [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ') : userStatus?.profile?.firstName || 'Exploit';
-  const userUsername = tgUser?.username || userStatus?.profile?.username || 'exploit_user';
+  // Zero clean: userStatus firstName/username stored at top level in Redis,
+  // not nested inside .profile sub-object (which is a separate admin key).
+  const displayName = tgUser
+    ? [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ')
+    : userStatus?.firstName || 'Exploit';
+  const userUsername = tgUser?.username || userStatus?.username || 'exploit_user';
   const userTelegramId = tgUser?.id || userStatus?.telegramId || '8884003270';
   const initials = displayName?.[0]?.toUpperCase() || 'E';
   const userPoints = userStatus?.points || 0;
