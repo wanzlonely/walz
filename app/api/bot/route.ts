@@ -94,7 +94,7 @@ export async function POST(req: Request) {
         const inline_keyboard = [
           [
             {
-              text: '🚀 Buka WALZSHOP Store',
+              text: '🚀 Buka WALZSHOP',
               web_app: { url: webAppUrl },
             },
           ],
@@ -102,7 +102,7 @@ export async function POST(req: Request) {
             {
               text: isPremium
                 ? '📞 Fixmerah'
-                : '📞 Fixmerah (Premium)',
+                : '🎁 Fixmerah',
               callback_data: 'fixmerah',
             },
           ],
@@ -110,7 +110,7 @@ export async function POST(req: Request) {
             {
               text: isPremium
                 ? '💳 Beli VIP'
-                : '💳 Beli VIP (Limited 5x/hari)',
+                : '💳 Beli VIP',
               web_app: { url: `${webAppUrl}?tab=buy` },
             },
             {
