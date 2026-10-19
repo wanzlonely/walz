@@ -1,4 +1,4 @@
-import { NextResponse, after } from 'next/server';
+import { NextResponse } from 'next/server';
 import { verifyTelegramInitData } from '@/lib/utils';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { handleAiSupport } from '@/lib/ai-support';
@@ -29,7 +29,6 @@ async function getOrCreateConversation(
     .maybeSingle();
 
   if (findErr) {
-    // Log error but continue - may be RLS issue; try creating new one
     console.error('[chat] Error finding conversation:', findErr.message);
   }
 
@@ -68,7 +67,6 @@ async function getOrCreateConversation(
 
     if (again) return again;
 
-    // Re-throw with more context
     throw new Error(`Gagal membuat percakapan: ${createErr.message}`);
   }
 
@@ -134,7 +132,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { initData, action, text } = body;
+    const { initData, action, text, status } = body;
 
     const tgUser = verifyTelegramInitData(initData);
 
@@ -153,6 +151,7 @@ export async function POST(req: Request) {
       userName
     );
 
+    // Handle mark_read action
     if (action === 'mark_read') {
       const { error } = await supabaseAdmin
         .from('chat_messages')
@@ -177,6 +176,24 @@ export async function POST(req: Request) {
       });
     }
 
+    // Handle status update action (close conversation, set ai_paused, etc.)
+    if (action === 'set_status' && status) {
+      await supabaseAdmin
+        .from('chat_conversations')
+        .update({
+          handled_by: status === 'close' ? 'ai' : 'owner',
+          needs_owner: status !== 'close' ? false : true,
+          ai_reason: status === 'close' ? 'Ditutup oleh owner' : null,
+          ai_paused_at: status === 'close' ? new Date().toISOString() : null,
+        })
+        .eq('id', conversation.id);
+
+      return NextResponse.json({
+        success: true,
+      });
+    }
+
+    // Default: send message
     const trimmed =
       typeof text === 'string'
         ? text.trim()
@@ -226,6 +243,7 @@ export async function POST(req: Request) {
         .eq('id', conversation.id);
     }
 
+    // Trigger AI support after user message
     after(async () => {
       try {
         await handleAiSupport(
