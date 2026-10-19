@@ -82,35 +82,26 @@ export async function POST(req: Request) {
         await redis.set(userKey, JSON.stringify(userData));
 
         const welcomeText =
-          `👋 *Selamat Datang di WALZSHOP*\n` +
-          `Layanan Digital Premium & Store Terpercaya\n\n` +
-          `🆔 *ID Akun:* \`${telegramId}\`\n` +
-          `👤 *Nama:* ${firstName}\n` +
-          `💎 *Status Akses:* ${isPremium ? 'VIP PREMIUM' : 'FREE USER'}\n` +
-          `⭐ *Saldo Poin:* ${userData.points || 0} Poin\n\n` +
-          `Bot: ${botName}\n` +
-          `Klik tombol di bawah untuk membuka *WALZSHOP Store*:`;
+          `⚡️ *WALZSHOP DIGITAL STORE* ⚡️\n` +
+          `_Layanan Digital Premium & Terpercaya_\n\n` +
+          `┌ 👤 *INFORMASI AKUN*\n` +
+          `├ 🆔 *ID Akun:* \`${telegramId}\`\n` +
+          `├ 👤 *Nama:* ${firstName}\n` +
+          `├ 💎 *Status Akses:* ${isPremium ? '*VIP PREMIUM*' : '*FREE USER*'}\n` +
+          `└ ⭐ *Saldo Poin:* \`${userData.points || 0} Poin\`\n\n` +
+          `🤖 *System:* ${botName}\n\n` +
+          `Silakan pilih menu di bawah ini untuk melanjutkan 👇`;
 
         const inline_keyboard = [
           [
             {
-              text: '🚀 Buka WALZSHOP',
-              web_app: { url: webAppUrl },
-            },
-          ],
-          [
-            {
-              text: isPremium
-                ? '📞 Fixmerah'
-                : '🎁 Fixmerah',
+              text: isPremium ? '📞 Fixmerah' : '🎁 Fixmerah',
               callback_data: 'fixmerah',
             },
           ],
           [
             {
-              text: isPremium
-                ? '💳 Beli VIP'
-                : '💳 Beli VIP',
+              text: '💳 Beli VIP',
               web_app: { url: `${webAppUrl}?tab=buy` },
             },
             {
@@ -283,7 +274,7 @@ export async function POST(req: Request) {
             formatted
               .map(
                 (n: string, i: number) =>
-                  `✅ BERHASIL (${i + 1})\n📱 \( {n}\n🆔 ID: NBNX-5269-1297- \){2050 + i * 100}\n📩 TERKIRIM\n`
+                  `✅ BERHASIL (${i + 1})\n📱 ${n}\n🆔 ID: NBNX-5269-1297-${2050 + i * 100}\n📩 TERKIRIM\n`
               )
               .join('\n') +
             `\n📬 Notifikasi update status akan dikirim otomatis jika ada balasan.`;
