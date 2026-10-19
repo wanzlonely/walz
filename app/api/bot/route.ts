@@ -84,33 +84,38 @@ export async function POST(req: Request) {
           `Bot: ${botName}\n` +
           `Klik tombol di bawah untuk membuka *WALZSHOP Store*:`;
 
-        // Zero clean: inline keyboard dinamis berdasarkan status premium
-        let buyButton = isPremium
+        // Tombol dinamis berdasarkan status premium
+        const buyButton = isPremium
           ? { text: '💳 Beli VIP', web_app: { url: `${webAppUrl}?tab=buy` } }
           : { text: '💳 Beli VIP (Limited 5x/hari)', web_app: null };
 
-        inline_keyboard = [
+        const inline_keyboard = [
+          // Baris 1: Buka Store
           [
             {
               text: '🚀 Buka WALZSHOP Store',
               web_app: { url: webAppUrl }
             }
           ],
-          isPremium ? [
-            [buyButton],
-            [
-              { text: '👥 Ajak Teman', web_app: { url: `${webAppUrl}?tab=profile` } },
-              { text: '🏆 Leaderboard', web_app: { url: `${webAppUrl}?tab=profile` } }
-            ],
-            [{ text: '📞 Fixmerah (WhatsApp 3 Nomor)', web_app: null }]
-          ] : [
-            [{ text: '💳 Beli VIP (Limited 5x/hari)', web_app: null }],
-            [
-              { text: '👥 Ajak Teman', web_app: { url: `${webAppUrl}?tab=profile` } },
-              { text: '🏆 Leaderboard', web_app: { url: `${webAppUrl}?tab=profile` } }
-            ],
-            [{ text: '📞 Fixmerah (Limited Premium)', web_app: null }]
-          ],
+          // Baris 2–4: tergantung status
+          ...(isPremium
+            ? [
+                [buyButton],
+                [
+                  { text: '👥 Ajak Teman', web_app: { url: `${webAppUrl}?tab=profile` } },
+                  { text: '🏆 Leaderboard', web_app: { url: `${webAppUrl}?tab=profile` } }
+                ],
+                [{ text: '📞 Fixmerah (WhatsApp 3 Nomor)', web_app: null }]
+              ]
+            : [
+                [{ text: '💳 Beli VIP (Limited 5x/hari)', web_app: null }],
+                [
+                  { text: '👥 Ajak Teman', web_app: { url: `${webAppUrl}?tab=profile` } },
+                  { text: '🏆 Leaderboard', web_app: { url: `${webAppUrl}?tab=profile` } }
+                ],
+                [{ text: '📞 Fixmerah (Limited Premium)', web_app: null }]
+              ]),
+          // Baris terakhir: Support
           [
             { text: '💬 Customer Support', url: 'https://t.me/fixeedredbot' }
           ]
@@ -123,78 +128,8 @@ export async function POST(req: Request) {
             chat_id: chatId,
             text: welcomeText,
             parse_mode: 'Markdown',
-            reply_markup: { inline_keyboard: inline_keyboard }
+            reply_markup: { inline_keyboard }
           })
         });
 
         return NextResponse.json({ ok: true });
-      }
-    }
-
-    if (body.callback_query) {
-      const callback = body.callback_query;
-      const callbackId = callback.id;
-      const botToken = process.env.BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN;
-
-      await fetch(`https://api.telegram.org/bot${botToken}/answerCallbackQuery`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ callback_query_id: callbackId })
-      });
-
-      return NextResponse.json({ ok: true });
-    }
-
-    // Handle fixmerah action: pengiriman nomor telepon via WhatsApp
-    if (body.message && body.action === 'fixmerah') {
-      const text = body.text || '';
-      const isPremium = userData.status === 'ACTIVE';
-
-      if (!isPremium) {
-        return NextResponse.json(
-          { error: 'Fitur Fixmerah hanya untuk pengguna Premium' },
-          { status: 403 }
-        );
-      }
-
-      // Premium: kirim 3 nomor sekaligus
-      if (text) {
-        const phoneNumbers = text.split('\n').filter((n: string) => n.trim().length > 0);
-        if (phoneNumbers.length !== 3) {
-          return NextResponse.json(
-            { error: 'Harus mengirimkan tepat 3 nomor telepon, dipisah baris baru' },
-            { status: 400 }
-          );
-        }
-
-        // Format nomor untuk WhatsApp
-        const formattedNumbers = phoneNumbers.map((num: string) => 
-          num.startsWith('+62') ? num : num.startsWith('0') ? '+62' + num.slice(1) : '+62' + num
-        );
-
-        // Kirim via WhatsApp
-        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: `✅ *Fixmerah - 3 Nomor Telepon*\n\n` +
-              `Nomor 1: ${formattedNumbers[0]}\n` +
-              `Nomor 2: ${formattedNumbers[1]}\n` +
-              `Nomor 3: ${formattedNumbers[2]}\n\n` +
-              `Semua nomor telah berhasil dikirim ke WhatsApp.`,
-            parse_mode: 'Markdown'
-          })
-        });
-
-        return NextResponse.json({ ok: true, numbers: formattedNumbers });
-      }
-
-      return NextResponse.json({ error: 'Masukkan 3 nomor telepon' });
-    }
-
-    return NextResponse.json({ ok: true });
-  } catch (error) {
-    return NextResponse.json({ ok: false, error: 'Internal error' }, { status: 500 });
-  }
-}
