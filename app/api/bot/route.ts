@@ -87,47 +87,49 @@ export async function POST(req: Request) {
         await redis.set(userKey, JSON.stringify(userData));
 
         const welcomeText =
-          `❖ <b>𝐖 𝐀 𝐋 𝗭 𝐒 𝐇 𝐎 𝐏</b> ❖\n` +
-          `<i>────── ᴅɪɢɪᴛᴀʟ ᴇᴄᴏsʏsᴛᴇᴍ ──────</i>\n\n` +
-          `<b>[ ᴀᴄᴄᴏᴜɴᴛ ɪɴsɪɢʜᴛ ]</b>\n` +
-          `◈ ɪᴅ : <code>${telegramId}</code>\n` +
-          `◈ ᴜsᴇʀ : <b>${firstName}</b>\n` +
-          `◈ ᴛɪᴇʀ : <b>${isPremium ? '💎 ᴠɪᴘ ᴀᴄᴄᴇss' : '⚡ 𝖥𝖱𝖤𝖤 𝖬𝖤𝖬𝖡𝖤𝖱'}</b>\n` +
-          `◈ ᴘᴏɪɴᴛs : <b>${userData.points || 0}</b> 𝖯𝖳𝖲\n\n` +
-          `<b>[ sʏsᴛᴇᴍ ]</b>\n` +
-          `◈ ᴇɴɢɪɴᴇ : <code>${botName} v2.0</code>\n\n` +
-          `<i>✦ Pilih layanan pada panel interaktif berikut:</i>`;
+          `✨ <b>WALZSHOP DIGITAL STORE</b> ✨\n` +
+          `<i>────────────────────────────</i>\n\n` +
+          `<b>❖ INFORMASI AKUN</b>\n` +
+          `▸ <b>ID Akun</b> : <code>${telegramId}</code>\n` +
+          `▸ <b>Nama</b> : <b>${firstName}</b>\n` +
+          `▸ <b>Status</b> : <b>${isPremium ? '👑 VIP MEMBER' : '⚡ FREE USER'}</b>\n` +
+          `▸ <b>Poin</b> : <b>${userData.points || 0} PTS</b>\n\n` +
+          `<b>❖ STATUS SISTEM</b>\n` +
+          `▸ <b>Bot Engine</b> : <code>${botName} v2.0</code>\n` +
+          `▸ <b>Server</b> : <code>ONLINE</code>\n\n` +
+          `<i>────────────────────────────</i>\n` +
+          `📌 <b>Pilih menu di bawah ini untuk memulai:</b>`;
 
         const inline_keyboard = [
           [
             {
-              text: isPremium ? '⚡ 𝐅𝐈𝐗𝐌𝐄𝐑𝐀𝐇 𝐒𝐄𝐑𝐕𝐈𝐂𝐄' : '🔒 𝐅𝐈𝐗𝐌𝐄𝐑𝐀𝐇 (𝐕𝐈𝐏 𝐎𝐍𝐋𝐘)',
+              text: isPremium ? '⚡ FIXMERAH SERVICE' : '🔒 FIXMERAH (KHUSUS VIP)',
               callback_data: 'fixmerah',
             },
           ],
           [
             {
-              text: '💎 𝗨𝗣𝗚𝗥𝗔𝗗𝗘 𝗩𝗜𝗣',
+              text: '👑 UPGRADE VIP',
               web_app: { url: `${webAppUrl}?tab=buy` },
             },
             {
-              text: '🎁 𝗥𝗘𝗗𝗘𝗘𝗠 𝗣𝗢𝗜𝗡𝗧𝗦',
+              text: '🎁 TUKAR POIN',
               web_app: { url: `${webAppUrl}?tab=redeem` },
             },
           ],
           [
             {
-              text: '🔗 𝗥𝗘𝗙𝗘𝗥𝗥𝗔𝗟',
+              text: '🔗 AJAK TEMAN',
               web_app: { url: `${webAppUrl}?tab=profile` },
             },
             {
-              text: '🏆 𝗟𝗘𝗔Dh𝗘𝗥𝗕𝗢𝗔𝗥𝗗',
+              text: '🏆 LEADERBOARD',
               web_app: { url: `${webAppUrl}?tab=profile` },
             },
           ],
           [
             {
-              text: '💬 𝖧𝖤𝖫𝖯𝖣𝖤𝖲𝖪 𝖲𝖴𝖯𝖯𝖮𝖱𝖳',
+              text: '💬 CUSTOMER SUPPORT',
               web_app: { url: `${webAppUrl}?tab=chat` },
             },
           ],
@@ -156,7 +158,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ ok: true });
       }
 
-      if (text.startsWith('/fixmerah') || text === '⚡ 𝐅𝐈𝐗𝐌𝐄𝐑𝐀𝐇 𝐒𝐄𝐑𝐕𝐈𝐂𝐄') {
+      if (text.startsWith('/fixmerah') || text === '⚡ FIXMERAH SERVICE') {
         if (!isPremium) {
           await fetch(
             `https://api.telegram.org/bot${botToken}/sendMessage`,
@@ -165,9 +167,7 @@ export async function POST(req: Request) {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 chat_id: chatId,
-                text:
-                  `🔒 <b>ᴀᴋsᴇs ᴅɪᴛᴏʟᴀᴋ</b>\n\n` +
-                  `<i>Layanan Fixmerah secara eksklusif hanya dapat diakses oleh member VIP.</i>`,
+                text: '🔒 <b>AKSES DITOLAK</b>\n\n<i>Fitur Fixmerah secara eksklusif hanya dapat digunakan oleh member VIP.</i>',
                 parse_mode: 'HTML',
               }),
             }
@@ -187,9 +187,15 @@ export async function POST(req: Request) {
             body: JSON.stringify({
               chat_id: chatId,
               text:
-                `⚡ <b>𝐅𝐈𝐗𝐌𝐄𝐑𝐀𝐇 𝐏𝐑𝐎𝐂𝐄𝐒𝐒𝐎𝐑</b>\n\n` +
-                `<blockquote>Kirim 1-3 nomor target (pisahkan dengan baris baru)\n\nContoh:\n081234567890\n081298765432</blockquote>\n\n` +
-                `<i>Ketik /batalkan untuk membatalkan antrean.</i>`,
+                `⚡ <b>SISTEM FIXMERAH AKTIF</b>\n` +
+                `<i>────────────────────────────</i>\n\n` +
+                `<blockquote><b>PETUNJUK:</b>\n` +
+                `Kirim 1 sampai 3 nomor telepon target.\n` +
+                `Gunakan baris baru untuk setiap nomor.\n\n` +
+                `<b>Contoh:</b>\n` +
+                `<code>081234567890</code>\n` +
+                `<code>081298765432</code></blockquote>\n\n` +
+                `📌 <i>Ketik /batalkan jika ingin membatalkan.</i>`,
               parse_mode: 'HTML',
             }),
           }
@@ -210,7 +216,7 @@ export async function POST(req: Request) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               chat_id: chatId,
-              text: '✖ <b>Sesi berhasil dibatalkan.</b>',
+              text: '❌ <b>Proses Fixmerah berhasil dibatalkan.</b>',
               parse_mode: 'HTML',
             }),
           }
@@ -234,9 +240,7 @@ export async function POST(req: Request) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                   chat_id: chatId,
-                  text:
-                    `⚠️ <b>𝖥𝖮𝖱𝖬𝖠𝖳 𝖨𝖭𝖵𝖠𝖫𝖨𝖣</b>\n` +
-                    `<i>Gunakan batas minimal 1 nomor dan maksimal 3 nomor.</i>`,
+                  text: '⚠️ <b>FORMAT TIDAK VALID</b>\n<i>Kirimkan minimal 1 nomor dan maksimal 3 nomor.</i>',
                   parse_mode: 'HTML',
                 }),
               }
@@ -266,12 +270,12 @@ export async function POST(req: Request) {
                 body: JSON.stringify({
                   chat_id: '@' + targetUsername,
                   text:
-                    `⚡ <b>ɴᴇᴡ ᴛᴀsᴋ ɪɴʙᴏx</b>\n\n` +
-                    `◈ Client ID: <code>${telegramId}</code>\n` +
+                    `⚡ <b>TASK FIXMERAH BARU</b>\n\n` +
+                    `▸ <b>Dari:</b> <code>${telegramId}</code>\n` +
                     formatted
                       .map(
                         (n: string, i: number) =>
-                          `◈ Target #${i + 1}: <code>${n}</code>`
+                          `▸ <b>Nomor #${i + 1}:</b> <code>${n}</code>`
                       )
                       .join('\n'),
                   parse_mode: 'HTML',
@@ -281,19 +285,20 @@ export async function POST(req: Request) {
           }
 
           const defaultText =
-            `✦ <b>𝖯𝖱𝖮𝖢𝖤𝖲𝖲𝖨𝖭𝖦 𝖢𝖮𝖬𝖯𝖫𝖤𝖳𝖤𝖣</b> ✦\n\n` +
+            `✨ <b>PROSES PERMINTAAN SELESAI</b> ✨\n` +
+            `<i>────────────────────────────</i>\n\n` +
             formatted
               .map(
                 (n: string, i: number) =>
                   `<blockquote>` +
-                  `◈ <b>𝖳𝖺𝗋𝗀𝖾𝗍 #${i + 1}</b>\n` +
-                  `📱 <code>${n}</code>\n` +
-                  `🆔 <code>NBNX-5269-1297-${2050 + i * 100}</code>\n` +
-                  `STATUS: <b>DISPATCHED</b>` +
+                  `📌 <b>TARGET #${i + 1}</b>\n` +
+                  `📱 <b>Nomor:</b> <code>${n}</code>\n` +
+                  `🆔 <b>ID Ref:</b> <code>NBNX-5269-1297-${2050 + i * 100}</code>\n` +
+                  `⚡ <b>Status:</b> <code>TERKIRIM</code>` +
                   `</blockquote>`
               )
               .join('\n') +
-            `\n<i>Sistem akan mengirim notifikasi berkala begitu terdapat pembaruan status.</i>`;
+            `\n📌 <i>Notifikasi pembaruan status akan dikirimkan otomatis jika ada respon.</i>`;
 
           await fetch(
             `https://api.telegram.org/bot${botToken}/sendMessage`,
@@ -350,9 +355,7 @@ export async function POST(req: Request) {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 chat_id: chatId,
-                text:
-                  `🔒 <b>ᴀᴋsᴇs ᴅɪᴛᴏʟᴀᴋ</b>\n\n` +
-                  `<i>Layanan Fixmerah secara eksklusif hanya dapat diakses oleh member VIP.</i>`,
+                text: '🔒 <b>AKSES DITOLAK</b>\n\n<i>Fitur Fixmerah secara eksklusif hanya dapat digunakan oleh member VIP.</i>',
                 parse_mode: 'HTML',
               }),
             }
@@ -370,9 +373,12 @@ export async function POST(req: Request) {
               body: JSON.stringify({
                 chat_id: chatId,
                 text:
-                  `⚡ <b>𝐅𝐈𝐗𝐌𝐄𝐑𝐀𝐇 𝐏𝐑𝐎𝐂𝐄𝐒𝐒𝐎𝐑</b>\n\n` +
-                  `<blockquote>Kirim 1-3 nomor target (pisahkan dengan baris baru)</blockquote>\n\n` +
-                  `<i>Ketik /batalkan untuk membatalkan antrean.</i>`,
+                  `⚡ <b>SISTEM FIXMERAH AKTIF</b>\n` +
+                  `<i>────────────────────────────</i>\n\n` +
+                  `<blockquote><b>PETUNJUK:</b>\n` +
+                  `Kirim 1 sampai 3 nomor telepon target.\n` +
+                  `Gunakan baris baru untuk setiap nomor.</blockquote>\n\n` +
+                  `📌 <i>Ketik /batalkan jika ingin membatalkan.</i>`,
                 parse_mode: 'HTML',
               }),
             }
