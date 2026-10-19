@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { verifyTelegramInitData } from '@/lib/utils';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { handleAiSupport } from '@/lib/ai-support';
