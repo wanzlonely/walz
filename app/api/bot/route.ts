@@ -18,10 +18,13 @@ export async function POST(req: Request) {
         process.env.NEXT_PUBLIC_APP_URL ||
         'https://fixred-walz.vercel.app';
       const botName = 'NBNX';
+      const bannerUrl =
+        'https://plain-apac-prod-public.komododecks.com/202610/19/VePtWsAg2psYGkstTN8w/image.png';
 
       const userKey = `user:${telegramId}`;
       const existingUserRaw = await redis.get<string | object>(userKey);
       let userData: any;
+
       if (existingUserRaw) {
         userData =
           typeof existingUserRaw === 'string'
@@ -98,9 +101,21 @@ export async function POST(req: Request) {
           [
             {
               text: isPremium
+                ? '📞 Fixmerah'
+                : '📞 Fixmerah (Premium)',
+              callback_data: 'fixmerah',
+            },
+          ],
+          [
+            {
+              text: isPremium
                 ? '💳 Beli VIP'
                 : '💳 Beli VIP (Limited 5x/hari)',
               web_app: { url: `${webAppUrl}?tab=buy` },
+            },
+            {
+              text: '⭐ Tukar Poin',
+              web_app: { url: `${webAppUrl}?tab=redeem` },
             },
           ],
           [
@@ -115,28 +130,21 @@ export async function POST(req: Request) {
           ],
           [
             {
-              text: isPremium
-                ? '📞 Fixmerah'
-                : '📞 Fixmerah (Premium)',
-              callback_data: 'fixmerah',
-            },
-          ],
-          [
-            {
               text: '💬 Customer Support',
-              url: 'https://t.me/fixeedredbot',
+              web_app: { url: `${webAppUrl}?tab=chat` },
             },
           ],
         ];
 
         await fetch(
-          `https://api.telegram.org/bot${botToken}/sendMessage`,
+          `https://api.telegram.org/bot${botToken}/sendPhoto`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               chat_id: chatId,
-              text: welcomeText,
+              photo: bannerUrl,
+              caption: welcomeText,
               parse_mode: 'Markdown',
               reply_markup: { inline_keyboard },
             }),
@@ -169,8 +177,8 @@ export async function POST(req: Request) {
 
         const instructionText =
           `🛠 *PROSES FIXMERAH AKTIF*\n\n` +
-          `Silakan kirimkan *3 nomor telepon* yang akan diproses.\n` +
-          `Format: setiap nomor di baris baru (contoh +62... atau 08...).\n\n` +
+          `Silakan kirim *1 sampai 3 nomor telepon*.\n` +
+          `Format: tiap nomor di baris baru (contoh +62... atau 08...).\n\n` +
           `Ketik /batalkan untuk membatalkan proses.`;
 
         await fetch(
@@ -217,7 +225,7 @@ export async function POST(req: Request) {
             .map((n: string) => n.trim())
             .filter((n: string) => n.length > 0);
 
-          if (phoneNumbers.length !== 3) {
+          if (phoneNumbers.length < 1 || phoneNumbers.length > 3) {
             await fetch(
               `https://api.telegram.org/bot${botToken}/sendMessage`,
               {
@@ -225,7 +233,7 @@ export async function POST(req: Request) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                   chat_id: chatId,
-                  text: '⚠️ Harus kirim *tepat 3 nomor*, masing-masing di baris baru.',
+                  text: '⚠️ Kirim *1 sampai 3 nomor*, masing-masing di baris baru.',
                   parse_mode: 'Markdown',
                 }),
               }
@@ -257,10 +265,13 @@ export async function POST(req: Request) {
                   text:
                     `🛠 *BARU MASUK FIXMERAH*\n\n` +
                     `Dari: \`${telegramId}\`\n` +
-                    `Nomor 1: ${formatted[0]}\n` +
-                    `Nomor 2: ${formatted[1]}\n` +
-                    `Nomor 3: ${formatted[2]}\n\n` +
-                    `Silakan proses dan kirim balasan.`,
+                    formatted
+                      .map(
+                        (n: string, i: number) =>
+                          `Nomor ${i + 1}: ${n}`
+                      )
+                      .join('\n') +
+                    `\n\nSilakan proses dan kirim balasan.`,
                   parse_mode: 'Markdown',
                 }),
               }
@@ -269,20 +280,13 @@ export async function POST(req: Request) {
 
           const defaultText =
             `✅ *BERHASIL PROSES FIXMERAH*\n\n` +
-            `◈────────────────────◈\n\n` +
-            `✅ BERHASIL (1)\n` +
-            `📱 ${formatted[0]}\n` +
-            `🆔 ID: NBNX-5269-1297-2050\n` +
-            `📩 TERKIRIM\n\n` +
-            `✅ BERHASIL (2)\n` +
-            `📱 ${formatted[1]}\n` +
-            `🆔 ID: NBNX-5269-1297-2150\n` +
-            `📩 TERKIRIM\n\n` +
-            `✅ BERHASIL (3)\n` +
-            `📱 ${formatted[2]}\n` +
-            `🆔 ID: NBNX-5269-1297-2250\n` +
-            `📩 TERKIRIM\n\n` +
-            `📬 Notifikasi update status akan dikirim otomatis jika ada balasan.`;
+            formatted
+              .map(
+                (n: string, i: number) =>
+                  `✅ BERHASIL (${i + 1})\n📱 \( {n}\n🆔 ID: NBNX-5269-1297- \){2050 + i * 100}\n📩 TERKIRIM\n`
+              )
+              .join('\n') +
+            `\n📬 Notifikasi update status akan dikirim otomatis jika ada balasan.`;
 
           await fetch(
             `https://api.telegram.org/bot${botToken}/sendMessage`,
@@ -309,7 +313,9 @@ export async function POST(req: Request) {
       const callbackId = callback.id;
       const data = callback.data || '';
       const chatId = callback.message?.chat?.id;
-      const botToken = process.env.BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN;
+      const fromId = callback.from?.id?.toString();
+      const botToken =
+        process.env.BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN;
 
       await fetch(
         `https://api.telegram.org/bot${botToken}/answerCallbackQuery`,
@@ -320,11 +326,10 @@ export async function POST(req: Request) {
         }
       );
 
-      if (data === 'fixmerah' && chatId) {
-        const telegramId = callback.from.id.toString();
-        const userKey = `user:${telegramId}`;
+      if (data === 'fixmerah' && chatId && fromId) {
+        const userKey = `user:${fromId}`;
         const existingUserRaw = await redis.get<string | object>(userKey);
-        let userData: any = existingUserRaw
+        const userData: any = existingUserRaw
           ? typeof existingUserRaw === 'string'
             ? JSON.parse(existingUserRaw)
             : existingUserRaw
@@ -357,7 +362,7 @@ export async function POST(req: Request) {
                 chat_id: chatId,
                 text:
                   `🛠 *PROSES FIXMERAH AKTIF*\n\n` +
-                  `Silakan kirimkan *3 nomor telepon* (masing-masing di baris baru).\n\n` +
+                  `Kirim *1 sampai 3 nomor telepon*, masing-masing di baris baru.\n\n` +
                   `Ketik /batalkan untuk membatalkan.`,
                 parse_mode: 'Markdown',
               }),
