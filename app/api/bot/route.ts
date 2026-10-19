@@ -14,7 +14,6 @@ export async function POST(req: Request) {
       const username = message.from.username || '';
 
       const botToken = process.env.BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN;
-      // Zero clean: gunakan banner URL dari komododecks & nama bot Nebunox
       const webAppUrl = 'https://plain-apac-prod-public.komododecks.com/202610/19/VePtWsAg2psYGkstTN8w/image.png';
       const botName = 'Nebunox';
 
@@ -74,7 +73,7 @@ export async function POST(req: Request) {
 
         const isPremium = userData.status === 'ACTIVE';
 
-        const welcomeText = 
+        const welcomeText =
           `👋 *Selamat Datang di WALZSHOP*\n` +
           `Layanan Digital Premium & Store Terpercaya\n\n` +
           `🆔 *ID Akun:* \`${telegramId}\`\n` +
@@ -84,20 +83,17 @@ export async function POST(req: Request) {
           `Bot: ${botName}\n` +
           `Klik tombol di bawah untuk membuka *WALZSHOP Store*:`;
 
-        // Tombol dinamis berdasarkan status premium
         const buyButton = isPremium
           ? { text: '💳 Beli VIP', web_app: { url: `${webAppUrl}?tab=buy` } }
           : { text: '💳 Beli VIP (Limited 5x/hari)', web_app: null };
 
         const inline_keyboard = [
-          // Baris 1: Buka Store
           [
             {
               text: '🚀 Buka WALZSHOP Store',
               web_app: { url: webAppUrl }
             }
           ],
-          // Baris 2–4: tergantung status
           ...(isPremium
             ? [
                 [buyButton],
@@ -115,7 +111,6 @@ export async function POST(req: Request) {
                 ],
                 [{ text: '📞 Fixmerah (Limited Premium)', web_app: null }]
               ]),
-          // Baris terakhir: Support
           [
             { text: '💬 Customer Support', url: 'https://t.me/fixeedredbot' }
           ]
@@ -133,3 +128,25 @@ export async function POST(req: Request) {
         });
 
         return NextResponse.json({ ok: true });
+      }
+    }
+
+    if (body.callback_query) {
+      const callback = body.callback_query;
+      const callbackId = callback.id;
+      const botToken = process.env.BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN;
+
+      await fetch(`https://api.telegram.org/bot${botToken}/answerCallbackQuery`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ callback_query_id: callbackId })
+      });
+
+      return NextResponse.json({ ok: true });
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    return NextResponse.json({ ok: false, error: 'Internal error' }, { status: 500 });
+  }
+}
