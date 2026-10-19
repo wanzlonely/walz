@@ -1075,8 +1075,14 @@ export default function StoreUI() {
                           <div className="w-6 text-center shrink-0">
                             {medal ? <span className="text-sm">{medal}</span> : <span className="text-[10px] font-black text-slate-500">#{rank}</span>}
                           </div>
-                          <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-violet-500 to-fuchsia-500 flex items-center justify-center text-white text-[10px] font-black shrink-0 shadow-md">
-                            {(p.firstName || '?')[0]?.toUpperCase()}
+                          <div className="w-7 h-7 rounded-full overflow-hidden shrink-0 shadow-md">
+                            {p.photo_url ? (
+                              <img src={p.photo_url} className="w-full h-full object-cover" alt="foto profil" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-[10px] font-black text-slate-500">
+                                {(p.firstName || '?')[0]?.toUpperCase()}
+                              </div>
+                            )}
                           </div>
                           <div className="min-w-0 flex-1">
                             <p className={`text-xs font-bold truncate ${isMe ? 'text-violet-300' : 'text-slate-200'}`}>{p.firstName}{isMe ? ' (Kamu)' : ''}</p>
@@ -1636,12 +1642,15 @@ export default function StoreUI() {
               <div className="absolute top-0 right-0 w-40 h-40 bg-violet-500/10 rounded-full blur-2xl pointer-events-none" />
               <div className="p-5 relative z-10">
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-300 via-fuchsia-500 to-violet-500 p-0.5 shadow-lg shrink-0">
-                    <div className="w-full h-full rounded-[14px] bg-[#070A12] flex items-center justify-center font-black text-white text-xl overflow-hidden">
-                      {tgUser?.photo_url ? <img src={tgUser.photo_url} className="w-full h-full object-cover" alt=""/> : initials}
-                    </div>
+                  <div className="w-16 h-16 rounded-full bg-[#070A12] flex items-center justify-center overflow-hidden">
+                    {tgUser?.photo_url ? (
+                      <img src={tgUser.photo_url} className="w-full h-full object-cover" alt="foto profile" />
+                    ) : (
+                      <div className="p-2 text-[10px] font-black text-slate-300">
+                        {displayName?.[0]?.toUpperCase() || '?'}
+                      </div>
+                    )}
                   </div>
-
                   <div className="min-w-0 flex-1">
                     <p className="text-base font-black text-white truncate leading-tight">{displayName}</p>
                     <p className="text-xs text-slate-400 font-mono mt-0.5">@{userUsername}</p>
