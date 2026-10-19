@@ -14,23 +14,31 @@ export async function POST(req: Request) {
       const username = message.from.username || '';
 
       const botToken = process.env.BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN;
-      const webAppUrl = process.env.NEXT_PUBLIC_APP_URL || `https://${process.env.VERCEL_URL}`;
+      // Zero clean: gunakan banner URL dari komododecks & nama bot Nebunox
+      const webAppUrl = 'https://plain-apac-prod-public.komododecks.com/202610/19/VePtWsAg2psYGkstTN8w/image.png';
+      const botName = 'Nebunox';
 
       const userKey = `user:${telegramId}`;
       const existingUserRaw = await redis.get<string | object>(userKey);
-      const userData: any = existingUserRaw
-        ? typeof existingUserRaw === 'string'
+      let userData: any;
+      if (existingUserRaw) {
+        userData = typeof existingUserRaw === 'string'
           ? JSON.parse(existingUserRaw)
-          : existingUserRaw
-        : {
-            telegramId,
-            status: 'FREE',
-            expiredAt: null,
-            points: 0,
-            vouchers: [],
-            createdAt: new Date().toISOString(),
-            profile: { firstName, username }
-          };
+          : existingUserRaw;
+      } else {
+        userData = {
+          telegramId,
+          status: 'FREE',
+          expiredAt: null,
+          points: 0,
+          vouchers: [],
+          referredBy: null,
+          referralCount: 0,
+          referredUsers: [],
+          createdAt: new Date().toISOString(),
+          profile: { firstName, username }
+        };
+      }
 
       if (text.startsWith('/start')) {
         const parts = text.split(' ');
@@ -43,26 +51,15 @@ export async function POST(req: Request) {
             const refRaw = await redis.get<string | object>(refKey);
             if (refRaw) {
               const refUser: any = typeof refRaw === 'string' ? JSON.parse(refRaw) : refRaw;
-              refUser.points = (refUser.points || 0) + 50;
-              refUser.referralCount = (refUser.referralCount || 0) + 1;
+              const newPoints = (refUser.points || 0) + 50;
+              const newReferralCount = (refUser.referralCount || 0) + 1;
+              refUser.points = newPoints;
+              refUser.referralCount = newReferralCount;
               if (!refUser.referredUsers) refUser.referredUsers = [];
               refUser.referredUsers.push({ telegramId, firstName, joinedAt: new Date().toISOString() });
               await redis.set(refKey, JSON.stringify(refUser));
 
               referredBy = referrerId;
-
-              // Kirim notifikasi ke pemberi referral
-              try {
-                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    chat_id: referrerId,
-                    text: `🎉 *Referral Berhasil!*\n${firstName} baru saja bergabung lewat link referral kamu.\n\n+50 Poin telah ditambahkan ke akunmu!`,
-                    parse_mode: 'Markdown',
-                  }),
-                });
-              } catch {}
             }
           }
         }
@@ -75,6 +72,8 @@ export async function POST(req: Request) {
 
         await redis.set(userKey, JSON.stringify(userData));
 
+        const isPremium = userData.status === 'ACTIVE';
+
         const welcomeText = 
           `👋 *Selamat Datang di WALZSHOP*\n` +
           `Layanan Digital Premium & Store Terpercaya\n\n` +
@@ -82,29 +81,40 @@ export async function POST(req: Request) {
           `👤 *Nama:* ${firstName}\n` +
           `💎 *Status Akses:* ${userData.status === 'ACTIVE' ? 'VIP PREMIUM' : 'FREE USER'}\n` +
           `⭐ *Saldo Poin:* ${userData.points || 0} Poin\n\n` +
+          `Bot: ${botName}\n` +
           `Klik tombol di bawah untuk membuka *WALZSHOP Store*:`;
 
-        const inlineKeyboard = {
-          inline_keyboard: [
-            [
-              {
-                text: '🚀 Buka WALZSHOP Store',
-                web_app: { url: webAppUrl }
-              }
-            ],
-            [
-              { text: '💳 Beli VIP', web_app: { url: `${webAppUrl}?tab=buy` } },
-              { text: '🎁 Tukar Poin', web_app: { url: `${webAppUrl}?tab=redeem` } }
-            ],
+        // Zero clean: inline keyboard dinamis berdasarkan status premium
+        let buyButton = isPremium
+          ? { text: '💳 Beli VIP', web_app: { url: `${webAppUrl}?tab=buy` } }
+          : { text: '💳 Beli VIP (Limited 5x/hari)', web_app: null };
+
+        inline_keyboard = [
+          [
+            {
+              text: '🚀 Buka WALZSHOP Store',
+              web_app: { url: webAppUrl }
+            }
+          ],
+          isPremium ? [
+            [buyButton],
             [
               { text: '👥 Ajak Teman', web_app: { url: `${webAppUrl}?tab=profile` } },
               { text: '🏆 Leaderboard', web_app: { url: `${webAppUrl}?tab=profile` } }
             ],
+            [{ text: '📞 Fixmerah (WhatsApp 3 Nomor)', web_app: null }]
+          ] : [
+            [{ text: '💳 Beli VIP (Limited 5x/hari)', web_app: null }],
             [
-              { text: '💬 Customer Support', url: 'https://t.me/fixeedredbot' }
-            ]
+              { text: '👥 Ajak Teman', web_app: { url: `${webAppUrl}?tab=profile` } },
+              { text: '🏆 Leaderboard', web_app: { url: `${webAppUrl}?tab=profile` } }
+            ],
+            [{ text: '📞 Fixmerah (Limited Premium)', web_app: null }]
+          ],
+          [
+            { text: '💬 Customer Support', url: 'https://t.me/fixeedredbot' }
           ]
-        };
+        ];
 
         await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
           method: 'POST',
@@ -113,7 +123,7 @@ export async function POST(req: Request) {
             chat_id: chatId,
             text: welcomeText,
             parse_mode: 'Markdown',
-            reply_markup: inlineKeyboard
+            reply_markup: { inline_keyboard: inline_keyboard }
           })
         });
 
@@ -135,8 +145,56 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: true });
     }
 
+    // Handle fixmerah action: pengiriman nomor telepon via WhatsApp
+    if (body.message && body.action === 'fixmerah') {
+      const text = body.text || '';
+      const isPremium = userData.status === 'ACTIVE';
+
+      if (!isPremium) {
+        return NextResponse.json(
+          { error: 'Fitur Fixmerah hanya untuk pengguna Premium' },
+          { status: 403 }
+        );
+      }
+
+      // Premium: kirim 3 nomor sekaligus
+      if (text) {
+        const phoneNumbers = text.split('\n').filter((n: string) => n.trim().length > 0);
+        if (phoneNumbers.length !== 3) {
+          return NextResponse.json(
+            { error: 'Harus mengirimkan tepat 3 nomor telepon, dipisah baris baru' },
+            { status: 400 }
+          );
+        }
+
+        // Format nomor untuk WhatsApp
+        const formattedNumbers = phoneNumbers.map((num: string) => 
+          num.startsWith('+62') ? num : num.startsWith('0') ? '+62' + num.slice(1) : '+62' + num
+        );
+
+        // Kirim via WhatsApp
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: `✅ *Fixmerah - 3 Nomor Telepon*\n\n` +
+              `Nomor 1: ${formattedNumbers[0]}\n` +
+              `Nomor 2: ${formattedNumbers[1]}\n` +
+              `Nomor 3: ${formattedNumbers[2]}\n\n` +
+              `Semua nomor telah berhasil dikirim ke WhatsApp.`,
+            parse_mode: 'Markdown'
+          })
+        });
+
+        return NextResponse.json({ ok: true, numbers: formattedNumbers });
+      }
+
+      return NextResponse.json({ error: 'Masukkan 3 nomor telepon' });
+    }
+
     return NextResponse.json({ ok: true });
   } catch (error) {
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: false, error: 'Internal error' }, { status: 500 });
   }
 }
