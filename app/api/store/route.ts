@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { redis, PACKAGES, verifyTelegramInitData } from '@/lib/utils';
+import { generateQris, checkTransactionStatus, cancelTransaction } from '@/lib/casaku';
 
 const DAILY_STREAK_POINTS = [10, 15, 20, 25, 30, 40, 75];
 
@@ -40,10 +41,67 @@ async function addHistory(telegramId: string, entry: { type: string; label: stri
   } catch {}
 }
 
+async function activateVip(userKey: string, userData: any, days: number, telegramId: string, orderMeta: any) {
+  let baseDate = new Date();
+  if (userData.status === 'ACTIVE' && userData.expiredAt && new Date(userData.expiredAt).getTime() > Date.now()) {
+    baseDate = new Date(userData.expiredAt);
+  }
+  baseDate.setTime(baseDate.getTime() + days * 24 * 60 * 60 * 1000);
+  userData.status = 'ACTIVE';
+  userData.expiredAt = baseDate.toISOString();
+  userData.totalDaysPurchased = (userData.totalDaysPurchased || 0) + days;
+  userData.updatedAt = new Date().toISOString();
+  await redis.set(userKey, JSON.stringify(userData));
+
+  await addHistory(telegramId, {
+    type: 'PURCHASE',
+    label: `Beli VIP ${days} Hari (QRIS)`,
+    days,
+  });
+  await addAuditLog(
+    'PAYMENT_PAID',
+    `Trx ${orderMeta.transactionId} | Paket ${orderMeta.packageId} | Rp ${orderMeta.amount}`,
+    telegramId
+  );
+
+  const botToken = process.env.BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN || '';
+  const adminId = process.env.ADMIN_TELEGRAM_ID || '';
+  if (botToken && adminId) {
+    try {
+      await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: adminId,
+          text:
+            `✅ *PEMBAYARAN QRIS BERHASIL*\n\n` +
+            `Trx: \`${orderMeta.transactionId}\`\n` +
+            `User: ${orderMeta.displayName} (${orderMeta.username})\n` +
+            `ID: \`${telegramId}\`\n` +
+            `Paket: *${orderMeta.packageLabel}*\n` +
+            `Total: Rp ${Number(orderMeta.amount).toLocaleString('id-ID')}`,
+          parse_mode: 'Markdown',
+        }),
+      });
+    } catch {}
+  }
+
+  return userData;
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { initData, action, packageId, proofNote, proofImage, voucherCode, pointsToRedeem, daysToAdd, isVoucher } = body;
+    const {
+      initData,
+      action,
+      packageId,
+      voucherCode,
+      pointsToRedeem,
+      daysToAdd,
+      isVoucher,
+      transactionId,
+    } = body;
 
     const tgUser = verifyTelegramInitData(initData);
     if (!tgUser || !tgUser.id) {
@@ -64,14 +122,15 @@ export async function POST(req: Request) {
 
     const userDataRaw = await redis.get<string | object>(userKey);
     const userData: any = userDataRaw
-      ? (typeof userDataRaw === 'string' ? JSON.parse(userDataRaw) : userDataRaw)
+      ? typeof userDataRaw === 'string'
+        ? JSON.parse(userDataRaw)
+        : userDataRaw
       : { telegramId, status: 'FREE', points: 50, vouchers: [], riskScore: 0, lastCheckin: null };
 
     if (userData.status === 'BANNED') {
       return NextResponse.json({ error: 'Akun Anda telah diblokir oleh admin.' }, { status: 403 });
     }
 
-    const botToken = process.env.BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN || '';
     const adminId = process.env.ADMIN_TELEGRAM_ID || '';
 
     const profileData = {
@@ -83,25 +142,36 @@ export async function POST(req: Request) {
     await redis.set(`profile:${telegramId}`, JSON.stringify(profileData));
 
     if (action === 'check_status') {
-      const pendingTrx = await redis.get(`pending_trx:${telegramId}`);
+      let pendingOrder: any = null;
+      const pendingTrxId = await redis.get<string>(`pending_trx:${telegramId}`);
+      if (pendingTrxId) {
+        const raw = await redis.get<string | object>(`trx:${pendingTrxId}`);
+        if (raw) {
+          pendingOrder = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        }
+      }
+
       const flashSaleRaw = await redis.get<string | object>('store:flash_sale');
-      const flashSale = flashSaleRaw ? (typeof flashSaleRaw === 'string' ? JSON.parse(flashSaleRaw) : flashSaleRaw) : null;
+      const flashSale = flashSaleRaw
+        ? typeof flashSaleRaw === 'string'
+          ? JSON.parse(flashSaleRaw)
+          : flashSaleRaw
+        : null;
       const isAdmin = adminId ? telegramId === adminId : false;
       const badge = computeBadge(userData);
 
-      // Progress misi harian (dihitung dari data yang sudah ada, tanpa migrasi rumit)
       const todayStr = new Date().toISOString().slice(0, 10);
       if (userData.missionsDate !== todayStr) {
         userData.missionsDate = todayStr;
         userData.missionsDone = { checkin: false, visit: false, redeem: false };
       }
       userData.missionsDone = userData.missionsDone || { checkin: false, visit: false, redeem: false };
-      userData.missionsDone.visit = true; // buka app = misi "kunjungi app" otomatis selesai
+      userData.missionsDone.visit = true;
       await redis.set(userKey, JSON.stringify(userData));
 
       return NextResponse.json({
         user: userData,
-        pendingOrder: !!pendingTrx,
+        pendingOrder: pendingOrder || null,
         flashSale,
         isAdmin,
         badge,
@@ -137,7 +207,12 @@ export async function POST(req: Request) {
       board.sort((a, b) => b.points - a.points);
       const top = board.slice(0, 10);
       const myRank = board.findIndex((b) => b.telegramId === telegramId) + 1;
-      return NextResponse.json({ success: true, leaderboard: top, myRank: myRank || null, totalPlayers: board.length });
+      return NextResponse.json({
+        success: true,
+        leaderboard: top,
+        myRank: myRank || null,
+        totalPlayers: board.length,
+      });
     }
 
     if (action === 'get_referrals') {
@@ -157,25 +232,34 @@ export async function POST(req: Request) {
 
       if (now - last < twentyFourHours) {
         const remainingHours = Math.ceil((twentyFourHours - (now - last)) / (60 * 60 * 1000));
-        return NextResponse.json({ error: `Kamu sudah klaim bonus hari ini. Coba lagi dalam ${remainingHours} jam.` }, { status: 400 });
+        return NextResponse.json(
+          { error: `Kamu sudah klaim bonus hari ini. Coba lagi dalam ${remainingHours} jam.` },
+          { status: 400 }
+        );
       }
 
-      // Streak berlanjut jika masih dalam 48 jam dari checkin terakhir, jika tidak reset ke 1
-      const streakContinues = last && (now - last) < fortyEightHours;
+      const streakContinues = last && now - last < fortyEightHours;
       const currentStreak = streakContinues ? ((userData.checkinStreak || 0) % 7) + 1 : 1;
       const streakBonus = DAILY_STREAK_POINTS[currentStreak - 1] || 10;
 
       userData.points = (userData.points || 0) + streakBonus;
       userData.lastCheckin = new Date().toISOString();
       userData.checkinStreak = currentStreak;
-
       userData.missionsDate = userData.missionsDate || new Date().toISOString().slice(0, 10);
       userData.missionsDone = userData.missionsDone || { checkin: false, visit: false, redeem: false };
       userData.missionsDone.checkin = true;
 
       await redis.set(userKey, JSON.stringify(userData));
-      await addHistory(telegramId, { type: 'CHECKIN', label: `Bonus Harian (Hari ke-${currentStreak})`, points: streakBonus });
-      await addAuditLog('DAILY_CHECKIN', `Klaim Bonus Harian +${streakBonus} PTS (Streak Hari ${currentStreak})`, telegramId);
+      await addHistory(telegramId, {
+        type: 'CHECKIN',
+        label: `Bonus Harian (Hari ke-${currentStreak})`,
+        points: streakBonus,
+      });
+      await addAuditLog(
+        'DAILY_CHECKIN',
+        `Klaim Bonus Harian +${streakBonus} PTS (Streak Hari ${currentStreak})`,
+        telegramId
+      );
 
       return NextResponse.json({
         success: true,
@@ -185,14 +269,28 @@ export async function POST(req: Request) {
       });
     }
 
-    if (action === 'submit_order') {
-      const pendingTrx = await redis.get(`pending_trx:${telegramId}`);
-      if (pendingTrx) {
-        return NextResponse.json({ error: 'Kamu masih memiliki transaksi yang sedang ditinjau admin.' }, { status: 400 });
+    if (action === 'create_payment') {
+      const existingPending = await redis.get<string>(`pending_trx:${telegramId}`);
+      if (existingPending) {
+        const raw = await redis.get<string | object>(`trx:${existingPending}`);
+        if (raw) {
+          const order = typeof raw === 'string' ? JSON.parse(raw) : raw;
+          if (order && order.status === 'PENDING' && order.qr_string) {
+            return NextResponse.json({
+              success: true,
+              order,
+              reused: true,
+            });
+          }
+        }
       }
 
       const flashSaleRaw = await redis.get<string | object>('store:flash_sale');
-      const flashSale: any = flashSaleRaw ? (typeof flashSaleRaw === 'string' ? JSON.parse(flashSaleRaw) : flashSaleRaw) : null;
+      const flashSale: any = flashSaleRaw
+        ? typeof flashSaleRaw === 'string'
+          ? JSON.parse(flashSaleRaw)
+          : flashSaleRaw
+        : null;
 
       const selectedPkg = PACKAGES.find((p) => p.id === packageId) || PACKAGES[0];
       let finalPrice = selectedPkg.price;
@@ -202,94 +300,184 @@ export async function POST(req: Request) {
         finalPrice = Math.max(0, selectedPkg.price - discountAmount);
       }
 
-      const orderId = `TRX-${Date.now().toString(36).toUpperCase()}`;
+      let casaku;
+      try {
+        casaku = await generateQris(finalPrice);
+      } catch (err: any) {
+        return NextResponse.json({ error: err?.message || 'Gagal membuat QRIS' }, { status: 502 });
+      }
 
       const orderPayload = {
-        orderId,
+        orderId: casaku.transactionId,
+        transactionId: casaku.transactionId,
         telegramId,
         displayName: [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' '),
         username: tgUser.username ? `@${tgUser.username}` : '-',
         packageId: selectedPkg.id,
-        amount: finalPrice,
+        packageLabel: selectedPkg.label,
         durationDays: selectedPkg.days,
-        proofNote: proofNote || '-',
-        proofImage: proofImage || null,
+        amount: casaku.totalAmount,
+        originalAmount: casaku.originalAmount,
+        uniqueNominal: casaku.uniqueNominal,
+        qr_string: casaku.qr_string,
+        payment_url: casaku.payment_url || null,
         status: 'PENDING',
+        paymentMethod: 'QRIS',
         createdAt: new Date().toISOString(),
+        expiredInMinutes: casaku.expiredInMinutes || 15,
       };
 
-      await redis.set(`trx:${orderId}`, JSON.stringify(orderPayload));
-      await redis.set(`pending_trx:${telegramId}`, orderId);
+      await redis.set(`trx:${casaku.transactionId}`, JSON.stringify(orderPayload));
+      await redis.set(`pending_trx:${telegramId}`, casaku.transactionId);
 
       const ordersRaw = await redis.get<string | object>('store:orders');
-      const orders: any[] = ordersRaw ? (typeof ordersRaw === 'string' ? JSON.parse(ordersRaw) : ordersRaw) : [];
+      const orders: any[] = ordersRaw
+        ? typeof ordersRaw === 'string'
+          ? JSON.parse(ordersRaw)
+          : ordersRaw
+        : [];
       orders.unshift(orderPayload);
+      if (orders.length > 200) orders.length = 200;
       await redis.set('store:orders', JSON.stringify(orders));
 
-      userData.riskScore = (userData.riskScore || 0) + 5;
-      await redis.set(userKey, JSON.stringify(userData));
+      await addAuditLog(
+        'CREATE_PAYMENT',
+        `Trx ${casaku.transactionId} | ${selectedPkg.label} | Rp ${casaku.totalAmount}`,
+        telegramId
+      );
 
-      await addAuditLog('SUBMIT_ORDER', `Order ID: ${orderId} | Total: Rp ${finalPrice}`, telegramId);
+      return NextResponse.json({ success: true, order: orderPayload });
+    }
 
-      if (botToken && adminId) {
-        const captionText =
-          `📦 *PESANAN BARU MASUK*\n\n` +
-          `Order ID: \`${orderId}\`\n` +
-          `User: ${orderPayload.displayName} (${orderPayload.username})\n` +
-          `ID Telegram: \`${telegramId}\`\n` +
-          `Paket: *${selectedPkg.label}* (Rp ${finalPrice.toLocaleString('id-ID')})\n` +
-          `Catatan: ${orderPayload.proofNote}`;
+    if (action === 'check_payment') {
+      const trxId =
+        transactionId ||
+        (await redis.get<string>(`pending_trx:${telegramId}`)) ||
+        '';
 
-        try {
-          if (proofImage && typeof proofImage === 'string' && proofImage.startsWith('data:image')) {
-            const base64Data = proofImage.split(',')[1];
-            const buffer = Buffer.from(base64Data, 'base64');
-            const formData = new FormData();
-            formData.append('chat_id', adminId);
-            formData.append('caption', captionText);
-            formData.append('parse_mode', 'Markdown');
-            formData.append('photo', new Blob([buffer], { type: 'image/jpeg' }), 'proof.jpg');
-
-            await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-              method: 'POST',
-              body: formData,
-            });
-          } else {
-            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                chat_id: adminId,
-                text: captionText,
-                parse_mode: 'Markdown',
-              }),
-            });
-          }
-        } catch {
-          await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              chat_id: adminId,
-              text: captionText,
-              parse_mode: 'Markdown',
-            }),
-          });
-        }
+      if (!trxId) {
+        return NextResponse.json({ error: 'Tidak ada transaksi pending' }, { status: 404 });
       }
 
-      return NextResponse.json({ success: true, orderId });
+      const raw = await redis.get<string | object>(`trx:${trxId}`);
+      if (!raw) {
+        return NextResponse.json({ error: 'Transaksi tidak ditemukan' }, { status: 404 });
+      }
+
+      let order: any = typeof raw === 'string' ? JSON.parse(raw) : raw;
+
+      if (order.status === 'PAID') {
+        return NextResponse.json({
+          success: true,
+          status: 'paid',
+          order,
+          user: userData,
+        });
+      }
+
+      let remote;
+      try {
+        remote = await checkTransactionStatus(trxId);
+      } catch (err: any) {
+        return NextResponse.json({
+          success: true,
+          status: (order.status || 'pending').toLowerCase(),
+          order,
+          error: err?.message,
+        });
+      }
+
+      const status = (remote.status || 'pending').toLowerCase();
+
+      if (status === 'paid') {
+        order.status = 'PAID';
+        order.paidAt = new Date().toISOString();
+        await redis.set(`trx:${trxId}`, JSON.stringify(order));
+        await redis.del(`pending_trx:${telegramId}`);
+
+        const ordersRaw = await redis.get<string | object>('store:orders');
+        let orders: any[] = ordersRaw
+          ? typeof ordersRaw === 'string'
+            ? JSON.parse(ordersRaw)
+            : ordersRaw
+          : [];
+        orders = orders.map((o) =>
+          o.transactionId === trxId || o.orderId === trxId ? { ...o, status: 'PAID', paidAt: order.paidAt } : o
+        );
+        await redis.set('store:orders', JSON.stringify(orders));
+
+        const updatedUser = await activateVip(userKey, userData, order.durationDays || 3, telegramId, {
+          transactionId: trxId,
+          packageId: order.packageId,
+          packageLabel: order.packageLabel || order.packageId,
+          amount: order.amount,
+          displayName: order.displayName,
+          username: order.username,
+        });
+
+        return NextResponse.json({
+          success: true,
+          status: 'paid',
+          order,
+          user: updatedUser,
+        });
+      }
+
+      if (status === 'cancel' || status === 'expired') {
+        order.status = status === 'cancel' ? 'CANCELLED' : 'EXPIRED';
+        await redis.set(`trx:${trxId}`, JSON.stringify(order));
+        await redis.del(`pending_trx:${telegramId}`);
+        return NextResponse.json({
+          success: true,
+          status,
+          order,
+        });
+      }
+
+      return NextResponse.json({
+        success: true,
+        status: 'pending',
+        order,
+      });
+    }
+
+    if (action === 'cancel_payment') {
+      const trxId =
+        transactionId ||
+        (await redis.get<string>(`pending_trx:${telegramId}`)) ||
+        '';
+
+      if (!trxId) {
+        return NextResponse.json({ error: 'Tidak ada transaksi pending' }, { status: 404 });
+      }
+
+      try {
+        await cancelTransaction(trxId);
+      } catch {}
+
+      const raw = await redis.get<string | object>(`trx:${trxId}`);
+      if (raw) {
+        const order: any = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        order.status = 'CANCELLED';
+        await redis.set(`trx:${trxId}`, JSON.stringify(order));
+      }
+      await redis.del(`pending_trx:${telegramId}`);
+      await addAuditLog('CANCEL_PAYMENT', `Trx ${trxId}`, telegramId);
+
+      return NextResponse.json({ success: true });
     }
 
     if (action === 'claim_voucher') {
       const formattedCode = (voucherCode || '').trim().toUpperCase();
       if (!formattedCode) return NextResponse.json({ error: 'Kode voucher harus diisi' }, { status: 400 });
 
-      const todayStr = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+      const todayStr = new Date().toISOString().slice(0, 10);
 
       const redeemCodesRaw = await redis.get<string | object>('store:redeem_codes');
       const redeemCodes: any[] = redeemCodesRaw
-        ? (typeof redeemCodesRaw === 'string' ? JSON.parse(redeemCodesRaw) : redeemCodesRaw)
+        ? typeof redeemCodesRaw === 'string'
+          ? JSON.parse(redeemCodesRaw)
+          : redeemCodesRaw
         : [];
 
       const codeIdx = redeemCodes.findIndex((c: any) => c.code === formattedCode);
@@ -302,31 +490,33 @@ export async function POST(req: Request) {
 
       const foundCode = redeemCodes[codeIdx];
 
-      // Reset kuota harian otomatis jika sudah ganti hari
       if (foundCode.dailyLimit && foundCode.lastResetDate !== todayStr) {
         foundCode.usedToday = 0;
         foundCode.lastResetDate = todayStr;
       }
 
-      // Cek kuota total (lifetime) kode
       if (typeof foundCode.usesLeft === 'number' && foundCode.usesLeft <= 0) {
         return NextResponse.json({ error: 'Kuota kode promo telah habis' }, { status: 400 });
       }
 
-      // Cek kuota harian kode (mencegah kode habis diborong di awal hari)
       if (foundCode.dailyLimit && (foundCode.usedToday || 0) >= foundCode.dailyLimit) {
-        return NextResponse.json({
-          error: `Kuota harian kode ini sudah penuh (${foundCode.dailyLimit}/hari). Coba lagi besok ya!`,
-        }, { status: 429 });
+        return NextResponse.json(
+          {
+            error: `Kuota harian kode ini sudah penuh (${foundCode.dailyLimit}/hari). Coba lagi besok ya!`,
+          },
+          { status: 429 }
+        );
       }
 
-      // Cek apakah user ini sudah pernah klaim kode yang sama hari ini
       const userClaimKey = `voucher_claim:${formattedCode}:${telegramId}`;
       const alreadyClaimedToday = await redis.get(userClaimKey);
       if (alreadyClaimedToday === todayStr) {
-        return NextResponse.json({
-          error: 'Kamu sudah klaim kode ini hari ini. Coba lagi besok!',
-        }, { status: 429 });
+        return NextResponse.json(
+          {
+            error: 'Kamu sudah klaim kode ini hari ini. Coba lagi besok!',
+          },
+          { status: 429 }
+        );
       }
 
       if (typeof foundCode.usesLeft === 'number') {
@@ -342,8 +532,6 @@ export async function POST(req: Request) {
         redeemCodes[codeIdx] = foundCode;
       }
       await redis.set('store:redeem_codes', JSON.stringify(redeemCodes));
-
-      // Tandai user sudah klaim kode ini hari ini (auto-expire 25 jam)
       await redis.set(userClaimKey, todayStr, { ex: 90000 });
 
       let baseDate = new Date();
@@ -379,7 +567,6 @@ export async function POST(req: Request) {
       }
 
       userData.points = (userData.points || 0) - cost;
-
       userData.missionsDate = userData.missionsDate || new Date().toISOString().slice(0, 10);
       userData.missionsDone = userData.missionsDone || { checkin: false, visit: false, redeem: false };
       userData.missionsDone.redeem = true;
@@ -406,7 +593,12 @@ export async function POST(req: Request) {
         userData.expiredAt = baseDate.toISOString();
         userData.totalDaysPurchased = (userData.totalDaysPurchased || 0) + addDays;
         await addAuditLog('REDEEM_POINT_VIP', `Tukar Poin +${addDays} Hari VIP`, telegramId);
-        await addHistory(telegramId, { type: 'REDEEM_VIP', label: `Tukar Poin +${addDays} Hari VIP`, points: -cost, days: addDays });
+        await addHistory(telegramId, {
+          type: 'REDEEM_VIP',
+          label: `Tukar Poin +${addDays} Hari VIP`,
+          points: -cost,
+          days: addDays,
+        });
       }
 
       userData.updatedAt = new Date().toISOString();
