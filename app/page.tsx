@@ -353,7 +353,7 @@ export default function StoreUI() {
     setChatLoading(true);
     setChatError(null);
     try {
-      const res = await fetch(`/api/chat?initData=\( {encodeURIComponent(raw)}&t= \){Date.now()}`, { cache: 'no-store' });
+      const res = await fetch(`/api/chat?initData=${encodeURIComponent(raw)}&t=${Date.now()}`, { cache: 'no-store' });
       const d = await res.json();
       if (!res.ok) throw new Error(d.error || 'Gagal memuat chat');
       setChatConversation(d.conversation);
@@ -608,7 +608,7 @@ export default function StoreUI() {
       const data = await res.json();
       if (res.ok) {
         const quotaNote = data.dailyLimit
-          ? ` (Sisa kuota hari ini: \( {data.remainingToday}/ \){data.dailyLimit})`
+          ? ` (Sisa kuota hari ini: ${data.remainingToday}/${data.dailyLimit})`
           : '';
         showToast('success', (data.message || 'Kode promo berhasil diklaim!') + quotaNote);
         setClaimInputCode('');
@@ -728,7 +728,7 @@ export default function StoreUI() {
     if (!telegramUserId) return;
     const refUrl = `https://t.me/fixeedredbot?start=ref_${telegramUserId}`;
     const shareText = encodeURIComponent(`Nikmati VIP Store & Bonus Poin Gratis di WALZSHOP! ${refUrl}`);
-    window.open(`https://t.me/share/url?url=\( {refUrl}&text= \){shareText}`, '_blank');
+    window.open(`https://t.me/share/url?url=${refUrl}&text=${shareText}`, '_blank');
   };
 
   const copyVoucherCode = (code: string) => {
@@ -798,6 +798,8 @@ export default function StoreUI() {
   const calculatedPrice = isFlashActive ? Math.max(0, Math.floor(rawPkg.price * (1 - flashDiscount / 100))) : rawPkg.price;
   const pkg = { ...rawPkg, price: calculatedPrice };
 
+  // Zero clean: userStatus firstName/username stored at top level in Redis,
+  // not nested inside .profile sub-object (which is a separate admin key).
   const displayName = tgUser
     ? [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ')
     : userStatus?.firstName || 'Exploit';
@@ -849,7 +851,7 @@ export default function StoreUI() {
         <div className="absolute top-1/2 -right-20 w-[280px] h-[280px] bg-amber-500/5 rounded-full blur-[100px]" />
       </div>
 
-      {/* Toast */}
+      {/* Smooth Spring Floating Toast Notification */}
       {toastMsg && (
         <div className="fixed top-3 left-0 right-0 z-[100] px-4 pointer-events-none flex justify-center">
           <div className={`pointer-events-auto w-full max-w-[360px] p-3.5 rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.8)] flex items-center gap-3 border backdrop-blur-2xl animate-[toastSlide_0.4s_cubic-bezier(0.16,1,0.3,1)] ${
@@ -899,16 +901,16 @@ export default function StoreUI() {
         </button>
       </header>
 
-      {/* Main Content */}
+      {/* Main Content Area */}
       <main className="px-4 pt-3.5 max-w-md mx-auto space-y-3.5 relative z-10">
 
-        {/* Live Ticker */}
+        {/* Live Purchase Ticker */}
         <div className="bg-[#0D121F] border border-emerald-500/30 px-3.5 py-2 rounded-2xl flex items-center gap-2.5 text-[10px] font-bold text-emerald-300 shadow-lg shadow-black/30 overflow-hidden">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-          <p className="truncate animate-[fadeIn_0.3s_ease-out]">{RECENT_PURCHASES[tickerIndex]}</p>
+          <p className="truncate key={tickerIndex} animate-[fadeIn_0.3s_ease-out]">{RECENT_PURCHASES[tickerIndex]}</p>
         </div>
 
-        {/* Flash Sale */}
+        {/* Flash Sale Banner */}
         {isFlashActive && (
           <div className="bg-gradient-to-r from-[#1C1218] via-[#140E16] to-[#0A070D] border border-rose-500/30 p-3.5 rounded-3xl flex items-center justify-between shadow-xl shadow-rose-950/20">
             <div className="flex items-center gap-3">
@@ -926,7 +928,7 @@ export default function StoreUI() {
           </div>
         )}
 
-        {/* Pending */}
+        {/* Pending Order Notice */}
         {pending && (
           <div className="bg-amber-950/20 border border-amber-500/40 p-3.5 rounded-3xl flex items-center gap-3 shadow-lg">
             <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shrink-0" />
@@ -934,9 +936,11 @@ export default function StoreUI() {
           </div>
         )}
 
-        {/* TAB: DASHBOARD */}
+        {/* TAB 1: DASHBOARD */}
         {activeTab === 'dashboard' && (
           <div className="space-y-3.5 animate-[fadeIn_0.25s_ease-out]">
+
+            {/* Profile Overview Card */}
             <div className="bg-[#0D121F] p-4.5 rounded-3xl relative overflow-hidden border border-white/10 shadow-xl space-y-3">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-400 via-teal-500 to-indigo-600 flex items-center justify-center font-black text-white text-base shadow-md border border-white/20 shrink-0 overflow-hidden">
@@ -967,6 +971,7 @@ export default function StoreUI() {
               )}
             </div>
 
+            {/* Quick Status Bar */}
             <div className="bg-[#0D121F] p-3 rounded-2xl border border-white/10 grid grid-cols-2 gap-2 text-center">
               <div className="bg-[#070A12] p-2.5 rounded-xl border border-white/5">
                 <span className="text-[9px] text-slate-400 font-bold block uppercase tracking-wider">Status Bot</span>
@@ -981,6 +986,7 @@ export default function StoreUI() {
               </div>
             </div>
 
+            {/* Promo Code Input Card */}
             <div className="bg-[#0D121F] p-4 rounded-3xl space-y-2.5 border border-emerald-500/25 shadow-xl">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 text-emerald-400"><IcoTag/></div>
@@ -1004,6 +1010,7 @@ export default function StoreUI() {
               </div>
             </div>
 
+            {/* Action Grid */}
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={() => { setActiveTab('buy'); setConfirmStep(false); }}
@@ -1028,7 +1035,7 @@ export default function StoreUI() {
               </button>
             </div>
 
-            {/* Leaderboard */}
+            {/* Leaderboard Section */}
             <div className="bg-[#0D121F] border border-amber-500/25 rounded-3xl overflow-hidden relative shadow-xl">
               <div className="p-4 space-y-3.5">
                 <div className="flex items-center justify-between">
@@ -1089,10 +1096,11 @@ export default function StoreUI() {
                 </div>
               </div>
             </div>
+
           </div>
         )}
 
-        {/* TAB: CHECKIN */}
+        {/* TAB 2: CHECKIN */}
         {activeTab === 'checkin' && (
           <div className="space-y-4 animate-[fadeIn_0.25s_ease-out]">
             <div className="bg-[#0D121F] border border-amber-500/30 p-6 rounded-3xl text-center space-y-4 shadow-xl relative overflow-hidden">
@@ -1131,6 +1139,7 @@ export default function StoreUI() {
               </div>
             </div>
 
+            {/* Streak Grid */}
             <div className="bg-[#0D121F] p-4 rounded-3xl border border-white/10 space-y-3 shadow-xl">
               <div className="flex items-center justify-between">
                 <p className="text-xs font-black text-white uppercase tracking-wider">Streak Absen Beruntun</p>
@@ -1182,7 +1191,7 @@ export default function StoreUI() {
           </div>
         )}
 
-        {/* TAB: BUY */}
+        {/* TAB 3: BUY / VIP STORE */}
         {activeTab === 'buy' && (
           <div className="space-y-4 animate-[fadeIn_0.25s_ease-out]">
             <div className="flex items-center justify-between">
@@ -1285,6 +1294,7 @@ export default function StoreUI() {
                   )}
                 </div>
 
+                {/* Package Cards Grid */}
                 <div className="grid grid-cols-2 gap-3">
                   {PACKAGES.map((p: any) => {
                     const originalPrice = p.price;
@@ -1331,6 +1341,7 @@ export default function StoreUI() {
                   })}
                 </div>
 
+                {/* Payment Method Selector */}
                 <div className="bg-[#0D121F] p-4 rounded-3xl border border-white/10 space-y-3 shadow-xl">
                   <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Pilih Metode Pembayaran</p>
                   <div className="grid grid-cols-3 gap-2">
@@ -1363,6 +1374,7 @@ export default function StoreUI() {
                 </button>
               </>
             ) : (
+              /* Payment Form */
               <div className="bg-[#0D121F] p-5 rounded-3xl space-y-4 border border-white/10 shadow-xl">
                 <div className="text-center pb-3.5 border-b border-white/10 space-y-1">
                   <span className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-[9px] font-black rounded-full inline-block">
@@ -1376,17 +1388,33 @@ export default function StoreUI() {
                 {payMethod === 'QRIS' && (
                   <div className="bg-[#070A12] border border-emerald-500/25 p-4 rounded-2xl text-center space-y-3">
                     <p className="text-[10px] text-emerald-400 font-black uppercase tracking-wider">Scan QRIS All Payment</p>
+
                     <div className="relative w-48 h-48 mx-auto bg-white p-2.5 rounded-2xl shadow-xl flex items-center justify-center border-2 border-emerald-400">
-                      <img src={QRIS_IMAGE_URL} alt="QRIS Payment" className="w-full h-full object-contain rounded-xl" />
+                      <img
+                        src={QRIS_IMAGE_URL}
+                        alt="QRIS Payment"
+                        className="w-full h-full object-contain rounded-xl"
+                      />
                     </div>
+
                     <div className="flex gap-2 justify-center pt-1">
-                      <button onClick={() => setQrisZoomOpen(true)} className="px-3.5 py-2 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs rounded-xl flex items-center gap-1.5 active:scale-95 transition-all">
-                        <div className="w-3.5 h-3.5"><IcoZoom/></div> Perbesar QRIS
+                      <button
+                        onClick={() => setQrisZoomOpen(true)}
+                        className="px-3.5 py-2 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs rounded-xl flex items-center gap-1.5 active:scale-95 transition-all"
+                      >
+                        <div className="w-3.5 h-3.5"><IcoZoom/></div>
+                        Perbesar QRIS
                       </button>
-                      <button onClick={downloadQrisImage} className="px-3.5 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 font-bold text-xs rounded-xl flex items-center gap-1.5 active:scale-95 transition-all">
-                        <div className="w-3.5 h-3.5"><IcoDownload/></div> Unduh Gambar
+
+                      <button
+                        onClick={downloadQrisImage}
+                        className="px-3.5 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 font-bold text-xs rounded-xl flex items-center gap-1.5 active:scale-95 transition-all"
+                      >
+                        <div className="w-3.5 h-3.5"><IcoDownload/></div>
+                        Unduh Gambar
                       </button>
                     </div>
+
                     <p className="text-[10px] text-slate-400 font-medium">Bisa di-scan semua E-Wallet & M-Banking</p>
                   </div>
                 )}
@@ -1399,7 +1427,10 @@ export default function StoreUI() {
                     </div>
                     <div className="flex items-center justify-between bg-[#0D121F] p-3 rounded-xl border border-white/5">
                       <span className="font-mono text-sm font-black text-white tracking-wider">083124469855</span>
-                      <button onClick={() => copyPayNumber('083124469855')} className="px-3 py-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black rounded-lg active:scale-95 transition-transform">
+                      <button
+                        onClick={() => copyPayNumber('083124469855')}
+                        className="px-3 py-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black rounded-lg active:scale-95 transition-transform"
+                      >
                         {copiedNum === '083124469855' ? 'Tercopy' : 'Salin Nomor'}
                       </button>
                     </div>
@@ -1414,7 +1445,10 @@ export default function StoreUI() {
                     </div>
                     <div className="flex items-center justify-between bg-[#0D121F] p-3 rounded-xl border border-white/5">
                       <span className="font-mono text-sm font-black text-white tracking-wider">901984771499</span>
-                      <button onClick={() => copyPayNumber('901984771499')} className="px-3 py-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black rounded-lg active:scale-95 transition-transform">
+                      <button
+                        onClick={() => copyPayNumber('901984771499')}
+                        className="px-3 py-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black rounded-lg active:scale-95 transition-transform"
+                      >
                         {copiedNum === '901984771499' ? 'Tercopy' : 'Salin Nomor'}
                       </button>
                     </div>
@@ -1461,9 +1495,11 @@ export default function StoreUI() {
           </div>
         )}
 
-        {/* TAB: REDEEM */}
+        {/* TAB 4: REDEEM / POINTS */}
         {activeTab === 'redeem' && (
           <div className="space-y-4 animate-[fadeIn_0.25s_ease-out]">
+
+            {/* Points Summary Card */}
             <div className="bg-[#0D121F] border border-amber-500/30 p-5 rounded-3xl relative overflow-hidden shadow-xl space-y-3">
               <div className="flex justify-between items-start">
                 <div>
@@ -1477,16 +1513,24 @@ export default function StoreUI() {
               </div>
 
               <div className="flex gap-2 pt-1">
-                <button onClick={copyReferral} className="flex-1 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all">
+                <button
+                  onClick={copyReferral}
+                  className="flex-1 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all"
+                >
                   <div className="w-4 h-4"><IcoCopy/></div>
                   {copied ? 'Tercopy!' : 'Salin Link Referral'}
                 </button>
-                <button onClick={shareToTelegram} className="py-2.5 px-4 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-black text-xs rounded-2xl flex items-center gap-1.5 active:scale-95 shadow-md shadow-amber-500/20 transition-all">
-                  <div className="w-4 h-4"><IcoShare/></div> Bagikan
+                <button
+                  onClick={shareToTelegram}
+                  className="py-2.5 px-4 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-black text-xs rounded-2xl flex items-center gap-1.5 active:scale-95 shadow-md shadow-amber-500/20 transition-all"
+                >
+                  <div className="w-4 h-4"><IcoShare/></div>
+                  Bagikan
                 </button>
               </div>
             </div>
 
+            {/* Active Vouchers List */}
             {userVouchers.length > 0 && (
               <div className="bg-[#0D121F] border border-white/10 p-4 rounded-3xl space-y-2 shadow-xl">
                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Voucher Milik Anda ({userVouchers.length})</p>
@@ -1496,7 +1540,10 @@ export default function StoreUI() {
                       <p className="font-mono text-xs font-black text-amber-300 tracking-wider">{v.code}</p>
                       <p className="text-[10px] text-emerald-400 font-bold">Diskon {v.discount}% VIP Access</p>
                     </div>
-                    <button onClick={() => copyVoucherCode(v.code)} className="px-3 py-1.5 bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[10px] font-bold rounded-xl active:scale-95 transition-all">
+                    <button
+                      onClick={() => copyVoucherCode(v.code)}
+                      className="px-3 py-1.5 bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[10px] font-bold rounded-xl active:scale-95 transition-all"
+                    >
                       {copiedVoucher === v.code ? 'Disalin' : 'Salin Kode'}
                     </button>
                   </div>
@@ -1504,6 +1551,7 @@ export default function StoreUI() {
               </div>
             )}
 
+            {/* Redeem Catalog Slider */}
             <div className="bg-[#0D121F] border border-white/10 p-4 rounded-3xl space-y-3 shadow-xl">
               <div className="flex items-center justify-between pb-2 border-b border-white/5">
                 <div>
@@ -1523,8 +1571,11 @@ export default function StoreUI() {
                   return (
                     <div key={opt.id} className="min-w-[210px] max-w-[210px] shrink-0">
                       <div className={`rounded-3xl border overflow-hidden relative ${
-                        canRedeem ? 'bg-[#070A12] border-amber-500/40 shadow-lg shadow-amber-500/10' : 'bg-[#070A12] border-white/5'
+                        canRedeem
+                          ? 'bg-[#070A12] border-amber-500/40 shadow-lg shadow-amber-500/10'
+                          : 'bg-[#070A12] border-white/5'
                       }`}>
+                        {/* Upper Ticket */}
                         <div className="p-4 pb-3 space-y-1.5">
                           <div className="flex items-center justify-between">
                             <span className={`text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider border ${
@@ -1540,12 +1591,14 @@ export default function StoreUI() {
                           <p className="text-[10px] text-slate-500 leading-relaxed h-8 overflow-hidden font-medium">{opt.desc}</p>
                         </div>
 
+                        {/* Perforated Divider */}
                         <div className="relative flex items-center px-4">
                           <div className="ticket-notch left"/>
                           <div className="ticket-divider flex-1"/>
                           <div className="ticket-notch right"/>
                         </div>
 
+                        {/* Lower Ticket */}
                         <div className="p-4 pt-3 space-y-2.5">
                           <div className="flex items-baseline justify-between">
                             <p className={`text-base font-black font-mono ${canRedeem ? 'text-amber-400' : 'text-slate-500'}`}>{opt.points}</p>
@@ -1576,12 +1629,15 @@ export default function StoreUI() {
                 })}
               </div>
             </div>
+
           </div>
         )}
 
-        {/* TAB: PROFILE */}
+        {/* TAB 5: PROFILE */}
         {activeTab === 'profile' && (
           <div className="space-y-4 animate-[fadeIn_0.25s_ease-out]">
+
+            {/* Profile Header Hero */}
             <div className="relative rounded-3xl overflow-hidden border border-white/10 bg-[#0D121F] shadow-xl">
               <div className="absolute top-0 right-0 w-40 h-40 bg-violet-500/10 rounded-full blur-2xl pointer-events-none" />
               <div className="p-5 relative z-10">
@@ -1601,7 +1657,7 @@ export default function StoreUI() {
                     {badge && (
                       <span
                         className="inline-flex items-center gap-1.5 mt-2 px-3 py-0.5 rounded-full text-[9px] font-black border uppercase tracking-wider"
-                        style={{ color: badge.color, borderColor: `\( {badge.color}55`, backgroundColor: ` \){badge.color}18` }}
+                        style={{ color: badge.color, borderColor: `${badge.color}55`, backgroundColor: `${badge.color}18` }}
                       >
                         <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: badge.color }} />
                         {badge.label}
@@ -1627,6 +1683,7 @@ export default function StoreUI() {
               </div>
             </div>
 
+            {/* Profile Sub Tabs */}
             <div className="bg-[#0D121F] border border-white/10 p-1 rounded-2xl flex gap-1">
               {(['overview', 'history', 'settings'] as const).map((t) => (
                 <button
@@ -1643,8 +1700,11 @@ export default function StoreUI() {
               ))}
             </div>
 
+            {/* Overview Sub-tab */}
             {profileSubTab === 'overview' && (
               <div className="space-y-3.5 animate-[fadeIn_0.25s_ease-out]">
+
+                {/* Daily Missions */}
                 <div className="bg-[#0D121F] border border-white/10 p-4 rounded-3xl space-y-3 shadow-xl">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
@@ -1675,6 +1735,7 @@ export default function StoreUI() {
                   </div>
                 </div>
 
+                {/* Referral Link Card */}
                 <div className="bg-[#0D121F] border border-white/10 p-4 rounded-3xl space-y-3 shadow-xl">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400">
@@ -1716,6 +1777,7 @@ export default function StoreUI() {
                   )}
                 </div>
 
+                {/* Tier Progress */}
                 <div className="bg-[#0D121F] border border-white/10 p-4 rounded-3xl space-y-3 shadow-xl">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
@@ -1744,9 +1806,11 @@ export default function StoreUI() {
                     })}
                   </div>
                 </div>
+
               </div>
             )}
 
+            {/* History Sub-tab */}
             {profileSubTab === 'history' && (
               <div className="bg-[#0D121F] border border-white/10 p-4 rounded-3xl space-y-3 shadow-xl animate-[fadeIn_0.25s_ease-out]">
                 <div className="flex items-center gap-3">
@@ -1798,6 +1862,7 @@ export default function StoreUI() {
               </div>
             )}
 
+            {/* Settings Sub-tab */}
             {profileSubTab === 'settings' && (
               <div className="space-y-3.5 animate-[fadeIn_0.25s_ease-out]">
                 <div className="bg-[#0D121F] border border-white/10 p-4 rounded-3xl space-y-3 shadow-xl">
@@ -1827,52 +1892,109 @@ export default function StoreUI() {
                 </div>
               </div>
             )}
+
           </div>
         )}
+
       </main>
 
-      {/* Bottom Nav */}
+      {/* Bottom Floating Navigation Bar */}
       <nav className="fixed bottom-3 left-1/2 -translate-x-1/2 z-40 w-[94%] max-w-sm">
         <div className="glass bg-[#0D121F]/90 backdrop-blur-3xl rounded-3xl p-1.5 border border-white/10 flex items-center justify-around shadow-[0_20px_50px_rgba(0,0,0,0.8)] gap-1">
-          <button onClick={() => setActiveTab('dashboard')} className={`flex-1 py-2.5 rounded-2xl flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${activeTab === 'dashboard' ? 'bg-white text-slate-950 shadow-md' : 'text-slate-400 hover:text-slate-200'}`}>
-            <div className="w-4 h-4"><IcoHome/></div><span>Home</span>
+          <button
+            onClick={() => setActiveTab('dashboard')}
+            className={`flex-1 py-2.5 rounded-2xl flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${
+              activeTab === 'dashboard' ? 'bg-white text-slate-950 shadow-md' : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <div className="w-4 h-4"><IcoHome/></div>
+            <span>Home</span>
           </button>
-          <button onClick={() => { setActiveTab('buy'); setConfirmStep(false); }} className={`flex-1 py-2.5 rounded-2xl flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${activeTab === 'buy' ? 'bg-white text-slate-950 shadow-md' : 'text-slate-400 hover:text-slate-200'}`}>
-            <div className="w-4 h-4"><IcoStore/></div><span>Store</span>
+
+          <button
+            onClick={() => { setActiveTab('buy'); setConfirmStep(false); }}
+            className={`flex-1 py-2.5 rounded-2xl flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${
+              activeTab === 'buy' ? 'bg-white text-slate-950 shadow-md' : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <div className="w-4 h-4"><IcoStore/></div>
+            <span>Store</span>
           </button>
-          <button onClick={() => setActiveTab('checkin')} className={`flex-1 py-2.5 rounded-2xl flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${activeTab === 'checkin' ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-slate-200'}`}>
-            <div className="w-4 h-4"><IcoCalendar/></div><span>Absen</span>
+
+          <button
+            onClick={() => setActiveTab('checkin')}
+            className={`flex-1 py-2.5 rounded-2xl flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${
+              activeTab === 'checkin' ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <div className="w-4 h-4"><IcoCalendar/></div>
+            <span>Absen</span>
           </button>
-          <button onClick={() => setActiveTab('redeem')} className={`flex-1 py-2.5 rounded-2xl flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${activeTab === 'redeem' ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-slate-200'}`}>
-            <div className="w-4 h-4"><IcoGift/></div><span>Poin</span>
+
+          <button
+            onClick={() => setActiveTab('redeem')}
+            className={`flex-1 py-2.5 rounded-2xl flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${
+              activeTab === 'redeem' ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <div className="w-4 h-4"><IcoGift/></div>
+            <span>Poin</span>
           </button>
-          <button onClick={() => setActiveTab('profile')} className={`flex-1 py-2.5 rounded-2xl flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${activeTab === 'profile' ? 'bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'}`}>
-            <div className="w-4 h-4"><IcoUserCircle/></div><span>Profil</span>
+
+          <button
+            onClick={() => setActiveTab('profile')}
+            className={`flex-1 py-2.5 rounded-2xl flex flex-col items-center justify-center gap-1 text-[10px] font-black transition-all active:scale-95 ${
+              activeTab === 'profile' ? 'bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <div className="w-4 h-4"><IcoUserCircle/></div>
+            <span>Profil</span>
           </button>
         </div>
       </nav>
 
-      {/* Redeem Modal */}
+      {/* Redeem Confirmation Modal */}
       {redeemConfirmItem && (
         <div className="fixed inset-0 z-50 bg-[#060810]/85 backdrop-blur-xl flex items-center justify-center p-4 animate-[fadeIn_0.15s_ease-out]" onClick={() => setRedeemConfirmItem(null)}>
-          <div className="max-w-xs w-full bg-[#0D121F] p-6 rounded-[32px] space-y-4 border border-amber-500/30 text-center shadow-[0_25px_70px_rgba(0,0,0,0.9)]" onClick={e => e.stopPropagation()}>
+          <div className="max-w-xs w-full bg-[#0D121F] p-6 rounded-[32px] space-y-4 border border-amber-500/30 text-center shadow-[0_25px_70px_rgba(0,0,0,0.9)] animate-[scaleIn_0.2s_ease-out]" onClick={e => e.stopPropagation()}>
             <div className="w-14 h-14 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center mx-auto shadow-inner">
               <div className="w-7 h-7"><IcoGift/></div>
             </div>
+
             <div>
               <h3 className="text-sm font-black text-white">Konfirmasi Penukaran Poin</h3>
               <p className="text-xs text-slate-300 mt-1 leading-relaxed">
                 Potong <span className="text-amber-400 font-bold font-mono">{redeemConfirmItem.points} PTS</span> untuk menukar <span className="text-white font-bold">{redeemConfirmItem.label}</span>?
               </p>
             </div>
+
             <div className="bg-[#070A12] p-3 rounded-2xl border border-white/10 text-xs space-y-1.5 text-left">
-              <div className="flex justify-between"><span className="text-slate-400">Saldo Saat Ini:</span><span className="text-white font-bold font-mono">{userPoints} PTS</span></div>
-              <div className="flex justify-between"><span className="text-slate-400">Biaya Penukaran:</span><span className="text-amber-400 font-bold font-mono">-{redeemConfirmItem.points} PTS</span></div>
-              <div className="flex justify-between pt-1.5 border-t border-white/5"><span className="text-slate-400">Sisa Poin:</span><span className="text-emerald-400 font-bold font-mono">{userPoints - redeemConfirmItem.points} PTS</span></div>
+              <div className="flex justify-between">
+                <span className="text-slate-400">Saldo Saat Ini:</span>
+                <span className="text-white font-bold font-mono">{userPoints} PTS</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-400">Biaya Penukaran:</span>
+                <span className="text-amber-400 font-bold font-mono">-{redeemConfirmItem.points} PTS</span>
+              </div>
+              <div className="flex justify-between pt-1.5 border-t border-white/5">
+                <span className="text-slate-400">Sisa Poin:</span>
+                <span className="text-emerald-400 font-bold font-mono">{userPoints - redeemConfirmItem.points} PTS</span>
+              </div>
             </div>
+
             <div className="grid grid-cols-[0.8fr_1.4fr] gap-2.5 pt-1">
-              <button onClick={() => setRedeemConfirmItem(null)} className="py-3 bg-white/5 border border-white/10 text-slate-300 font-extrabold rounded-2xl text-xs uppercase tracking-wider active:scale-95 transition-all">Batal</button>
-              <button onClick={executeRedeem} disabled={redeeming} className="py-3 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl active:scale-95 disabled:opacity-40 shadow-lg shadow-amber-500/20 transition-all">
+              <button
+                onClick={() => setRedeemConfirmItem(null)}
+                className="py-3 bg-white/5 border border-white/10 text-slate-300 font-extrabold rounded-2xl text-xs uppercase tracking-wider active:scale-95 transition-all"
+              >
+                Batal
+              </button>
+              <button
+                onClick={executeRedeem}
+                disabled={redeeming}
+                className="py-3 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl active:scale-95 disabled:opacity-40 shadow-lg shadow-amber-500/20 transition-all"
+              >
                 {redeeming ? 'Proses...' : 'Konfirmasi Klaim'}
               </button>
             </div>
@@ -1880,7 +2002,7 @@ export default function StoreUI() {
         </div>
       )}
 
-      {/* QRIS Zoom Modal */}
+      {/* QRIS Fullscreen Modal */}
       {qrisZoomOpen && (
         <div className="fixed inset-0 z-50 bg-[#060810]/90 backdrop-blur-2xl flex items-center justify-center p-4 animate-[fadeIn_0.15s_ease-out]" onClick={() => setQrisZoomOpen(false)}>
           <div className="max-w-sm w-full bg-[#0D121F] p-5 rounded-[32px] space-y-4 border border-emerald-500/40 text-center shadow-2xl" onClick={e => e.stopPropagation()}>
@@ -1888,12 +2010,21 @@ export default function StoreUI() {
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"/>
               <span className="text-xs font-black text-white uppercase tracking-wider">QRIS FULLSCREEN SCANNER</span>
             </div>
+
             <div className="w-full aspect-square bg-white p-3 rounded-2xl shadow-2xl flex items-center justify-center border-4 border-emerald-400">
-              <img src={QRIS_IMAGE_URL} alt="QRIS Fullscreen" className="w-full h-full object-contain rounded-xl" />
+              <img
+                src={QRIS_IMAGE_URL}
+                alt="QRIS Fullscreen"
+                className="w-full h-full object-contain rounded-xl"
+              />
             </div>
+
             <div className="space-y-2">
               <p className="text-xs text-emerald-400 font-bold">Siap di-scan menggunakan DANA, GoPay, OVO, ShopeePay & M-Banking</p>
-              <button onClick={() => setQrisZoomOpen(false)} className="w-full py-3.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg shadow-emerald-500/20 active:scale-95 transition-all">
+              <button
+                onClick={() => setQrisZoomOpen(false)}
+                className="w-full py-3.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg shadow-emerald-500/20 active:scale-95 transition-all"
+              >
                 Tutup & Kembali
               </button>
             </div>
@@ -1901,7 +2032,7 @@ export default function StoreUI() {
         </div>
       )}
 
-      {/* Chat FAB */}
+      {/* Customer Support Chat: Floating Action Button */}
       {!chatOpen && (
         <button
           onClick={() => setChatOpen(true)}
@@ -1920,11 +2051,17 @@ export default function StoreUI() {
         </button>
       )}
 
-      {/* Chat Panel */}
+      {/* Customer Support Chat: Full-screen Panel */}
       {chatOpen && (
         <div className="fixed inset-0 z-50 bg-[#060810] flex flex-col h-[100dvh] animate-[fadeIn_0.15s_ease-out]">
+          {/* Header */}
           <div className="shrink-0 flex items-center gap-3 px-4 pb-3 pt-[max(56px,calc(env(safe-area-inset-top)+44px))] border-b border-white/10 bg-[#0D121F]">
-            <button onClick={() => setChatOpen(false)} className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 active:scale-95 transition-all shrink-0">←</button>
+            <button
+              onClick={() => setChatOpen(false)}
+              className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 active:scale-95 transition-all shrink-0"
+            >
+              ←
+            </button>
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center text-white shrink-0 shadow-md">
               <div className="w-4.5 h-4.5"><IcoChat /></div>
             </div>
@@ -1934,12 +2071,20 @@ export default function StoreUI() {
                 {chatConversation?.status === 'closed' ? 'Percakapan ditutup' : 'Owner biasanya membalas cepat'}
               </p>
             </div>
-            <button onClick={() => loadChat(initData)} className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 active:scale-95 transition-all shrink-0">
+            <button
+              onClick={() => loadChat(initData)}
+              className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 active:scale-95 transition-all shrink-0"
+            >
               <div className="w-4 h-4"><IcoRefresh /></div>
             </button>
           </div>
 
-          <div ref={chatScrollRef} onScroll={handleChatScroll} className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 py-4 space-y-2.5">
+          {/* Messages */}
+          <div
+            ref={chatScrollRef}
+            onScroll={handleChatScroll}
+            className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 py-4 space-y-2.5"
+          >
             {chatLoading && chatMessages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center gap-2 text-slate-500">
                 <div className="w-6 h-6 border-2 border-violet-500/30 border-t-violet-500 rounded-full animate-spin" />
@@ -1951,7 +2096,12 @@ export default function StoreUI() {
                   <div className="w-6 h-6"><IcoLock /></div>
                 </div>
                 <p className="text-xs text-rose-300 font-semibold">{chatError}</p>
-                <button onClick={() => loadChat(initData)} className="px-4 py-2 bg-white/5 border border-white/10 text-slate-200 text-[11px] font-bold rounded-xl active:scale-95 transition-all">Coba Lagi</button>
+                <button
+                  onClick={() => loadChat(initData)}
+                  className="px-4 py-2 bg-white/5 border border-white/10 text-slate-200 text-[11px] font-bold rounded-xl active:scale-95 transition-all"
+                >
+                  Coba Lagi
+                </button>
               </div>
             ) : chatMessages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center gap-2 text-center px-6">
@@ -1997,12 +2147,13 @@ export default function StoreUI() {
             )}
           </div>
 
+          {/* Input */}
           <div className="shrink-0 p-3 pb-[max(12px,env(safe-area-inset-bottom))] border-t border-white/10 bg-[#0D121F]">
-            {chatConversation?.status === 'closed' && (
+            {chatConversation?.status === 'closed' ? (
               <div className="text-center py-2">
                 <p className="text-[10px] text-slate-500 font-medium">Percakapan ini telah ditutup oleh Owner. Kirim pesan baru untuk membuka kembali.</p>
               </div>
-            )}
+            ) : null}
             <div className="flex items-end gap-2">
               <textarea
                 value={chatInput}
@@ -2034,6 +2185,7 @@ export default function StoreUI() {
           </div>
         </div>
       )}
+
     </div>
   );
 }
