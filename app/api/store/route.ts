@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { redis, PACKAGES, verifyTelegramInitData } from '@/lib/utils';
-import { generateQris, checkTransactionStatus, cancelTransaction } from '@/lib/casaku';
+import { createQrisOrder, getQrisOrderStatus } from '@/lib/qris';
 
 const DAILY_STREAK_POINTS = [10, 15, 20, 25, 30, 40, 75];
 
@@ -298,35 +298,35 @@ export async function POST(req: Request) {
         finalPrice = Math.max(0, selectedPkg.price - discountAmount);
       }
 
-      let casaku;
+      let qris;
       try {
-        casaku = await generateQris(finalPrice);
+        qris = await createQrisOrder(finalPrice, `WALZ ${selectedPkg.label} - ${telegramId}`);
       } catch (err: any) {
         return NextResponse.json({ error: err?.message || 'Gagal membuat QRIS' }, { status: 502 });
       }
 
       const orderPayload = {
-        orderId: casaku.transactionId,
-        transactionId: casaku.transactionId,
+        orderId: qris.code,
+        transactionId: qris.code,
         telegramId,
         displayName: [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' '),
         username: tgUser.username ? `@${tgUser.username}` : '-',
         packageId: selectedPkg.id,
         packageLabel: selectedPkg.label,
         durationDays: selectedPkg.days,
-        amount: casaku.totalAmount,
-        originalAmount: casaku.originalAmount,
-        uniqueNominal: casaku.uniqueNominal,
-        qr_string: casaku.qr_string,
-        payment_url: casaku.payment_url || null,
+        amount: qris.totalAmount,
+        originalAmount: finalPrice,
+        uniqueNominal: 0,
+        qr_string: qris.qrisString,
+        payment_url: null,
         status: 'PENDING',
         paymentMethod: 'QRIS',
         createdAt: new Date().toISOString(),
-        expiredInMinutes: casaku.expiredInMinutes || 15,
+        expiredInMinutes: 15,
       };
 
-      await redis.set(`trx:${casaku.transactionId}`, JSON.stringify(orderPayload));
-      await redis.set(`pending_trx:${telegramId}`, casaku.transactionId);
+      await redis.set(`trx:${qris.code}`, JSON.stringify(orderPayload));
+      await redis.set(`pending_trx:${telegramId}`, qris.code);
 
       const ordersRaw = await redis.get<string | object>('store:orders');
       const orders: any[] = ordersRaw
@@ -340,7 +340,7 @@ export async function POST(req: Request) {
 
       await addAuditLog(
         'CREATE_PAYMENT',
-        `Trx ${casaku.transactionId} | ${selectedPkg.label} | Rp ${casaku.totalAmount}`,
+        `Order ${qris.code} | ${selectedPkg.label} | Rp ${qris.totalAmount}`,
         telegramId
       );
 
@@ -366,7 +366,7 @@ export async function POST(req: Request) {
 
       let remote;
       try {
-        remote = await checkTransactionStatus(trxId);
+        remote = await getQrisOrderStatus(trxId);
       } catch (err: any) {
         return NextResponse.json({
           success: true,
@@ -380,7 +380,7 @@ export async function POST(req: Request) {
 
       if (status === 'paid') {
         order.status = 'PAID';
-        order.paidAt = new Date().toISOString();
+        order.paidAt = remote.paidAt || new Date().toISOString();
         await redis.set(`trx:${trxId}`, JSON.stringify(order));
         await redis.del(`pending_trx:${telegramId}`);
 
@@ -407,8 +407,8 @@ export async function POST(req: Request) {
         return NextResponse.json({ success: true, status: 'paid', order, user: updatedUser });
       }
 
-      if (status === 'cancel' || status === 'expired') {
-        order.status = status === 'cancel' ? 'CANCELLED' : 'EXPIRED';
+      if (status === 'cancel' || status === 'expired' || status === 'cancelled') {
+        order.status = status.startsWith('cancel') ? 'CANCELLED' : 'EXPIRED';
         await redis.set(`trx:${trxId}`, JSON.stringify(order));
         await redis.del(`pending_trx:${telegramId}`);
         return NextResponse.json({ success: true, status, order });
@@ -422,10 +422,6 @@ export async function POST(req: Request) {
       if (!trxId) {
         return NextResponse.json({ error: 'Tidak ada transaksi pending' }, { status: 404 });
       }
-
-      try {
-        await cancelTransaction(trxId);
-      } catch {}
 
       const raw = await redis.get<string | object>(`trx:${trxId}`);
       if (raw) {
